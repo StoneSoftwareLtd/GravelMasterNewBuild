@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Preview: start the website preview (runs when this folder opens)",
+      "detail": "Runs http://localhost:8780 in the background - real pages from the live site with the new header and footer. Read-only.",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\preview\\tools\\site-preview.ps1", "-NoBrowser"],
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "reveal": "silent", "panel": "dedicated" },
+      "runOptions": { "runOn": "folderOpen" }
+    },
+    {
+      "label": "Preview: open the whole website with the new header and footer",
+      "detail": "Opens http://localhost:8780 in your browser, starting the preview first if it isn't running",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\preview\\tools\\site-preview.ps1"],
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Preview: rebuild and watch .cshtml files",
+      "detail": "For the single Live Server page (preview/index.html): rebuilds it now and whenever a .cshtml file in Views/Shared is saved",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\preview\\tools\\build.ps1", "-Watch"],
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Preview: refresh menu data from the live site",
+      "detail": "Re-reads categories, products and a sample page from www.gravelmaster.co.uk, then rebuilds",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\preview\\tools\\fetch-data.ps1"],
+      "problemMatcher": []
+    }
+  ]
+}

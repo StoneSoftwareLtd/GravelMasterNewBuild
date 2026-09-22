@@ -1,0 +1,14 @@
+{
+  // The whole website with the new header, footer and homepage runs at http://localhost:8780: double-click
+  // "Start website preview.cmd", or Terminal > Run Task > "Preview: open the whole website with the new
+  // header and footer". See preview/README.md.
+  //
+  // Live Server (below) shows saved pages: right-click preview/index.html (the new homepage) >
+  // "Open with Live Server". Clicking a link on it opens that page in the whole-website preview.
+  "liveServer.settings.root": "/preview",
+  "liveServer.settings.mount": [
+    ["/css", "Website/Website/css"],
+    ["/js", "Website/Website/js"],
+    ["/img", "Website/Website/img"]
+  ]
+}

@@ -1,0 +1,2410 @@
+{
+    "fetched":  "2026-09-17 16:47",
+    "stylesheets":  [
+                        "https://www.gravelmaster.co.uk/Content/basecss?v=B4QCRoE7Xvo-LdY9L_TnXRlJcS-1kj-e7k0LP5hkcGQ1",
+                        "https://www.gravelmaster.co.uk/css/global.css?v210"
+                    ],
+    "categories":  [
+                       {
+                           "name":  "Gravels \u0026 Chippings",
+                           "url":  "garden-chippings",
+                           "idealFor":  "Driveways, Pathways, Borders and General Garden Use",
+                           "subs":  [
+                                        {
+                                            "name":  "Slate Chippings",
+                                            "url":  "slate-chippings"
+                                        }
+                                    ]
+                       },
+                       {
+                           "name":  "Play Area",
+                           "url":  "play-area-surfaces",
+                           "idealFor":  "Schools, Nurseries and Home Play Areas",
+                           "subs":  [
+
+                                    ]
+                       },
+                       {
+                           "name":  "Topsoil and Mulches",
+                           "url":  "topsoil-and-compost",
+                           "idealFor":  "Planting, Fruit Growing, General gardening activities, and Improving Soil Composition",
+                           "subs":  [
+                                        {
+                                            "name":  "Turf and Lawn Seed",
+                                            "url":  "turf-and-seed"
+                                        }
+                                    ]
+                       },
+                       {
+                           "name":  "Cobbles, Pebbles \u0026 Rockery",
+                           "url":  "cobbles-and-pebbles-rockery",
+                           "idealFor":  "Rockeries, Water Features, Gabion Stones and General Landscaping",
+                           "subs":  [
+                                        {
+                                            "name":  "Scottish Cobbles \u0026 Pebbles",
+                                            "url":  "scottish"
+                                        }
+                                    ]
+                       },
+                       {
+                           "name":  "Building Products",
+                           "url":  "building-aggregates",
+                           "idealFor":  "Construction and Landscaping Projects",
+                           "subs":  [
+
+                                    ]
+                       },
+                       {
+                           "name":  "Winter Salt \u0026 Fuel",
+                           "url":  "winter-salt-and-fuel",
+                           "idealFor":  "Gritting driveways and paths (Winter Salt)",
+                           "subs":  [
+
+                                    ]
+                       },
+                       {
+                           "name":  "Accessories",
+                           "url":  "accessories",
+                           "idealFor":  null,
+                           "subs":  [
+                                        {
+                                            "name":  "Membrane",
+                                            "url":  "weed-control-membrane"
+                                        }
+                                    ]
+                       },
+                       {
+                           "name":  "Bulbs",
+                           "url":  "bulbs",
+                           "idealFor":  null,
+                           "subs":  [
+
+                                    ]
+                       }
+                   ],
+    "products":  [
+                     {
+                         "name":  "Ballast 20mm",
+                         "category":  "building-aggregates",
+                         "url":  "ballast-20mm"
+                     },
+                     {
+                         "name":  "Begonia \u0027Cotton Candy Glow\u0027",
+                         "category":  "bulbs",
+                         "url":  "begonia-cotton"
+                     },
+                     {
+                         "name":  "Black Basalt 10mm",
+                         "category":  "garden-chippings",
+                         "url":  "black-basalt-10mm"
+                     },
+                     {
+                         "name":  "Black Basalt 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "black-basalt-20mm"
+                     },
+                     {
+                         "name":  "Black Basalt 6mm",
+                         "category":  "garden-chippings",
+                         "url":  "black-basalt-6mm"
+                     },
+                     {
+                         "name":  "Bloom and Root Rose Topsoil",
+                         "category":  "topsoil-and-compost",
+                         "url":  "bloom-and"
+                     },
+                     {
+                         "name":  "Blue Slate Chippings 20mm",
+                         "category":  "slate-chippings",
+                         "url":  "blue-slate-20mm"
+                     },
+                     {
+                         "name":  "Blue Slate Chippings 40mm",
+                         "category":  "slate-chippings",
+                         "url":  "blue-slate-40mm"
+                     },
+                     {
+                         "name":  "Brown Rock Salt",
+                         "category":  "winter-salt-and-fuel",
+                         "url":  "brown-rock-salt"
+                     },
+                     {
+                         "name":  "Carbon Steel Soft Grip Digging Spade",
+                         "category":  "accessories",
+                         "url":  "carbon-steel-soft-grip-digging-spade"
+                     },
+                     {
+                         "name":  "Coastal Scottish Cobbles 80-120mm",
+                         "category":  "scottish",
+                         "url":  "scottish-cobbles-80-120mm"
+                     },
+                     {
+                         "name":  "Composted Bark Fines ",
+                         "category":  "topsoil-and-compost",
+                         "url":  "composted-bark"
+                     },
+                     {
+                         "name":  "Concreting Sharp Sand",
+                         "category":  "building-aggregates",
+                         "url":  "concreting-sharp-sand"
+                     },
+                     {
+                         "name":  "Contract Ornamental Bark Mulch",
+                         "category":  "topsoil-and-compost",
+                         "url":  "landscaping-bark"
+                     },
+                     {
+                         "name":  "Cotswold Chippings 10mm",
+                         "category":  "garden-chippings",
+                         "url":  "cotswold-chippings-10mm"
+                     },
+                     {
+                         "name":  "Cotswold Chippings 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "cotswold-chippings-20mm"
+                     },
+                     {
+                         "name":  "Cotswold Chippings 6mm",
+                         "category":  "garden-chippings",
+                         "url":  "cotwold-chippings-6mm"
+                     },
+                     {
+                         "name":  "Cotswold Rockery",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "cotswold-rockery"
+                     },
+                     {
+                         "name":  "Crusher Run 20mm",
+                         "category":  "building-aggregates",
+                         "url":  "crusher-run-20mm"
+                     },
+                     {
+                         "name":  "Crusher Run 40mm (MOT Type 1)",
+                         "category":  "building-aggregates",
+                         "url":  "crusher-run-40mm"
+                     },
+                     {
+                         "name":  "Dahlia Boom Boom White",
+                         "category":  "bulbs",
+                         "url":  "dahlia-boom"
+                     },
+                     {
+                         "name":  "Dahlia Bubblegum Glow",
+                         "category":  "bulbs",
+                         "url":  "dahlia-bubblegum"
+                     },
+                     {
+                         "name":  "DAHLIA Cafe au Lait",
+                         "category":  "bulbs",
+                         "url":  "dahlia-cafe"
+                     },
+                     {
+                         "name":  "Dahlia Coral Mirage",
+                         "category":  "bulbs",
+                         "url":  "dahlia-coral"
+                     },
+                     {
+                         "name":  "Dahlia Melody Dora",
+                         "category":  "bulbs",
+                         "url":  "dahlia-melody"
+                     },
+                     {
+                         "name":  "Dahlia Ocean Whisper",
+                         "category":  "bulbs",
+                         "url":  "dahlia-ocean"
+                     },
+                     {
+                         "name":  "Dahlia Painted Smile",
+                         "category":  "bulbs",
+                         "url":  "dahlia-painted"
+                     },
+                     {
+                         "name":  "Dahlia Pearl Swirl",
+                         "category":  "bulbs",
+                         "url":  "dahlia-pearl"
+                     },
+                     {
+                         "name":  "Dahlia Tangerine Temptation ",
+                         "category":  "bulbs",
+                         "url":  "dahlia-tangerine"
+                     },
+                     {
+                         "name":  "Dahlia Velvet Majesty",
+                         "category":  "bulbs",
+                         "url":  "dahlia-velvet"
+                     },
+                     {
+                         "name":  "Dahlia Velvet Noir",
+                         "category":  "bulbs",
+                         "url":  "dahlia-velvet-noir"
+                     },
+                     {
+                         "name":  "Deep Root Tree Blend",
+                         "category":  "topsoil-and-compost",
+                         "url":  "deep-root"
+                     },
+                     {
+                         "name":  "Dhalia Cherry Button",
+                         "category":  "bulbs",
+                         "url":  "dhalia-cherry"
+                     },
+                     {
+                         "name":  "Dhalia Savanna Blush",
+                         "category":  "bulbs",
+                         "url":  "dhalia-savanna"
+                     },
+                     {
+                         "name":  "Double Screened Topsoil",
+                         "category":  "topsoil-and-compost",
+                         "url":  "double-screened-topsoil"
+                     },
+                     {
+                         "name":  "Dove Grey Derbyshire Peakstone 10mm",
+                         "category":  "garden-chippings",
+                         "url":  "dove-grey-derbyshire-peakstone-10mm"
+                     },
+                     {
+                         "name":  "Dove Grey Derbyshire Peakstone 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "dove-grey-derbyshire-peakstone-20mm"
+                     },
+                     {
+                         "name":  "Easihold Stone Glue",
+                         "category":  "accessories",
+                         "url":  "pebble-glue"
+                     },
+                     {
+                         "name":  "Edging Tool",
+                         "category":  "accessories",
+                         "url":  "edging-tool"
+                     },
+                     {
+                         "name":  "Empty Waste Bags",
+                         "category":  "accessories",
+                         "url":  "empty-bags"
+                     },
+                     {
+                         "name":  "Ericaceious Tospoil ",
+                         "category":  "topsoil-and-compost",
+                         "url":  "ericaceious-tospoil"
+                     },
+                     {
+                         "name":  "Everest Blue 10mm",
+                         "category":  "garden-chippings",
+                         "url":  "everest-blue-10mm"
+                     },
+                     {
+                         "name":  "Everest Blue 14-20mm",
+                         "category":  "garden-chippings",
+                         "url":  "everest-blue-20mm"
+                     },
+                     {
+                         "name":  "Everest Pebbles 20-40mm",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "everest-pebbles-20-40"
+                     },
+                     {
+                         "name":  "FeatherSnap Bird Feeder",
+                         "category":  "accessories",
+                         "url":  "bird-feeder"
+                     },
+                     {
+                         "name":  "Flamenco Gravel 10mm",
+                         "category":  "garden-chippings",
+                         "url":  "flamenco-gravel-10mm"
+                     },
+                     {
+                         "name":  "Flamenco Gravel 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "flamenco-gravel-20mm"
+                     },
+                     {
+                         "name":  "Flamenco Pebbles 20-40mm",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "flamenco-pebbles-20-40"
+                     },
+                     {
+                         "name":  "Florence Chippings 12-18mm",
+                         "category":  "garden-chippings",
+                         "url":  "florence-chipping-12-18"
+                     },
+                     {
+                         "name":  "Fork",
+                         "category":  "accessories",
+                         "url":  "fork"
+                     },
+                     {
+                         "name":  "Galvanised Steel Weed Membrane Pegs",
+                         "category":  "weed-control-membrane",
+                         "url":  "steel-pegs"
+                     },
+                     {
+                         "name":  "Garden Egg Chair",
+                         "category":  "accessories",
+                         "url":  "garden-egg"
+                     },
+                     {
+                         "name":  "Garden Hose Pipe",
+                         "category":  "accessories",
+                         "url":  "garden-hose"
+                     },
+                     {
+                         "name":  "Gardening Gloves",
+                         "category":  "accessories",
+                         "url":  "gardening-gloves"
+                     },
+                     {
+                         "name":  "Giant Lilium Beverly Dreams",
+                         "category":  "bulbs",
+                         "url":  "giant-lilium-beverly"
+                     },
+                     {
+                         "name":  "Giant Lilium Golden Triumph",
+                         "category":  "bulbs",
+                         "url":  "giant-lilium-golden"
+                     },
+                     {
+                         "name":  "Giant Lilium Nettys Pride",
+                         "category":  "bulbs",
+                         "url":  "giant-lilium-netty"
+                     },
+                     {
+                         "name":  "Giant Lilium Pretty Women",
+                         "category":  "bulbs",
+                         "url":  "giant-lilium-pretty"
+                     },
+                     {
+                         "name":  "Gift Card",
+                         "category":  "accessories",
+                         "url":  "voucher"
+                     },
+                     {
+                         "name":  "Gladiolus Coral Horizon",
+                         "category":  "bulbs",
+                         "url":  "gladiolus-coral"
+                     },
+                     {
+                         "name":  "Gladiolus Crimson",
+                         "category":  "bulbs",
+                         "url":  "gladiolus-crimson"
+                     },
+                     {
+                         "name":  "Gladiolus Royal Flame",
+                         "category":  "bulbs",
+                         "url":  "gladiolus-royal"
+                     },
+                     {
+                         "name":  "Glaswegian Pebbles 20-40mm",
+                         "category":  "scottish",
+                         "url":  "glaswegian-pebbles"
+                     },
+                     {
+                         "name":  "Golden Gravel 10mm",
+                         "category":  "garden-chippings",
+                         "url":  "golden-gravel-10mm"
+                     },
+                     {
+                         "name":  "Golden Gravel 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "golden-gravel-20mm"
+                     },
+                     {
+                         "name":  "Grass Seed with Ryegrass",
+                         "category":  "turf-and-seed",
+                         "url":  "grass-seed-ryegrass"
+                     },
+                     {
+                         "name":  "Green Granite 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "green-granite-20mm"
+                     },
+                     {
+                         "name":  "Green Granite Rockery",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "green-granite-rockery"
+                     },
+                     {
+                         "name":  "Green Slate Chippings 20mm",
+                         "category":  "slate-chippings",
+                         "url":  "green-slate-20mm"
+                     },
+                     {
+                         "name":  "Green Slate Chippings 40mm",
+                         "category":  "slate-chippings",
+                         "url":  "green-slate-40mm"
+                     },
+                     {
+                         "name":  "Green Slate Rockery",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "green-slate-rockery"
+                     },
+                     {
+                         "name":  "Grey Slate Chippings 20mm",
+                         "category":  "slate-chippings",
+                         "url":  "grey-slate-20mm"
+                     },
+                     {
+                         "name":  "Grey Slate Chippings 40mm",
+                         "category":  "slate-chippings",
+                         "url":  "grey-slate-40mm"
+                     },
+                     {
+                         "name":  "Irish Sea Cobbles 20-40mm",
+                         "category":  "scottish",
+                         "url":  "irish-sea-cobbles-20-40"
+                     },
+                     {
+                         "name":  "Kiln Dried Sand",
+                         "category":  "building-aggregates",
+                         "url":  "kiln-dried-sand"
+                     },
+                     {
+                         "name":  "Large Galvanised Stainless Steel Planter",
+                         "category":  "accessories",
+                         "url":  "large-galvanised"
+                     },
+                     {
+                         "name":  "Macadam Cold Lay",
+                         "category":  "building-aggregates",
+                         "url":  "macadam-6"
+                     },
+                     {
+                         "name":  "Mediterranean Pebbles 15-30mm",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "black-pebbles"
+                     },
+                     {
+                         "name":  "Midnight Black Chippings\r\n 12-18mm",
+                         "category":  "garden-chippings",
+                         "url":  "midnight-black-12-18"
+                     },
+                     {
+                         "name":  "Midnight Black Cobbles\r\n 40-60mm",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "midnight-black-40-60"
+                     },
+                     {
+                         "name":  "Midnight Black Pebbles\r\n 20-40mm",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "midnight-black-120-40"
+                     },
+                     {
+                         "name":  "Moonstone 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "moonstone-20mm"
+                     },
+                     {
+                         "name":  "Multi Purpose Compost",
+                         "category":  "topsoil-and-compost",
+                         "url":  "multi-purpose"
+                     },
+                     {
+                         "name":  "Muscari Pink Sunrise",
+                         "category":  "bulbs",
+                         "url":  "pink-sunrise"
+                     },
+                     {
+                         "name":  "Mushroom Compost ",
+                         "category":  "topsoil-and-compost",
+                         "url":  "mushroom-compost"
+                     },
+                     {
+                         "name":  "Ornamental Lawn Grass Seed",
+                         "category":  "turf-and-seed",
+                         "url":  "ornamental-lawn-seed"
+                     },
+                     {
+                         "name":  "Oyster Pebbles",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "oyster-pebbles"
+                     },
+                     {
+                         "name":  "Panda 10mm",
+                         "category":  "garden-chippings",
+                         "url":  "panda-10mm"
+                     },
+                     {
+                         "name":  "Panda 20-40mm",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "panda-20-40mm"
+                     },
+                     {
+                         "name":  "Panda Gravel 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "panda-20mm"
+                     },
+                     {
+                         "name":  "Plastic Membrane Fixing Pegs",
+                         "category":  "weed-control-membrane",
+                         "url":  "plastic-pegs"
+                     },
+                     {
+                         "name":  "Play Area Rubber Chippings Black",
+                         "category":  "play-area-surfaces",
+                         "url":  "rubber-chippings-black"
+                     },
+                     {
+                         "name":  "Play Area Rubber Chippings Blue",
+                         "category":  "play-area-surfaces",
+                         "url":  "rubber-chippings-blue"
+                     },
+                     {
+                         "name":  "Play Area Rubber Chippings Brown",
+                         "category":  "play-area-surfaces",
+                         "url":  "rubber-chippings-brown"
+                     },
+                     {
+                         "name":  "Play Area Rubber Chippings Green",
+                         "category":  "play-area-surfaces",
+                         "url":  "rubber-chippings-green"
+                     },
+                     {
+                         "name":  "Play Area Rubber Chippings Grey",
+                         "category":  "play-area-surfaces",
+                         "url":  "rubber-chippings-grey"
+                     },
+                     {
+                         "name":  "Play Area Rubber Chippings Maroon",
+                         "category":  "play-area-surfaces",
+                         "url":  "rubber-chippings-maroon"
+                     },
+                     {
+                         "name":  "Play Area Rubber Chippings Plum",
+                         "category":  "play-area-surfaces",
+                         "url":  "rubber-chippings-plum"
+                     },
+                     {
+                         "name":  "Play Grade Bark Chips - Softwood",
+                         "category":  "play-area-surfaces",
+                         "url":  "play-bark-softwood"
+                     },
+                     {
+                         "name":  "Play Grade Wood Chippings",
+                         "category":  "play-area-surfaces",
+                         "url":  "play-bark-original"
+                     },
+                     {
+                         "name":  "Play Sand",
+                         "category":  "play-area-surfaces",
+                         "url":  "play-sand"
+                     },
+                     {
+                         "name":  "Plum Slate Chippings 20mm",
+                         "category":  "slate-chippings",
+                         "url":  "plum-slate-20mm"
+                     },
+                     {
+                         "name":  "Plum Slate Chippings 40mm",
+                         "category":  "slate-chippings",
+                         "url":  "plum-slate-40mm"
+                     },
+                     {
+                         "name":  "Plum Slate Rockery",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "plum-slate-rockery"
+                     },
+                     {
+                         "name":  "Polar White 10mm",
+                         "category":  "garden-chippings",
+                         "url":  "polar-white-10mm"
+                     },
+                     {
+                         "name":  "Polar White 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "polar-white-20mm"
+                     },
+                     {
+                         "name":  "Polar White Pebbles 20-40mm",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "polar-white-pebbles"
+                     },
+                     {
+                         "name":  "Post Mix Concrete",
+                         "category":  "building-aggregates",
+                         "url":  "post-mix-concrete"
+                     },
+                     {
+                         "name":  "Premium All in one Multi Purpose",
+                         "category":  "topsoil-and-compost",
+                         "url":  "gm-premium"
+                     },
+                     {
+                         "name":  "Premium Play bark Nuggets",
+                         "category":  "play-area-surfaces",
+                         "url":  "play-bark"
+                     },
+                     {
+                         "name":  "Pro Turf Hard Wearing Turf - 1 Metre Sq Rolls",
+                         "category":  "turf-and-seed",
+                         "url":  "pro-hard-wearing-turf"
+                     },
+                     {
+                         "name":  "ProBlend Beds \u0026 Borders Topsoil",
+                         "category":  "topsoil-and-compost",
+                         "url":  "borders-topsoil"
+                     },
+                     {
+                         "name":  "ProBlend Multi-purpose Soil",
+                         "category":  "topsoil-and-compost",
+                         "url":  "multi-purpose-soil"
+                     },
+                     {
+                         "name":  "ProBlend Premier Gold Topsoil",
+                         "category":  "topsoil-and-compost",
+                         "url":  "gold-topsoil"
+                     },
+                     {
+                         "name":  "ProBlend Soil Improver",
+                         "category":  "topsoil-and-compost",
+                         "url":  "soil-improver"
+                     },
+                     {
+                         "name":  "ProBlend Turfing Soil",
+                         "category":  "topsoil-and-compost",
+                         "url":  "turfing-soil"
+                     },
+                     {
+                         "name":  "ProBlend Vegetable \u0026 Fruit Topsoil",
+                         "category":  "topsoil-and-compost",
+                         "url":  "fruit-and-vegetable-soil"
+                     },
+                     {
+                         "name":  "Professional Horticultural Grit",
+                         "category":  "topsoil-and-compost",
+                         "url":  "professional-grit"
+                     },
+                     {
+                         "name":  "Quartz Pea Gravel 10mm",
+                         "category":  "garden-chippings",
+                         "url":  "quartz-pea-gravel-10mm"
+                     },
+                     {
+                         "name":  "Quartz Pea Gravel 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "quartz-pea-gravel-20mm"
+                     },
+                     {
+                         "name":  "Quick Lawn Repair Blend",
+                         "category":  "topsoil-and-compost",
+                         "url":  "quick-lawn"
+                     },
+                     {
+                         "name":  "Raised Bed Topsoil Mix",
+                         "category":  "topsoil-and-compost",
+                         "url":  "raised-bed"
+                     },
+                     {
+                         "name":  "Red Building Sand",
+                         "category":  "building-aggregates",
+                         "url":  "red-building-sand"
+                     },
+                     {
+                         "name":  "Red Granite 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "red-granite-20mm"
+                     },
+                     {
+                         "name":  "Red Gritstone Rockery",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "red-gritstone-rockery"
+                     },
+                     {
+                         "name":  "River Washed Gravel 10mm",
+                         "category":  "garden-chippings",
+                         "url":  "river-washed-gravel-10mm"
+                     },
+                     {
+                         "name":  "River Washed Gravel 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "river-washed-gravel-20mm"
+                     },
+                     {
+                         "name":  "Rockin Blue Chippings",
+                         "category":  "play-area-surfaces",
+                         "url":  "rockin-blue-chippings"
+                     },
+                     {
+                         "name":  "Rockin Green Chippings",
+                         "category":  "play-area-surfaces",
+                         "url":  "rockin-green-chippings"
+                     },
+                     {
+                         "name":  "Rockin Purple Chippings",
+                         "category":  "play-area-surfaces",
+                         "url":  "rockin-purple-chippings"
+                     },
+                     {
+                         "name":  "Rockin Red Chippings",
+                         "category":  "play-area-surfaces",
+                         "url":  "rockin-red-chippings"
+                     },
+                     {
+                         "name":  "Rootzone Sand \u0026 Soil Mix",
+                         "category":  "topsoil-and-compost",
+                         "url":  "rootzone-sand"
+                     },
+                     {
+                         "name":  "Scottish Cobbles 30-50mm",
+                         "category":  "scottish",
+                         "url":  "scottish-cobbles-30-50mm"
+                     },
+                     {
+                         "name":  "Scottish Cobbles 50-80mm",
+                         "category":  "scottish",
+                         "url":  "scottish-cobbles-50-80mm"
+                     },
+                     {
+                         "name":  "Scottish Pebbles 14-20mm",
+                         "category":  "scottish",
+                         "url":  "scottish-pebbles-14-20mm"
+                     },
+                     {
+                         "name":  "Scottish Pebbles 20-30mm",
+                         "category":  "scottish",
+                         "url":  "scottish-pebbles-20-30mm"
+                     },
+                     {
+                         "name":  "Scottish Pebbles 8-14mm",
+                         "category":  "scottish",
+                         "url":  "scottish-pebbles-8-14mm"
+                     },
+                     {
+                         "name":  "Scottish Silver Granite 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "scottish-silver-granite-20mm"
+                     },
+                     {
+                         "name":  "Screened Topsoil",
+                         "category":  "topsoil-and-compost",
+                         "url":  "screened-topsoil"
+                     },
+                     {
+                         "name":  "Small Tool Kit With Stool",
+                         "category":  "accessories",
+                         "url":  "small-tool"
+                     },
+                     {
+                         "name":  "Snow Shovel",
+                         "category":  "winter-salt-and-fuel",
+                         "url":  "snow-shovel"
+                     },
+                     {
+                         "name":  "Standard Grit Bin",
+                         "category":  "winter-salt-and-fuel",
+                         "url":  "standard-grit-bin-rock-salt"
+                     },
+                     {
+                         "name":  "Top Dressing Sand and Soil Mix",
+                         "category":  "topsoil-and-compost",
+                         "url":  "top-dressing"
+                     },
+                     {
+                         "name":  "Transplanter",
+                         "category":  "accessories",
+                         "url":  "transplanter"
+                     },
+                     {
+                         "name":  "Trowel",
+                         "category":  "accessories",
+                         "url":  "trowel"
+                     },
+                     {
+                         "name":  "Weed Control Membrane 1m Widths",
+                         "category":  "weed-control-membrane",
+                         "url":  "weed-membrane-1m-width"
+                     },
+                     {
+                         "name":  "Weed Control Membrane 2m Widths",
+                         "category":  "weed-control-membrane",
+                         "url":  "weed-membrane-2m-width"
+                     },
+                     {
+                         "name":  "White Rock Salt",
+                         "category":  "winter-salt-and-fuel",
+                         "url":  "white-rock-salt"
+                     },
+                     {
+                         "name":  "Winter Mix Compost Mulch",
+                         "category":  "topsoil-and-compost",
+                         "url":  "winter-mix"
+                     },
+                     {
+                         "name":  "Yellow Building Sand",
+                         "category":  "building-aggregates",
+                         "url":  "yellow-building-sand"
+                     },
+                     {
+                         "name":  "Yorkshire Cream 10mm",
+                         "category":  "garden-chippings",
+                         "url":  "yorkshire-cream-10mm"
+                     },
+                     {
+                         "name":  "Yorkshire Cream 20mm",
+                         "category":  "garden-chippings",
+                         "url":  "yorkshire-cream-20mm"
+                     },
+                     {
+                         "name":  "Yorkstone Buff Rockery",
+                         "category":  "cobbles-and-pebbles-rockery",
+                         "url":  "yorkstone-buff-rockery"
+                     }
+                 ],
+    "tiles":  [
+                  {
+                      "category":  "slate-chippings",
+                      "url":  "plum-slate-40mm",
+                      "name":  "Plum Slate Chippings 40mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/40PLSL-330.jpg",
+                      "synopsis":  "The larger sized chippings will definitiely add the needed brightness to your landscape.",
+                      "price":  "135.00",
+                      "tradePrice":  "125.00"
+                  },
+                  {
+                      "category":  "slate-chippings",
+                      "url":  "plum-slate-20mm",
+                      "name":  "Plum Slate Chippings 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20PLSL-330.jpg",
+                      "synopsis":  "The beautiful plum colour makes this product ideal for decorative purposes in water features, ponds or around garden borders.",
+                      "price":  "124.00",
+                      "tradePrice":  "114.00"
+                  },
+                  {
+                      "category":  "slate-chippings",
+                      "url":  "green-slate-40mm",
+                      "name":  "Green Slate Chippings 40mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/40GRSL-330.jpg",
+                      "synopsis":  "The stylish green colour will brighten all outdoor areas and give a truly unique look.",
+                      "price":  "131.00",
+                      "tradePrice":  "121.00"
+                  },
+                  {
+                      "category":  "slate-chippings",
+                      "url":  "green-slate-20mm",
+                      "name":  "Green Slate Chippings 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20GRSL-330.jpg",
+                      "synopsis":  "This is an eco-friendly product that is a wonderful shade of green! Use for landscaping, water features and mulch.",
+                      "price":  "131.00",
+                      "tradePrice":  "121.00"
+                  },
+                  {
+                      "category":  "slate-chippings",
+                      "url":  "grey-slate-40mm",
+                      "name":  "Grey Slate Chippings 40mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/40GYSL-330.jpg",
+                      "synopsis":  "A stunning shade of grey that will add a contempory and modern style to your home.",
+                      "price":  "119.00",
+                      "tradePrice":  "109.00"
+                  },
+                  {
+                      "category":  "slate-chippings",
+                      "url":  "grey-slate-20mm",
+                      "name":  "Grey Slate Chippings 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20GYSL-330.jpg",
+                      "synopsis":  "Choose this lovely grey coloured slate to modernise your home and add a touch of elegance to your outdoor space.",
+                      "price":  "118.00",
+                      "tradePrice":  "108.00"
+                  },
+                  {
+                      "category":  "slate-chippings",
+                      "url":  "blue-slate-20mm",
+                      "name":  "Blue Slate Chippings 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20BLSL-330.jpg",
+                      "synopsis":  "A beautiful blue slate that will add the needed brightness to your garden area.",
+                      "price":  "126.00",
+                      "tradePrice":  "116.00"
+                  },
+                  {
+                      "category":  "slate-chippings",
+                      "url":  "blue-slate-40mm",
+                      "name":  "Blue Slate Chippings 40mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/40BLSL-330.jpg",
+                      "synopsis":  "The larger sized slate chippings are perfect for decorative uses and will make the lovely shade of blue stand out!",
+                      "price":  "133.00",
+                      "tradePrice":  "123.00"
+                  },
+                  {
+                      "category":  "turf-and-seed",
+                      "url":  "pro-hard-wearing-turf",
+                      "name":  "Pro Turf Hard Wearing Turf - 1 Metre Sq Rolls",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/TT3-330.jpg",
+                      "synopsis":  "Hard wearing turf is perfect for a family lawn that will receive lots of footfall.",
+                      "price":  "3.75",
+                      "tradePrice":  "3.75"
+                  },
+                  {
+                      "category":  "turf-and-seed",
+                      "url":  "grass-seed-ryegrass",
+                      "name":  "Grass Seed with Ryegrass",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/HGSEED-330.jpg",
+                      "synopsis":  "The perfect grass seed to use if you require a hard-wearing, durable lawn.",
+                      "price":  "89.70",
+                      "tradePrice":  "89.70"
+                  },
+                  {
+                      "category":  "turf-and-seed",
+                      "url":  "ornamental-lawn-seed",
+                      "name":  "Ornamental Lawn Grass Seed",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/ORGSEED-330.jpg",
+                      "synopsis":  "Ornamental Lawn Grass seed has a medium-fine texture and a moderate wear tolerance.",
+                      "price":  "94.70",
+                      "tradePrice":  "94.70"
+                  },
+                  {
+                      "category":  "turf-and-seed",
+                      "url":  "top-tee-turf",
+                      "name":  "Top Tee Turf - 1 Metre Sq Rolls",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/TT2-330.jpg",
+                      "synopsis":  "Top Tee turf is available in 1m2 rolls and is perfect for the use on golf tees and tennis courts.",
+                      "price":  "10.98",
+                      "tradePrice":  "10.98"
+                  },
+                  {
+                      "category":  "scottish",
+                      "url":  "glaswegian-pebbles",
+                      "name":  "Glaswegian Pebbles 20-40mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/40GLASP-330.jpg",
+                      "synopsis":  "These pebbles are from Glasgow and are a stylish mix of creams, browns, pinks and greys.",
+                      "price":  "111.00",
+                      "tradePrice":  "101.00"
+                  },
+                  {
+                      "category":  "scottish",
+                      "url":  "irish-sea-cobbles-20-40",
+                      "name":  "Irish Sea Cobbles 20-40mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/30-80IRISHCOB-330.jpg",
+                      "synopsis":  "These cobbles are from the Irish Sea and are a stylish mix of creams, browns and greys.",
+                      "price":  "112.00",
+                      "tradePrice":  "102.00"
+                  },
+                  {
+                      "category":  "scottish",
+                      "url":  "scottish-cobbles-30-50mm",
+                      "name":  "Scottish Cobbles 30-50mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/30-50SCOT-330.jpg",
+                      "synopsis":  "30-50mm Scottish Cobbles are ideal for placing around borders and pathways. Their smooth surface and natural colours looks perfect alongside any contrastic colour.",
+                      "price":  "165.00",
+                      "tradePrice":  "155.00"
+                  },
+                  {
+                      "category":  "scottish",
+                      "url":  "scottish-pebbles-20-30mm",
+                      "name":  "Scottish Pebbles 20-30mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20-30SCOT-330.jpg",
+                      "synopsis":  "They are a stunning mix of greys, browns, creams and pinks to give a contemporary look in any garden.",
+                      "price":  "164.00",
+                      "tradePrice":  "154.00"
+                  },
+                  {
+                      "category":  "scottish",
+                      "url":  "scottish-pebbles-8-14mm",
+                      "name":  "Scottish Pebbles 8-14mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/8-14SCOT-330.jpg",
+                      "synopsis":  "Introduce to containers or pathways and watch your outdoor space be transformed. The Scottish Pebbles are stylish and modern!",
+                      "price":  "164.00",
+                      "tradePrice":  "154.00"
+                  },
+                  {
+                      "category":  "scottish",
+                      "url":  "scottish-pebbles-14-20mm",
+                      "name":  "Scottish Pebbles 14-20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/14-20SCOT-330.jpg",
+                      "synopsis":  "Ideal for the use on driveways or pathways and will brighten up any outdoor area.",
+                      "price":  "164.00",
+                      "tradePrice":  "154.00"
+                  },
+                  {
+                      "category":  "scottish",
+                      "url":  "scottish-cobbles-50-80mm",
+                      "name":  "Scottish Cobbles 50-80mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/50-80SCOT-330.jpg",
+                      "synopsis":  "Scottish Cobbles in the 50-80mm size are perfect for the use on patio areas, borders and rockeries.",
+                      "price":  "183.00",
+                      "tradePrice":  "173.00"
+                  },
+                  {
+                      "category":  "scottish",
+                      "url":  "scottish-cobbles-80-120mm",
+                      "name":  "Coastal Scottish Cobbles 80-120mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/80-120SCOT-330.jpg",
+                      "synopsis":  "Use the 80-120mm Scottish Cobbles for rockeries or to provide a stunning pathway border.",
+                      "price":  "207.00",
+                      "tradePrice":  "197.00"
+                  },
+                  {
+                      "category":  "weed-control-membrane",
+                      "url":  "weed-membrane-1m-width",
+                      "name":  "Weed Control Membrane 1m Widths",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/WM1M-330.jpg",
+                      "synopsis":  "The 1m membranes are durable and extremely effective at suppressing weed growth.",
+                      "price":  "15.99",
+                      "tradePrice":  "15.99"
+                  },
+                  {
+                      "category":  "weed-control-membrane",
+                      "url":  "weed-membrane-2m-width",
+                      "name":  "Weed Control Membrane 2m Widths",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/WM2M-330.jpg",
+                      "synopsis":  "The slightly larger membranes are 2m in size and are pefect for weed suppression.",
+                      "price":  "23.00",
+                      "tradePrice":  "23.00"
+                  },
+                  {
+                      "category":  "weed-control-membrane",
+                      "url":  "steel-pegs",
+                      "name":  "Galvanised Steel Weed Membrane Pegs",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/STEELPEG-330.jpg",
+                      "synopsis":  "These are a durable and strong alternative to plastic pegs and will effectively hold your membrane in place.",
+                      "price":  "36.00",
+                      "tradePrice":  "36.00"
+                  },
+                  {
+                      "category":  "weed-control-membrane",
+                      "url":  "plastic-pegs",
+                      "name":  "Plastic Membrane Fixing Pegs",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/PLASPEG-330.jpg",
+                      "synopsis":  "Hold your membrane in place with these easy to use plastic membrane pegs.",
+                      "price":  "9.00",
+                      "tradePrice":  "9.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "cotswold-chippings-20mm",
+                      "name":  "Cotswold Chippings 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20COTS-330.jpg",
+                      "synopsis":  "Cotswold chippings are extremely popular due to the contemporary cream colour and variety of ideal uses.",
+                      "price":  "91.00",
+                      "tradePrice":  "92.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "black-basalt-20mm",
+                      "name":  "Black Basalt 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20BBAS-330.jpg",
+                      "synopsis":  "Black Basalt is an extremely durable stone that shines black when wet and grey when dry!",
+                      "price":  "97.00",
+                      "tradePrice":  "92.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "dove-grey-derbyshire-peakstone-20mm",
+                      "name":  "Dove Grey Derbyshire Peakstone 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20DERB-330.jpg",
+                      "synopsis":  "Dove Grey Derbyshire Peakstone is a modern stone that can be used for driveways, water features and decorative purpose.",
+                      "price":  "92.00",
+                      "tradePrice":  "87.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "golden-gravel-20mm",
+                      "name":  "Golden Gravel 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20GOLD-330.jpg",
+                      "synopsis":  "Golden Gravel is a stunning combination of yellows, creams and browns and is perfect for rockeries, water featrures and driveways.",
+                      "price":  "100.00",
+                      "tradePrice":  "95.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "panda-10mm",
+                      "name":  "Panda 10mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/10PANDA-330.jpg",
+                      "synopsis":  "The modern look is made up of Polar White and Black Basalt chippings. making it a fantastic addition to any garden.",
+                      "price":  "133.00",
+                      "tradePrice":  "133.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "panda-20mm",
+                      "name":  "Panda Gravel 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20BLKIC-330.jpg",
+                      "synopsis":  "Panda Gravel is a beautiful mix of Black Basalt, Polar White and Everest Blue to give modern and hard-wearing properties.",
+                      "price":  "105.00",
+                      "tradePrice":  "100.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "flamenco-gravel-20mm",
+                      "name":  "Flamenco Gravel 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20FLAM-330.jpg",
+                      "synopsis":  "Flamenco gravel is a durable and modern mix of stunning colours including pinks, greys and white.",
+                      "price":  "122.00",
+                      "tradePrice":  "117.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "polar-white-20mm",
+                      "name":  "Polar White 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20POLAR-330.jpg",
+                      "synopsis":  "Polar White 20mm is a pure white marble stone from Spain that shines beautifully in the sun.",
+                      "price":  "120.00",
+                      "tradePrice":  "115.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "yorkshire-cream-10mm",
+                      "name":  "Yorkshire Cream 10mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/10YORCR-330.jpg",
+                      "synopsis":  "This cream and light brown coloured stone is often referred to as \u0027Yorkshire Flint\u0027 or \u0027Cotters Gold\u0027 and is perfect for driveways and pathways.",
+                      "price":  "130.00",
+                      "tradePrice":  "121.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "yorkshire-cream-20mm",
+                      "name":  "Yorkshire Cream 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20YORCR-330.jpg",
+                      "synopsis":  "This cream and light brown coloured stone is often referred to as \u0027Yorkshire Flint\u0027 or \u0027Cotters Gold\u0027 and is perfect for driveways and pathways.",
+                      "price":  "132.00",
+                      "tradePrice":  "122.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "cotswold-chippings-10mm",
+                      "name":  "Cotswold Chippings 10mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/10COTS-330.jpg",
+                      "synopsis":  "Cotswold Chippings 10mm brighten up any garden border or pathway with the lovely cream colour.",
+                      "price":  "114.00",
+                      "tradePrice":  "104.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "everest-blue-20mm",
+                      "name":  "Everest Blue 14-20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20ICEB-330.jpg",
+                      "synopsis":  "Everest Blue is an angular pale-grey and blue gravel that will brighten up almost any landscape!",
+                      "price":  "118.00",
+                      "tradePrice":  "113.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "red-granite-20mm",
+                      "name":  "Red Granite 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20REDG-330.jpg",
+                      "synopsis":  "Red granite will add style and character to your property. The rustic colour is unique and modern.",
+                      "price":  "110.00",
+                      "tradePrice":  "112.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "polar-white-10mm",
+                      "name":  "Polar White 10mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/10POLAR-330.jpg",
+                      "synopsis":  "Polar White 10mm is a pure white marble stone from Spain that shines beautifully in the sun.",
+                      "price":  "123.00",
+                      "tradePrice":  "126.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "golden-gravel-10mm",
+                      "name":  "Golden Gravel 10mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/10GOLD-330.jpg",
+                      "synopsis":  "A beautiful mix of gold and brown shades that will transform your outdoor space.",
+                      "price":  "118.00",
+                      "tradePrice":  "108.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "green-granite-20mm",
+                      "name":  "Green Granite 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20GREEN-330.jpg",
+                      "synopsis":  "Add a bright stone such as our green granite to your garden to give it the wow-factor!",
+                      "price":  "123.00",
+                      "tradePrice":  "113.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "dove-grey-derbyshire-peakstone-10mm",
+                      "name":  "Dove Grey Derbyshire Peakstone 10mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/10DERB-330.jpg",
+                      "synopsis":  "A light grey stone that will match any current garden design!",
+                      "price":  "113.00",
+                      "tradePrice":  "103.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "quartz-pea-gravel-20mm",
+                      "name":  "Quartz Pea Gravel 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20QTZ-330.jpg",
+                      "synopsis":  "Choose this gravel if you want to create a natural looking landscape. The brown and stone colours will complement any current design.",
+                      "price":  "90.00",
+                      "tradePrice":  "85.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "cotwold-chippings-6mm",
+                      "name":  "Cotswold Chippings 6mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/6COTS-330.jpg",
+                      "synopsis":  "6mm Cotswold Chippings look fantastic when placed around borders or containers. The light colour will brighten any area.",
+                      "price":  "112.00",
+                      "tradePrice":  "102.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "quartz-pea-gravel-10mm",
+                      "name":  "Quartz Pea Gravel 10mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/10QTZ-330.jpg",
+                      "synopsis":  "A traditional stone that looks perfect on pathways and for decorative garden use.",
+                      "price":  "110.00",
+                      "tradePrice":  "100.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "moonstone-20mm",
+                      "name":  "Moonstone 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20MOON-330.jpg",
+                      "synopsis":  "Moonstone is a charming mix of dark browns, black and white chippings and is a firm favourite of ours!",
+                      "price":  "131.00",
+                      "tradePrice":  "121.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "black-basalt-10mm",
+                      "name":  "Black Basalt 10mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/10BBAS-330.jpg",
+                      "synopsis":  "10mm Black Basalt is the perfect decorative product that is black when wet and grey when dry.",
+                      "price":  "130.00",
+                      "tradePrice":  "120.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "scottish-silver-granite-20mm",
+                      "name":  "Scottish Silver Granite 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20SCOT-330.jpg",
+                      "synopsis":  "Scottish Silver granite is a truly unique product! The chippings are a stunning blend of silver-grey shades that appear black and speckled when wet.",
+                      "price":  "164.00",
+                      "tradePrice":  "154.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "black-basalt-6mm",
+                      "name":  "Black Basalt 6mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/6BBAS-330.jpg",
+                      "synopsis":  "6mm Black Basalt is the perfect decorative product that is black when wet and grey when dry.",
+                      "price":  "130.00",
+                      "tradePrice":  "120.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "everest-blue-10mm",
+                      "name":  "Everest Blue 10mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/10ICEB-330.jpg",
+                      "synopsis":  "Everest Blue is an angular pale-grey and blue gravel that will brighten up almost any landscape!",
+                      "price":  "183.00",
+                      "tradePrice":  "178.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "flamenco-gravel-10mm",
+                      "name":  "Flamenco Gravel 10mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/10FLAM-330.jpg",
+                      "synopsis":  "Flamenco gravel is a durable and modern mix of stunning colours including pinks, greys and white.",
+                      "price":  "235.00",
+                      "tradePrice":  "230.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "midnight-black-12-18",
+                      "name":  "Midnight Black Chippings\r\n 12-18mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/12-18NEROPEB-330.jpg",
+                      "synopsis":  "Midnight black is our new smooth alternative to our very popular Black Basalt. Our brand new addition looks stunning wet and dry and will give a modern look to any garden",
+                      "price":  "209.00",
+                      "tradePrice":  "199.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "florence-chipping-12-18",
+                      "name":  "Florence Chippings 12-18mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/12-18CORDPEB-330.jpg",
+                      "synopsis":  "Our beautiful Florence chipping is a brand new addition to our range",
+                      "price":  "217.00",
+                      "tradePrice":  "207.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "river-washed-gravel-10mm",
+                      "name":  "River Washed Gravel 10mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/10PEB-330.jpg",
+                      "synopsis":  "River washed 10mm has a stunning variation of brown, white and stone colours to give a truly unique stone.",
+                      "price":  "110.00",
+                      "tradePrice":  "100.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "river-washed-gravel-20mm",
+                      "name":  "River Washed Gravel 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20PEB-330.jpg",
+                      "synopsis":  "These 20mm pebbles are mainly rounded in shape and is the perfect product to use for general groundcover.",
+                      "price":  "110.00",
+                      "tradePrice":  "100.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "everest-blue-20-40",
+                      "name":  "Everest Blue 20-40mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20-40ICECHIP-330.jpg",
+                      "synopsis":  "Everest Blue is an angular pale-grey and blue chippings that will soon brighten up any landscape.",
+                      "price":  "189.00",
+                      "tradePrice":  "189.00"
+                  },
+                  {
+                      "category":  "garden-chippings",
+                      "url":  "sample-box",
+                      "name":  "Sample Box",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/SAMPBOX1-330.jpg",
+                      "synopsis":  "Sample Box",
+                      "price":  "25.00",
+                      "tradePrice":  "25.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "play-sand",
+                      "name":  "Play Sand",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/PLAYS-330.jpg",
+                      "synopsis":  "Our play sand is of the highest quality and is perfect for the use in childrens play pits. Tested in accordance to the BS EN 1177 standard.",
+                      "price":  "89.00",
+                      "tradePrice":  "84.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "play-bark",
+                      "name":  "Premium Play bark Nuggets",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/PLAYNUG-330.jpg",
+                      "synopsis":  "Play Bark has been tested in accordance to BS. EN1177 standard and is suitable for the use on childrens play areas.",
+                      "price":  "164.00",
+                      "tradePrice":  "154.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "play-bark-softwood",
+                      "name":  "Play Grade Bark Chips - Softwood",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/SOSPLAYBK-330.jpg",
+                      "synopsis":  "Play Bark has been tested in accordance to BS. EN1177 standard and is suitable for the use on childrens play areas.",
+                      "price":  "134.00",
+                      "tradePrice":  "124.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "play-bark-original",
+                      "name":  "Play Grade Wood Chippings",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/PLAYBK-330.jpg",
+                      "synopsis":  "Play Bark has been tested in accordance to BS. EN1177 standard and is suitable for the use on childrens play areas.",
+                      "price":  "161.00",
+                      "tradePrice":  "151.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rockin-blue-chippings",
+                      "name":  "Rockin Blue Chippings",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RKINBLUE-330.jpg",
+                      "synopsis":  "Rockin Blue Chippings",
+                      "price":  "260.00",
+                      "tradePrice":  "260.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rockin-green-chippings",
+                      "name":  "Rockin Green Chippings",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RKINGREEN-330.jpg",
+                      "synopsis":  "Rockin Green Chippings",
+                      "price":  "278.00",
+                      "tradePrice":  "273.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rockin-purple-chippings",
+                      "name":  "Rockin Purple Chippings",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RKINPURPLE-330.jpg",
+                      "synopsis":  "Rockin Purple Chippings",
+                      "price":  "278.00",
+                      "tradePrice":  "273.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rockin-red-chippings",
+                      "name":  "Rockin Red Chippings",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RKINRED-330.jpg",
+                      "synopsis":  "Rockin Red Chippings",
+                      "price":  "278.00",
+                      "tradePrice":  "273.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rubber-chippings-plum",
+                      "name":  "Play Area Rubber Chippings Plum",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RUBPLYPLU-330.jpg",
+                      "synopsis":  "Plum will always look bright and beautiful in any outdoor space.",
+                      "price":  "454.00",
+                      "tradePrice":  "424.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rubber-chippings-maroon",
+                      "name":  "Play Area Rubber Chippings Maroon",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RUBPLYMAR-330.jpg",
+                      "synopsis":  "Maroon is a fantastic colour to add to an outdoor play area!",
+                      "price":  "434.00",
+                      "tradePrice":  "424.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rubber-chippings-blue",
+                      "name":  "Play Area Rubber Chippings Blue",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RUBPLYBLU-330.jpg",
+                      "synopsis":  "Inject colour to your play area with our blue rubber chippings.",
+                      "price":  "434.00",
+                      "tradePrice":  "424.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rubber-chippings-green",
+                      "name":  "Play Area Rubber Chippings Green",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RUBPLYGRN-330.jpg",
+                      "synopsis":  "Green rubber chippings are perfect for making your play area look bright and cheerful.",
+                      "price":  "434.00",
+                      "tradePrice":  "424.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rubber-chippings-brown",
+                      "name":  "Play Area Rubber Chippings Brown",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RUBPLYBRW-330.jpg",
+                      "synopsis":  "Brown rubber chippings will blend effortlessly into the natural landscape.",
+                      "price":  "434.00",
+                      "tradePrice":  "424.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rubber-chippings-black",
+                      "name":  "Play Area Rubber Chippings Black",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RUBPLYBLK-330.jpg",
+                      "synopsis":  "Black rubber chippings are perfect for play areas and are dark in colour.",
+                      "price":  "434.00",
+                      "tradePrice":  "424.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rubber-chippings-grey",
+                      "name":  "Play Area Rubber Chippings Grey",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RUBPLYGRY-330.jpg",
+                      "synopsis":  "These stunning chippings are light enough to brighten an outdoor space without injecting too much colour.",
+                      "price":  "434.00",
+                      "tradePrice":  "424.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rockin-black-chippings",
+                      "name":  "Rockin Black Chippings",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RKINBLACK-330.jpg",
+                      "synopsis":  "Rockin Black Chippings",
+                      "price":  "278.00",
+                      "tradePrice":  "273.00"
+                  },
+                  {
+                      "category":  "play-area-surfaces",
+                      "url":  "rockin-pink-chippings",
+                      "name":  "Rockin Pink Chippings",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RKINPINK-330.jpg",
+                      "synopsis":  "Rockin Pink Chippings",
+                      "price":  "278.00",
+                      "tradePrice":  "273.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "multi-purpose-soil",
+                      "name":  "ProBlend Multi-purpose Soil",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/MPTSOIL-330.jpg",
+                      "synopsis":  "An organic, nutrient rich soil that is perfect for various gardening uses such as turfing and planting.",
+                      "price":  "103.00",
+                      "tradePrice":  "93.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "soil-improver",
+                      "name":  "ProBlend Soil Improver",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/SOILIM-330.jpg",
+                      "synopsis":  "Reinvigorate your existing soil by adding our Soil Improver to your lawn.",
+                      "price":  "107.00",
+                      "tradePrice":  "97.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "screened-topsoil",
+                      "name":  "Screened Topsoil",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/TSOIL-330.jpg",
+                      "synopsis":  "Screened initially to remove oversized lumps, the Screen Topsoil is perfect for general garden uses.",
+                      "price":  "103.00",
+                      "tradePrice":  "93.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "turfing-soil",
+                      "name":  "ProBlend Turfing Soil",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/TTSOIL-330.jpg",
+                      "synopsis":  "Turfing Soil is extremely popular and perfect for sprinkling grass seed or laying turn upon.",
+                      "price":  "103.00",
+                      "tradePrice":  "93.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "landscaping-bark",
+                      "name":  "Contract Ornamental Bark Mulch",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/BAMUL-330.jpg",
+                      "synopsis":  "Mulch can suppress weed growth, protect plants from frost and add a woodland appearance to any landscape.",
+                      "price":  "127.00",
+                      "tradePrice":  "117.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "fruit-and-vegetable-soil",
+                      "name":  "ProBlend Vegetable \u0026 Fruit Topsoil",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/FVTSOIL-330.jpg",
+                      "synopsis":  "This particular soil is rich in organic matter to provide the necessary nutrients for healthy crop establishment.",
+                      "price":  "103.00",
+                      "tradePrice":  "93.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "double-screened-topsoil",
+                      "name":  "Double Screened Topsoil",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DTSOIL-330.jpg",
+                      "synopsis":  "Double Screened Topsoil has been screened twice to remove oversized lumps, creating a soil that is easy to work with.",
+                      "price":  "105.00",
+                      "tradePrice":  "95.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "borders-topsoil",
+                      "name":  "ProBlend Beds \u0026 Borders Topsoil",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/BBTSOIL-330.jpg",
+                      "synopsis":  "ProBlend Beds \u0026 Borders Garden Soil is the ideal product to place in containers, planters and beds/borders. It contains a controlled release fertiliser and a special water-retentive material designed to promote the early development of plants, trees and shrubs.",
+                      "price":  "103.00",
+                      "tradePrice":  "93.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "professional-grit",
+                      "name":  "Professional Horticultural Grit",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/PROHORT-330.jpg",
+                      "synopsis":  "Professional Horticultural Grit has been screened to 1-5mm to assist with drainage.",
+                      "price":  "113.00",
+                      "tradePrice":  "103.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "gold-topsoil",
+                      "name":  "ProBlend Premier Gold Topsoil",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/GOLDTSOIL-330.jpg",
+                      "synopsis":  "Ideal for general garden requirements such as turfing, planting and for general ground cover.",
+                      "price":  "108.00",
+                      "tradePrice":  "98.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "bloom-and",
+                      "name":  "Bloom and Root Rose Topsoil",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/BLMRTSOIL-330.jpg",
+                      "synopsis":  "Give your roses the perfect foundation with Bloom \u0026 Root Rose Blend  a carefully balanced mix of screened topsoil, ericaceous nutrient-rich compost, perlite for improved drainage, and well-rotted manure to provide long-lasting fertility and soil enrichment.",
+                      "price":  "98.00",
+                      "tradePrice":  "98.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "composted-bark",
+                      "name":  "Composted Bark Fines",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/COMPBRKFINE-330.jpg",
+                      "synopsis":  "Our Composted Mulch Fines are ideal for improving soil drainage and helping to break up heavy clay soils, creating a lighter, more workable growing environment.",
+                      "price":  "122.00",
+                      "tradePrice":  "122.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "deep-root",
+                      "name":  "Deep Root Tree Blend",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DRTSOIL-330.jpg",
+                      "synopsis":  "Our RootMax Tree Planting Soil is a specialist topsoil blend designed to give newly planted trees the best possible start, supporting strong root establishment and healthy early growth",
+                      "price":  "100.00",
+                      "tradePrice":  "100.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "ericaceious-tospoil",
+                      "name":  "Ericaceious Tospoil",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/ERITSOIL-330.jpg",
+                      "synopsis":  "Create the ideal growing environment for acid-loving plants with this specially formulated Ericaceous Topsoil.",
+                      "price":  "100.00",
+                      "tradePrice":  "100.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "multi-purpose",
+                      "name":  "Multi Purpose Compost",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/MPCSOIL-330.jpg",
+                      "synopsis":  "Our Multi Purpose Peat Free Compost is a rich, friable growing medium designed to help revitalise garden spaces and support healthy plant development. I",
+                      "price":  "99.00",
+                      "tradePrice":  "99.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "mushroom-compost",
+                      "name":  "Mushroom Compost",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/MUSHSOIL-330.jpg",
+                      "synopsis":  "Our Multi Purpose Peat Free Compost is a dark, crumbly growing medium designed to help revitalise your garden and support strong, healthy plant growth.",
+                      "price":  "102.00",
+                      "tradePrice":  "102.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "gm-premium",
+                      "name":  "Premium All in one Multi Purpose",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/PREMSOIL-330.jpg",
+                      "synopsis":  "This premium multipurpose topsoil blend is ideal for use beneath new lawns, beds, borders, and vegetable patches",
+                      "price":  "108.00",
+                      "tradePrice":  "108.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "quick-lawn",
+                      "name":  "Quick Lawn Repair Blend",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/QLRSOIL-330.jpg",
+                      "synopsis":  "Restore damaged or bare patches quickly with our Rapid Patch Lawn Repair Blend  a ready-to-use mix of grass seed and nutrient-rich growing media designed to repair small areas of missing lawn and encourage fast, healthy regrowt",
+                      "price":  "100.00",
+                      "tradePrice":  "100.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "raised-bed",
+                      "name":  "Raised Bed Topsoil Mix",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RBEDSOIL-330.jpg",
+                      "synopsis":  "Raised Bed Mix is specially formulated to take the hassle out of raised bed gardening. Simply fill your raised bed and plant directly into the mix, no additional soil or compost required.",
+                      "price":  "98.00",
+                      "tradePrice":  "98.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "rootzone-sand",
+                      "name":  "Rootzone Sand \u0026 Soil Mix",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RTZONE-330.jpg",
+                      "synopsis":  "Root-Zone is a premium blend of coarse, gritty sand and sandy loam topsoil, specially formulated to improve drainage and soil structure.",
+                      "price":  "107.00",
+                      "tradePrice":  "107.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "top-dressing",
+                      "name":  "Top Dressing Sand and Soil Mix",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/TDSSSOIL-330.jpg",
+                      "synopsis":  "Our Lawn Dressing Sand is designed to support aeration, levelling and overseeding, helping you maintain a healthier, greener lawn all year round.",
+                      "price":  "102.00",
+                      "tradePrice":  "102.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "winter-mix",
+                      "name":  "Winter Mix Compost Mulch",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/WMCSOIL-330.jpg",
+                      "synopsis":  "Our Winter Blend Compost Garden Mulch is a nutrient-rich mix of screened organic compost, well-rotted farmyard manure and fine bark, carefully blended to nourish soil and support healthy plant growth.",
+                      "price":  "100.00",
+                      "tradePrice":  "100.00"
+                  },
+                  {
+                      "category":  "topsoil-and-compost",
+                      "url":  "ready-to",
+                      "name":  "Ready To Grow Lawn Mix",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RTGSOIL-330.jpg",
+                      "synopsis":  "Create a new lawn quickly and easily with Lawn in a Bag  a ready-to-use blend of quality topsoil mixed with hard-wearing grass seed.",
+                      "price":  "108.00",
+                      "tradePrice":  "108.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "polar-white-pebbles",
+                      "name":  "Polar White Pebbles 20-40mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20-40PWP-330.jpg",
+                      "synopsis":  "Polar White pebbles have a sparkly pure white appearance and look stunning in all gardens.",
+                      "price":  "195.00",
+                      "tradePrice":  "185.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "oyster-pebbles",
+                      "name":  "Oyster Pebbles",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20OYST-330.jpg",
+                      "synopsis":  "Often referred to as \u0027Lydd Pebbles\u0027 the oyster pebbles are 20mm in size and will complement any rockery or low maintenance garden.",
+                      "price":  "148.00",
+                      "tradePrice":  "138.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "plum-slate-rockery",
+                      "name":  "Plum Slate Rockery",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/PLSLROCK-330.jpg",
+                      "synopsis":  "These Plum Slate rockery pieces will make a bold statement in any garden landscape due to the vibrant plum colour.",
+                      "price":  "197.00",
+                      "tradePrice":  "197.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "cotswold-rockery",
+                      "name":  "Cotswold Rockery",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/COTSROCK-330.jpg",
+                      "synopsis":  "Cotswold rockery pieces look fantastic and will colour-match any scenery.",
+                      "price":  "237.00",
+                      "tradePrice":  "237.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "panda-20-40mm",
+                      "name":  "Panda 20-40mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20-40PANDA-330.jpg",
+                      "synopsis":  "Panda Pebbles 20-40mm are a striking blend of Polar White Pebbles and Midnight Black Pebbles.",
+                      "price":  "155.00",
+                      "tradePrice":  "150.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "red-gritstone-rockery",
+                      "name":  "Red Gritstone Rockery",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/REDROCK-330.jpg",
+                      "synopsis":  "The Red Gritstone Rockery will become a lasting feature in your garden for years.",
+                      "price":  "249.00",
+                      "tradePrice":  "249.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "yorkstone-buff-rockery",
+                      "name":  "Yorkstone Buff Rockery",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/YORKROCK-330.jpg",
+                      "synopsis":  "The contemporary style rockery pieces look amazing in any garden and are perfect for ponds and water features.",
+                      "price":  "299.00",
+                      "tradePrice":  "299.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "black-pebbles",
+                      "name":  "Mediterranean Pebbles 15-30mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/15-30BLKP-330.jpg",
+                      "synopsis":  "Black pebbles look stunning alone in containers or used around garden borders.",
+                      "price":  "213.00",
+                      "tradePrice":  "203.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "green-slate-rockery",
+                      "name":  "Green Slate Rockery",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/GRSLROCK-330.jpg",
+                      "synopsis":  "This stylish green slate rockery is perfect for enhancing any current landscape and is a firm favourite with many customers.",
+                      "price":  "305.00",
+                      "tradePrice":  "305.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "green-granite-rockery",
+                      "name":  "Green Granite Rockery",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/GRGRAROCK-330.jpg",
+                      "synopsis":  "This stylish green granite rockery is perfect for creating a focal point in any garden landscape by creating a unique look.",
+                      "price":  "237.00",
+                      "tradePrice":  "237.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "everest-pebbles-20-40",
+                      "name":  "Everest Pebbles 20-40mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20-40ICEB-330.jpg",
+                      "synopsis":  "Our brand new Everest Pebbles are a naturally sourced product which will bring style to any garden.",
+                      "price":  "196.00",
+                      "tradePrice":  "186.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "flamenco-pebbles-20-40",
+                      "name":  "Flamenco Pebbles 20-40mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20-40FLAMPEB-330.jpg",
+                      "synopsis":  "This stunning mix of pink, grey and white pebbles are the newest additionto our exotic Flamenco range.",
+                      "price":  "252.00",
+                      "tradePrice":  "242.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "midnight-black-40-60",
+                      "name":  "Midnight Black Cobbles\r\n 40-60mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/40-60NEROPEB-330.jpg",
+                      "synopsis":  "Our large Black Midnight cobbles are the largest of our brand new Midnight collection",
+                      "price":  "232.00",
+                      "tradePrice":  "222.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "midnight-black-120-40",
+                      "name":  "Midnight Black Pebbles\r\n 20-40mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20-40NEROPEB-330.jpg",
+                      "synopsis":  "Our high quality Midnight Black pebbles are a perfect choice if you want a bold dark colour in your water features",
+                      "price":  "217.00",
+                      "tradePrice":  "207.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "black-polished-pebbles",
+                      "name":  "Black Polished Pebbles 15-30mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/15-30BPP-330.jpg",
+                      "synopsis":  "",
+                      "price":  "213.00",
+                      "tradePrice":  "203.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "longstone-rockery",
+                      "name":  "Longstone Rockery",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/LONGROCK-330.jpg",
+                      "synopsis":  "This elegant Longstone rockery is a grey coloured stone that will blend effortlessly into any natural landscaping environment.",
+                      "price":  "356.00",
+                      "tradePrice":  "356.00"
+                  },
+                  {
+                      "category":  "cobbles-and-pebbles-rockery",
+                      "url":  "blue-slate-rockery",
+                      "name":  "Blue Slate Rockery",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/BLSLROCK-330.jpg",
+                      "synopsis":  "Blue Slate Rockery will definitely be the main attraction of your garden area.",
+                      "price":  "367.00",
+                      "tradePrice":  "367.00"
+                  },
+                  {
+                      "category":  "building-aggregates",
+                      "url":  "post-mix-concrete",
+                      "name":  "Post Mix Concrete",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/PMIX-330.jpg",
+                      "synopsis":  "A quick-dry, ready mix concrete that is perfect for securing fence posts.",
+                      "price":  "270.00",
+                      "tradePrice":  "260.00"
+                  },
+                  {
+                      "category":  "building-aggregates",
+                      "url":  "crusher-run-40mm",
+                      "name":  "Crusher Run 40mm (MOT Type 1)",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/40CRUSH-330.jpg",
+                      "synopsis":  "Mot Type 1 is the ideal sub-base for driveways and patios and will give a profesional, lasting finish.",
+                      "price":  "106.00",
+                      "tradePrice":  "96.00"
+                  },
+                  {
+                      "category":  "building-aggregates",
+                      "url":  "macadam-6",
+                      "name":  "Macadam Cold Lay",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/6MACADAM-330.jpg",
+                      "synopsis":  "Drive Patch Cold Lay Macadam is a ready and easy solution ideal for patching and repairing paths or driveways straight from the bag.",
+                      "price":  "379.00",
+                      "tradePrice":  "369.00"
+                  },
+                  {
+                      "category":  "building-aggregates",
+                      "url":  "crusher-run-20mm",
+                      "name":  "Crusher Run 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20CRUSH-330.jpg",
+                      "synopsis":  "Crusher Run 20mm will provide a professional smooth finish and is perfect to use as a sub-base for driveways.",
+                      "price":  "107.00",
+                      "tradePrice":  "97.00"
+                  },
+                  {
+                      "category":  "building-aggregates",
+                      "url":  "ballast-20mm",
+                      "name":  "Ballast 20mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/20BALL-330.jpg",
+                      "synopsis":  "Ballast is perfect for construction projects and can be used as a sub-base or for sand blasting.",
+                      "price":  "106.00",
+                      "tradePrice":  "96.00"
+                  },
+                  {
+                      "category":  "building-aggregates",
+                      "url":  "concreting-sharp-sand",
+                      "name":  "Concreting Sharp Sand",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/CONCS-330.jpg",
+                      "synopsis":  "Often referred to as Sharp Sand, concreting sand is ideal for general building work or for the use under paving.",
+                      "price":  "107.00",
+                      "tradePrice":  "97.00"
+                  },
+                  {
+                      "category":  "building-aggregates",
+                      "url":  "red-building-sand",
+                      "name":  "Red Building Sand",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/REDBS-330.jpg",
+                      "synopsis":  "Red building sand is a standard sand used for the majority of building jobs.",
+                      "price":  "99.00",
+                      "tradePrice":  "89.00"
+                  },
+                  {
+                      "category":  "building-aggregates",
+                      "url":  "yellow-building-sand",
+                      "name":  "Yellow Building Sand",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/YELBS-330.jpg",
+                      "synopsis":  "Yellow Building Sand can be used for general building and landscaping projects.",
+                      "price":  "120.00",
+                      "tradePrice":  "110.00"
+                  },
+                  {
+                      "category":  "building-aggregates",
+                      "url":  "kiln-dried-sand",
+                      "name":  "Kiln Dried Sand",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/MCKILDS-330.jpg",
+                      "synopsis":  "Kiln Dried Sand is primarily used as a joint filling between paving and patio slabs.",
+                      "price":  "192.00",
+                      "tradePrice":  "182.00"
+                  },
+                  {
+                      "category":  "building-aggregates",
+                      "url":  "limestone-10mm",
+                      "name":  "Limestone 10mm",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/10LIMS-330.jpg",
+                      "synopsis":  "Perfect for the use on garden pathways or for general garden landscaping.",
+                      "price":  "113.00",
+                      "tradePrice":  "103.00"
+                  },
+                  {
+                      "category":  "winter-salt-and-fuel",
+                      "url":  "brown-rock-salt",
+                      "name":  "Brown Rock Salt",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/BSALT-330.jpg",
+                      "synopsis":  "Brown Rock Salt is easy to apply and can be seen on surfaces to make them safer.",
+                      "price":  "129.00",
+                      "tradePrice":  "124.00"
+                  },
+                  {
+                      "category":  "winter-salt-and-fuel",
+                      "url":  "white-rock-salt",
+                      "name":  "White Rock Salt",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/WSALT-330.jpg",
+                      "synopsis":  "This Rock Salt is perfect for leaving a clean looking surface that is safe for pedestrians to walk on during the winter.",
+                      "price":  "152.00",
+                      "tradePrice":  "147.00"
+                  },
+                  {
+                      "category":  "winter-salt-and-fuel",
+                      "url":  "snow-shovel",
+                      "name":  "Snow Shovel",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/SNOWSHOVEL-330.jpg",
+                      "synopsis":  "",
+                      "price":  "4.99",
+                      "tradePrice":  "4.99"
+                  },
+                  {
+                      "category":  "winter-salt-and-fuel",
+                      "url":  "standard-grit-bin-rock-salt",
+                      "name":  "Standard Grit Bin",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/SGBIN-330.jpg",
+                      "synopsis":  "The Standard Grit Bin can store up to 8 x 25Kg bags of rock salt!",
+                      "price":  "129.50",
+                      "tradePrice":  "129.50"
+                  },
+                  {
+                      "category":  "winter-salt-and-fuel",
+                      "url":  "premium-grit-bin-rock-salt",
+                      "name":  "Premium Lockable Grit Bin",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/PGBIN-330.jpg",
+                      "synopsis":  "This premium lockable grit bin is ideal for storing rock salt during the Winter months.",
+                      "price":  "157.50",
+                      "tradePrice":  "157.50"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "pebble-glue",
+                      "name":  "Easihold Stone Glue",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/PBLEGLUE-330.jpg",
+                      "synopsis":  "",
+                      "price":  "23.99",
+                      "tradePrice":  "23.99"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "voucher",
+                      "name":  "Gift Card",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/VOUCHER-330.jpg",
+                      "synopsis":  "Gift Vouchers, the ideal gift",
+                      "price":  "20.00",
+                      "tradePrice":  "20.00"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "carbon-steel-soft-grip-digging-spade",
+                      "name":  "Carbon Steel Soft Grip Digging Spade",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/SGSPADE-330.jpg",
+                      "synopsis":  "Use to reshape beds and borders or dig out planting holes. The soft grib handle makes it easy to use and comfortable to hold.",
+                      "price":  "17.00",
+                      "tradePrice":  "17.00"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "bird-feeder",
+                      "name":  "FeatherSnap Bird Feeder",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/Feathsnapparent-330.jpg",
+                      "synopsis":  "",
+                      "price":  "149.99",
+                      "tradePrice":  "149.99"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "edging-tool",
+                      "name":  "Edging Tool",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/EDGTOOL-330.jpg",
+                      "synopsis":  "The lightweight design and a soft grip handle makes it easy to use and comfortable to work with.",
+                      "price":  "15.00",
+                      "tradePrice":  "15.00"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "trowel",
+                      "name":  "Trowel",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/TROWEL-330.jpg",
+                      "synopsis":  "Hand trowels are perfect for planting in beds and borders and allow for perfect results.",
+                      "price":  "9.00",
+                      "tradePrice":  "9.00"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "transplanter",
+                      "name":  "Transplanter",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/TRPLANTER-330.jpg",
+                      "synopsis":  "Our hand transplanter is ideal for planting bulbs and seed.",
+                      "price":  "11.00",
+                      "tradePrice":  "11.00"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "fork",
+                      "name":  "Fork",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/FORK-330.jpg",
+                      "synopsis":  "Garden Forks are ideal for digging into soils to help with planting and soil drainage.",
+                      "price":  "11.00",
+                      "tradePrice":  "11.00"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "empty-bags",
+                      "name":  "Empty Waste Bags",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/EMPTYGM-330.jpg",
+                      "synopsis":  "",
+                      "price":  "4.99",
+                      "tradePrice":  "4.99"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "garden-egg",
+                      "name":  "Garden Egg Chair",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/EGGCHR1-330.jpg",
+                      "synopsis":  "",
+                      "price":  "182.00",
+                      "tradePrice":  "177.00"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "garden-hose",
+                      "name":  "Garden Hose Pipe",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/HOSEPIP1-330.jpg",
+                      "synopsis":  "",
+                      "price":  "27.99",
+                      "tradePrice":  "22.99"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "gardening-gloves",
+                      "name":  "Gardening Gloves",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/GDNGLOVE1-330.jpg",
+                      "synopsis":  "",
+                      "price":  "9.99",
+                      "tradePrice":  "9.99"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "large-galvanised",
+                      "name":  "Large Galvanised Stainless Steel Planter",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/RSDBED1-330.jpg",
+                      "synopsis":  "",
+                      "price":  "62.99",
+                      "tradePrice":  "57.99"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "small-tool",
+                      "name":  "Small Tool Kit With Stool",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/TLKIT1-330.jpg",
+                      "synopsis":  "",
+                      "price":  "41.99",
+                      "tradePrice":  "36.99"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "wheelbarrow-in-a-box",
+                      "name":  "Easiload Green Wheelbarrow in a Box",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/WWB-EASI-330.jpg",
+                      "synopsis":  "Use the wheelbarrow to transport garening materials around your outdoor space at ease.",
+                      "price":  "77.00",
+                      "tradePrice":  "77.00"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "carbon-steel-soft-grip-digging-fork",
+                      "name":  "Carbon Steel Soft Grip Digging Fork",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/SGFORK-330.jpg",
+                      "synopsis":  "Effortlessly transform your garden soil by using this all-purpose fork.",
+                      "price":  "13.50",
+                      "tradePrice":  "13.50"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "dutch-hoe",
+                      "name":  "Dutch Hoe",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/HOE-330.jpg",
+                      "synopsis":  "Use a Dutch Hoe to slice the tops of weeds and level-out existing soil.",
+                      "price":  "12.50",
+                      "tradePrice":  "12.50"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "16-tyne-lawn-rake",
+                      "name":  "16 Tyne Lawn Rake",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/16TRAKE-330.jpg",
+                      "synopsis":  "Ideal for maintaining a clean, tidy outdoor space and clearing leaves or debris.",
+                      "price":  "14.00",
+                      "tradePrice":  "14.00"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "cultivator",
+                      "name":  "Cultivator",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/CULT-330.jpg",
+                      "synopsis":  "Prepare your soil for planting crops and general garden work by using the hand cultivator to turn existing soil.",
+                      "price":  "8.50",
+                      "tradePrice":  "8.50"
+                  },
+                  {
+                      "category":  "accessories",
+                      "url":  "kneeling-mat",
+                      "name":  "300mm x 400mm Large Gardeners Kneeling Mat",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/300-400MAT-330.jpg",
+                      "synopsis":  "Protect your knees when you are gardening with this top-quality kneeling mat.",
+                      "price":  "10.50",
+                      "tradePrice":  "10.50"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "begonia-cotton",
+                      "name":  "Begonia \u0027Cotton Candy Glow\u0027",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/BEGINIAWPNK-330.jpg",
+                      "synopsis":  "Begonia Cotton Candy Glow is a charming. ruffled beauty. producing an abundant display of soft. candy-pink blooms. Compact at around 30cm tall.",
+                      "price":  "5.50",
+                      "tradePrice":  "5.50"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dahlia-boom",
+                      "name":  "Dahlia Boom Boom White",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DHALIABOOM-330.jpg",
+                      "synopsis":  "Dahlia Boom Boom White is a timeless garden favourite. perfect for borders. patios. containers. or allotments. This long-established variety produces brilliant white pompon blooms.",
+                      "price":  "5.50",
+                      "tradePrice":  "5.50"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dahlia-cafe",
+                      "name":  "DAHLIA Cafe au Lait",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DHALIACAFE-330.jpg",
+                      "synopsis":  "Dahlia Caf au Lait is a firm favourite for wedding bouquets and floral arrangements. and its easy to see why. Its large. show-stopping blooms appear in a range of soft.",
+                      "price":  "5.90",
+                      "tradePrice":  "5.90"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dahlia-coral",
+                      "name":  "Dahlia Coral Mirage",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DAHLIAJOW-330.jpg",
+                      "synopsis":  "Introduce bold drama and elegance to your garden with Dahlia Coral Mirage. This striking variety produces deep red. fully double blooms edged with a crisp white rim",
+                      "price":  "6.50",
+                      "tradePrice":  "6.50"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dahlia-melody",
+                      "name":  "Dahlia Melody Dora",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DHALIAMEL-330.jpg",
+                      "synopsis":  "For compact dahlia flower power. Dahlia Melody Dora is the perfect choice. Growing 2050cm tall. it works beautifully in pots. containers.",
+                      "price":  "6.50",
+                      "tradePrice":  "6.50"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dahlia-ocean",
+                      "name":  "Dahlia Ocean Whisper",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DHALIAPAC-330.jpg",
+                      "synopsis":  "Bring a show-stopping display to your borders and containers with Dahlia Ocean Whisper. This decorative. double-flowering dahlia features creamy white petals kissed with soft red accents.",
+                      "price":  "5.99",
+                      "tradePrice":  "5.99"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dahlia-painted",
+                      "name":  "Dahlia Painted Smile",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DHALIAPATCH-330.jpg",
+                      "synopsis":  "Add a burst of fruity summer colour to your garden with Dahlia Painted Smile! This stunning dahlia features richly layered petals in twilight mauve above with a striking blackcurrant-red underside.",
+                      "price":  "6.50",
+                      "tradePrice":  "6.50"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dahlia-pearl",
+                      "name":  "Dahlia Pearl Swirl",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DHALIAMARB-330.jpg",
+                      "synopsis":  "Dahlia Pearl Swirl is a stunning summer perennial. perfect for adding colour and elegance to your garden. Growing up to 80cm tall",
+                      "price":  "5.50",
+                      "tradePrice":  "5.50"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dahlia-tangerine",
+                      "name":  "Dahlia Tangerine Temptation",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DAHLIAORA-330.jpg",
+                      "synopsis":  "Add a warm. glowing splash of orange to your summer and autumn garden with Dahlia Tangerine Temptation. This striking cactus dahlia features spiky.",
+                      "price":  "5.90",
+                      "tradePrice":  "5.90"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dahlia-velvet",
+                      "name":  "Dahlia Velvet Majesty",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DHALIATOM-330.jpg",
+                      "synopsis":  "Dahlia Velvet Majesty is a timeless heirloom variety that continues to impress with its massive dinnerplate blooms in rich magenta-purple. subtly lighter at the edges.",
+                      "price":  "5.90",
+                      "tradePrice":  "5.90"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dhalia-cherry",
+                      "name":  "Dhalia Cherry Button",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DHALIAROB-330.jpg",
+                      "synopsis":  "Dahlia Cherry Bottom is a delightful ball or pompon dahlia with theatrical. tropical-coloured blooms. From a distance. its vibrant pink spheres captivate",
+                      "price":  "5.50",
+                      "tradePrice":  "5.50"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "giant-lilium-beverly",
+                      "name":  "Giant Lilium Beverly Dreams",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/LILBEV-330.jpg",
+                      "synopsis":  "Lily Miss Lily is a spectacular show-stopper with unique bicolour blooms and towering stems reaching up to 2.5m. Each fragrant flower features a rich red centre edged in pearly white",
+                      "price":  "6.55",
+                      "tradePrice":  "6.55"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "giant-lilium-golden",
+                      "name":  "Giant Lilium Golden Triumph",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/LILOLYMPIC-330.jpg",
+                      "synopsis":  "Giant Lilium Golden Triumph is a striking oriental lily. combining elegance with bold presence. Its sumptuous midsummer blooms feature velvety petals in golden hues with subtle creamy accents.",
+                      "price":  "6.55",
+                      "tradePrice":  "6.55"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "giant-lilium-netty",
+                      "name":  "Giant Lilium Nettys Pride",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/LILNETTY-330.jpg",
+                      "synopsis":  "Asiatic lilies are perfect for bedding. thanks to their sturdy. upright stems and reliable growth. Slightly fragrant. they produce elegant blooms that bring vibrant colour to summer gardens",
+                      "price":  "6.55",
+                      "tradePrice":  "6.55"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "giant-lilium-pretty",
+                      "name":  "Giant Lilium Pretty Women",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/LILPRETTY-330.jpg",
+                      "synopsis":  "Lilium Pretty Woman is a true giant of summer gardens. producing towering stems up to 180250cm tall with pure white blooms and soft apple-green throats.",
+                      "price":  "6.55",
+                      "tradePrice":  "6.55"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "gladiolus-coral",
+                      "name":  "Gladiolus Coral Horizon",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/GLADVIST-330.jpg",
+                      "synopsis":  "Gladiolus Coral Horizon brings a tropical touch to summer gardens with its elegant spikes of soft purple. lavender. and violet blooms",
+                      "price":  "6.55",
+                      "tradePrice":  "6.55"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "gladiolus-crimson",
+                      "name":  "Gladiolus Crimson",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/GLADGROZ-330.jpg",
+                      "synopsis":  "Gladiolus Crimson is a show-stopping addition to summer borders. bursting into bloom with bold. frilly cerise flowers on sturdy. upright stems.",
+                      "price":  "6.55",
+                      "tradePrice":  "6.55"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "gladiolus-royal",
+                      "name":  "Gladiolus Royal Flame",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/GLADSHAKA-330.jpg",
+                      "synopsis":  "Gladiolus Royal Flame is a dramatic and sophisticated addition to any garden. Upright. sword-shaped leaves support tall. elegant spikes adorned with up to ten velvety blooms in deep near-black tones.",
+                      "price":  "6.55",
+                      "tradePrice":  "6.55"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dahlia-bubblegum",
+                      "name":  "Dahlia Bubblegum Glow",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DAHLIAPNK-330.jpg",
+                      "synopsis":  "",
+                      "price":  "5.90",
+                      "tradePrice":  "5.90"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dahlia-velvet-noir",
+                      "name":  "Dahlia Velvet Noir",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DHALIABLK-330.jpg",
+                      "synopsis":  "Make a bold statement with the dark and dramatic Dahlia Velvet Noir. This striking decorative dahlia produces velvety. double blooms in deep. moody shades of red.",
+                      "price":  "5.90",
+                      "tradePrice":  "5.90"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "dhalia-savanna",
+                      "name":  "Dhalia Savanna Blush",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/DAHLIAROSE-330.jpg",
+                      "synopsis":  "Discover the captivating charm of Dahlia Savanna Blush. Each bloom reveals subtle hints of darker purple nestled within the curls of its petals. adding depth and intrigue to its soft blush tones",
+                      "price":  "5.90",
+                      "tradePrice":  "5.90"
+                  },
+                  {
+                      "category":  "bulbs",
+                      "url":  "pink-sunrise",
+                      "name":  "Muscari Pink Sunrise",
+                      "image":  "https://cdn.gravelmaster.co.uk/optimised/Pinksunrise-330.jpg",
+                      "synopsis":  "Muscari Pink Sunrise is a charming and easy-to-grow perennial that brings soft pastel tones and sweet fragrance to your garden",
+                      "price":  "25.00",
+                      "tradePrice":  "25.00"
+                  }
+              ],
+    "banners":  [
+                    {
+                        "link":  "https://www.gravelmaster.co.uk/products/garden-chippings/p/cotswold-chippings-20mm",
+                        "image":  "https://admin-gravelmaster.azurewebsites.net/banners/e7015f63-93bc-4e59-8905-fc6768aa1250.png"
+                    },
+                    {
+                        "link":  "https://www.gravelmaster.co.uk/topsoil-and-compost/products/",
+                        "image":  "https://admin-gravelmaster.azurewebsites.net/banners/c55956f2-6e02-4b1b-86d0-c2f2693b6c7a.png"
+                    },
+                    {
+                        "link":  "https://www.gravelmaster.co.uk/products/play-area-surfaces/p/play-sand",
+                        "image":  "https://admin-gravelmaster.azurewebsites.net/banners/5b089814-672f-4339-9a39-a33371cef2fc.png"
+                    },
+                    {
+                        "link":  "https://www.gravelmaster.co.uk/products/garden-chippings/p/panda-20mm",
+                        "image":  "https://admin-gravelmaster.azurewebsites.net/banners/112e1fd3-bc88-4570-8edf-7991fe7db980.png"
+                    },
+                    {
+                        "link":  "https://www.gravelmaster.co.uk/cobbles-and-pebbles-rockery/products/",
+                        "image":  "https://admin-gravelmaster.azurewebsites.net/banners/31de0760-b8a3-4525-badd-b5fffff00c28.png"
+                    },
+                    {
+                        "link":  "https://www.gravelmaster.co.uk/bulbs/products/",
+                        "image":  "https://www.gravelmaster.co.uk/img/bulbs.png"
+                    }
+                ]
+}
