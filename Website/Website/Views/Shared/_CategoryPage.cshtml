@@ -15,7 +15,8 @@
     };
 
     // The product each category highlights in the promo card (by category and product URL name). It shows on the
-    // unfiltered page, in place of that product's normal card, after the first promoPosition cards.
+    // unfiltered page in the default order, in place of that product's normal card, after the first promoPosition
+    // cards. (Filtered or sorted, the products stay exactly as asked for.)
     var promoProducts = new Dictionary<string, string>
     {
         { "garden-chippings", "flamenco-gravel-20mm" },
@@ -28,7 +29,7 @@
 
     CategoryProduct promo = null;
     string promoUrl;
-    if (!Model.IsFiltered && Model.CategoryUrl != null && promoProducts.TryGetValue(Model.CategoryUrl, out promoUrl))
+    if (!Model.IsFiltered && Model.SelectedSort == CategoryPageModel.SortOptions[0] && Model.CategoryUrl != null && promoProducts.TryGetValue(Model.CategoryUrl, out promoUrl))
     {
         promo = Model.Products.FirstOrDefault(p => p.Url.EndsWith("/p/" + promoUrl, StringComparison.OrdinalIgnoreCase));
     }
