@@ -223,12 +223,23 @@ namespace Agilis.ECommerce.Mvc.Web.ViewModels.Common
             set;
         }
 
+        // Every product the new header's mega menu can show, loaded on first use so the menu reads the
+        // product list once per page instead of once for every category and subcategory.
+        private List<Product> menuProducts;
+
         // Visible products in a category for the new header's mega menu, in the category page's default order.
         public List<Product> GetMenuProducts(CategoryViewModel category)
         {
-            return productRepository.GetAllProducts()
-                .Where(p => p.CategoryId == category.CategoryId && p.Category != null && p.Url != null)
-                .OrderByDescending(p => p.TaxRateID)
+            if (menuProducts == null)
+            {
+                menuProducts = productRepository.GetAllProducts()
+                    .Where(p => p.Category != null && p.Url != null)
+                    .OrderByDescending(p => p.TaxRateID)
+                    .ToList();
+            }
+
+            return menuProducts
+                .Where(p => p.CategoryId == category.CategoryId)
                 .GroupBy(p => p.Url)
                 .Select(g => g.First())
                 .ToList();
