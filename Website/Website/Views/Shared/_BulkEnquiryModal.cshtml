@@ -1,0 +1,58 @@
+@model IEnumerable<string>
+@{
+    // Model: the top-level category names, in menu order, for the Product list.
+    var categories = Model.ToList();
+
+    // Colours for the Product list, in menu order (as the header's accents).
+    string[] categoryColours = { "#8e44ad", "#37853f", "#8a7524", "#d81b47", "#1f6fb0", "#b8940a", "#17a6d6", "#6b6b6b" };
+}
+@* "Request a bulk delivery" pop-up from the Optima prototype, shared by the new homepage and category page.
+   Any element with data-bulk-open opens it. Styles: css/gm-enquiry.css. Behaviour: js/gm-enquiry.js. *@
+<link href="/css/gm-enquiry.css?v1" rel="stylesheet" />
+<div class="gm-enquiry bulk-modal" id="bulkModal" hidden>
+    <div class="bulk-modal__overlay" data-bulk-close></div>
+    <div class="bulk-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="bulkModalTitle">
+        <button type="button" class="bulk-modal__close" aria-label="Close" data-bulk-close>
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#26331f" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
+        <h2 class="bulk-modal__title" id="bulkModalTitle">Request a bulk delivery</h2>
+        <p class="bulk-modal__intro">Simply complete the form below, and our team will work their magic to generate a delivery quote tailored to your specified delivery address.</p>
+        <p class="bulk-modal__req">All fields required</p>
+        @* Same field names as the product page's quick enquiry (#miniForm), posted to /basket/sendlooseenquiry by gm-enquiry.js *@
+        <form class="bulk-form">
+            <div class="bulk-form__row">
+                <label class="bulk-form__label" for="bulk-name">Name<span>*</span></label>
+                <input class="bulk-form__input" id="bulk-name" name="name-request" type="text" autocomplete="name" maxlength="255" required>
+            </div>
+            <div class="bulk-form__row">
+                <label class="bulk-form__label" for="bulk-email">Email<span>*</span></label>
+                <input class="bulk-form__input" id="bulk-email" name="email-request" type="email" autocomplete="email" maxlength="255" required>
+            </div>
+            <div class="bulk-form__row">
+                <label class="bulk-form__label" for="bulk-postcode">Postcode<span>*</span></label>
+                <input class="bulk-form__input" id="bulk-postcode" name="postcode-request" type="text" autocomplete="postal-code" maxlength="10" required>
+            </div>
+            <div class="bulk-form__row">
+                <label class="bulk-form__label" for="bulk-product">Product<span>*</span></label>
+                <select class="bulk-form__input bulk-form__select" id="bulk-product" name="product" data-colour-select required>
+                    <option value="">Select</option>
+                    @for (int i = 0; i < categories.Count; i++)
+                    {
+                        <option value="@categories[i]" data-color="@categoryColours[i % categoryColours.Length]" style="color:@categoryColours[i % categoryColours.Length]">@categories[i]</option>
+                    }
+                </select>
+            </div>
+            <div class="bulk-form__row">
+                <label class="bulk-form__label" for="bulk-amount">Amount required<span>*</span></label>
+                <input class="bulk-form__input" id="bulk-amount" name="amount" type="text" maxlength="255" required>
+            </div>
+            <label class="bulk-form__consent">
+                <input type="checkbox" required>
+                <span>I consent to Gravel Master using my details to process this form and contact me.</span>
+            </label>
+            <button type="submit" class="bulk-form__submit">Submit</button>
+            <p class="bulk-form__status" aria-live="polite" hidden></p>
+        </form>
+    </div>
+</div>
+<script src="/js/gm-enquiry.js?v1"></script>

@@ -1,0 +1,152 @@
+/* ===== "Request a bulk delivery" pop-up (Optima design) =====
+   Views/Shared/_BulkEnquiryModal.cshtml, shared by the new homepage and category page. Ported from the
+   Optima prototype's styles.css. The old stylesheets still load underneath, so every rule is scoped to
+   .gm-enquiry (the pop-up itself), and the shield resets the old element rules (Bootstrap 4 Reboot,
+   global.css) at element-level specificity so the design's class rules still win.
+   Behaviour: js/gm-enquiry.js. */
+
+/* ---- Shield against the old site's element rules ---- */
+div:where(.gm-enquiry) {
+  font-family: "Quicksand", "Segoe UI", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: normal;          /* the old body is 1.5 */
+  text-align: start;
+}
+:where(.gm-enquiry) :is(*, *::before, *::after) { box-sizing: border-box; }
+:where(.gm-enquiry) :is(h1, h2, h3, h4, h5, h6) {
+  margin: 0;                    /* Bootstrap Reboot: margin-bottom .5rem */
+  color: inherit;               /* global.css colours headings */
+  font-family: inherit;
+  font-size: inherit;           /* global.css: 18px */
+  line-height: inherit;         /* Bootstrap Reboot: 1.2 */
+}
+:where(.gm-enquiry) p { margin: 0; }
+:where(.gm-enquiry) label { margin: 0; }                      /* Bootstrap Reboot: margin-bottom .5rem */
+:where(.gm-enquiry) :is(input, select, textarea, button) { font-family: inherit; }
+:where(.gm-enquiry) button { border-radius: 0; }
+
+/* ---- The pop-up ---- */
+.gm-enquiry.bulk-modal[hidden] { display: none; }
+.gm-enquiry.bulk-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+  overflow-y: auto;
+}
+.gm-enquiry .bulk-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 30, 18, 0.55);
+}
+.gm-enquiry .bulk-modal__dialog {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  background: #fff;
+  color: #26331f;
+  border-radius: 6px;
+  padding: 34px 34px 38px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+.gm-enquiry .bulk-modal__close {
+  position: absolute;
+  top: -14px;
+  right: -6px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 4px;
+  background: #bcd35a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gm-enquiry .bulk-modal__close:hover { background: #b0c94c; }
+.gm-enquiry .bulk-modal__title {
+  margin: 0 0 12px;
+  font-size: 27px;
+  font-weight: 700;
+  color: #23301c;
+}
+.gm-enquiry .bulk-modal__intro {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4a5346;
+}
+.gm-enquiry .bulk-modal__req {
+  margin: 0 0 18px;
+  font-size: 12.5px;
+  color: #6b7263;
+}
+.gm-enquiry .bulk-form__row {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.gm-enquiry .bulk-form__label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #23301c;
+}
+.gm-enquiry .bulk-form__label span { color: #23301c; }
+.gm-enquiry .bulk-form__input {
+  width: 100%;
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #23301c;
+  border: 1px solid #d3d8cc;
+  border-radius: 5px;
+  background: #fff;
+}
+.gm-enquiry .bulk-form__input:focus {
+  outline: none;
+  border-color: #6f8f3f;
+}
+.gm-enquiry .bulk-form__select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2323301c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 34px;
+}
+.gm-enquiry .bulk-form__consent {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  margin: 18px 0 22px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #4a5346;
+}
+.gm-enquiry .bulk-form__consent input { margin-top: 3px; }
+.gm-enquiry .bulk-form__submit {
+  border: none;
+  border-radius: 5px;
+  background: #bcd35a;
+  color: #23301c;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 14px 40px;
+  cursor: pointer;
+}
+.gm-enquiry .bulk-form__submit:hover { background: #b0c94c; }
+.gm-enquiry .bulk-form__submit:disabled { opacity: .6; cursor: wait; }
+.gm-enquiry .bulk-form__status { margin: 16px 0 0; font-size: 14px; font-weight: 700; color: #23301c; }
+.gm-enquiry .bulk-form__status[hidden] { display: none; }
+
+@media (max-width: 480px) {
+  .gm-enquiry .bulk-form__row { grid-template-columns: 1fr; gap: 6px; }
+  .gm-enquiry .bulk-modal__dialog { padding: 30px 22px 32px; }
+}

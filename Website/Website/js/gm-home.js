@@ -1,10 +1,8 @@
 /* ===== GravelMaster homepage behaviour (Optima design) =====
-   Carousels, tabs and the bulk enquiry modal from the Optima prototype (hero.js and home.html's inline
-   scripts), wired to the live site's features:
-   - the quantity calculator uses the formulas of the live /calculator page, and "Send me my estimate"
-     posts to /email/sendcalculatorcalculation like its Email Results button;
-   - the bulk enquiry form posts the same fields as the product page's quick enquiry (#miniForm) to
-     /basket/sendlooseenquiry.
+   Carousels, tabs and the calculator from the Optima prototype (hero.js and home.html's inline scripts),
+   wired to the live site's features: the quantity calculator uses the formulas of the live /calculator
+   page, and "Send me my estimate" posts to /email/sendcalculatorcalculation like its Email Results
+   button. The bulk enquiry pop-up ("Enquire Here") is shared: js/gm-enquiry.js.
    Plain JavaScript: the site's jQuery arrives later through RequireJS. */
 
 /* Hero carousel */
@@ -299,65 +297,6 @@
       if (!res.ok) throw new Error(res.status);
       status.textContent = 'Sent - check your inbox for your estimate.';
       input.value = '';
-    }).catch(function () {
-      status.textContent = 'Sorry, that didn’t send. Please try again or call 0330 058 5068.';
-    }).then(function () {
-      button.disabled = false;
-    });
-  });
-})();
-
-/* Bulk delivery enquiry modal */
-(function () {
-  var modal = document.querySelector('.gm-home #bulkModal');
-  if (!modal) return;
-  var form   = modal.querySelector('.bulk-form');
-  var status = modal.querySelector('.bulk-form__status');
-  var opener = null;
-
-  function open(e) {
-    if (e) e.preventDefault();
-    opener = document.activeElement;
-    modal.hidden = false;
-    document.body.style.overflow = 'hidden';
-    modal.querySelector('input, select').focus();
-  }
-  function close() {
-    modal.hidden = true;
-    document.body.style.overflow = '';
-    if (opener && opener.focus) opener.focus();
-  }
-
-  document.querySelectorAll('.gm-home [data-bulk-open]').forEach(function (btn) {
-    btn.addEventListener('click', open);
-  });
-  modal.querySelectorAll('[data-bulk-close]').forEach(function (el) {
-    el.addEventListener('click', close);
-  });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !modal.hidden) close();
-  });
-
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (!form.checkValidity()) { form.reportValidity(); return; }
-    var button = form.querySelector('.bulk-form__submit');
-    button.disabled = true;
-    status.hidden = false;
-    status.textContent = 'Sending…';
-    // Same fields as the product page's quick enquiry (#miniForm); the consent box isn't sent.
-    var data = new URLSearchParams();
-    ['name-request', 'email-request', 'postcode-request', 'product', 'amount'].forEach(function (name) {
-      data.append(name, form.querySelector('[name="' + name + '"]').value);
-    });
-    fetch('/basket/sendlooseenquiry', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-      body: data
-    }).then(function (res) {
-      if (!res.ok) throw new Error(res.status);
-      status.textContent = 'Thank you - our team will be in touch with your delivery quote.';
-      form.reset();
     }).catch(function () {
       status.textContent = 'Sorry, that didn’t send. Please try again or call 0330 058 5068.';
     }).then(function () {

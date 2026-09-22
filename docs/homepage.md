@@ -8,9 +8,10 @@ The Optima prototype's homepage (`home.html`), rebuilt to take the site's real d
 |---|---|
 | `Views/Home/_HomePage.cshtml` | the new homepage, as a partial |
 | `css/gm-home.css` | its styles, scoped to `.gm-home`, with a shield against the old site's CSS |
-| `js/gm-home.js` | carousels, tabs, calculator and enquiry pop-up |
+| `js/gm-home.js` | carousels, tabs and calculator |
 | `ViewModels/Common/HomePageModels.cs` | `HomeBanner` and `HomeProduct` |
 | `img/gm-home-*` | section backgrounds and the eight inspiration gallery photos |
+| `Views/Shared/_BulkEnquiryModal.cshtml`, `css/gm-enquiry.css`, `js/gm-enquiry.js` | the bulk delivery pop-up, shared with the category page |
 
 ## Sections, and where their content comes from
 

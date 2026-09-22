@@ -32,6 +32,17 @@ function Get-Between([string]$s, [string]$startPattern, [string]$endLiteral, [st
   if ($end -lt 0) { throw "Couldn't find the end of $what" }
   $s.Substring($m.Index, $end + $endLiteral.Length - $m.Index)
 }
+function Replace-Block([string]$text, [string]$startPattern, [string]$replacement, [string]$what) {
+  # replaces a Razor block from its start (e.g. "@foreach (...)") to its matching closing brace
+  $m = [regex]::Match($text, $startPattern)
+  if (-not $m.Success) { throw "Couldn't find $what" }
+  $open = $text.IndexOf('{', $m.Index)   # the block's own opening brace (the first one in the match)
+  $depth = 0
+  for ($i = $open; $i -lt $text.Length; $i++) {
+    if ($text[$i] -eq '{') { $depth++ } elseif ($text[$i] -eq '}') { $depth--; if ($depth -eq 0) { break } }
+  }
+  $text.Substring(0, $m.Index) + $replacement + $text.Substring($i + 1)
+}
 function Assert-NoRazor([string]$what, [string]$s) {
   $m = [regex]::Match($s, '(?<![\w.])@(?!media\b|keyframes\b|font-face\b|import\b|supports\b)[A-Za-z(*{]')
   if ($m.Success) { throw "$what still contains Razor near: " + $s.Substring([Math]::Max(0, $m.Index - 80), [Math]::Min(160, $s.Length - [Math]::Max(0, $m.Index - 80))) }
@@ -226,6 +237,20 @@ function Invoke-Build {
   $mobile = $mobile.Remove($list.Index, $list.Length).Insert($list.Index, $list.Groups[1].Value + "`n" + $items.ToString() + $list.Groups[2].Value)
   Assert-NoRazor '_SiteMobileMenu' $mobile
 
+  # ---------- Views/Shared/_BulkEnquiryModal.cshtml (shared by the new homepage and category page) ----------
+  $enquirySrc = Read-Package 'Views\Shared\_BulkEnquiryModal.cshtml'
+  $enquiryColours = [regex]::Matches([regex]::Match($enquirySrc, 'string\[\] categoryColours = \{([^}]*)\}').Groups[1].Value, '"(#\w+)"') | ForEach-Object { $_.Groups[1].Value }
+  if (-not $enquiryColours) { throw "Couldn't read categoryColours from _BulkEnquiryModal.cshtml" }
+  $enquiryHtml = Get-Between $enquirySrc '<link href="/css/gm-enquiry\.css' '</script>' 'the bulk enquiry pop-up'
+  $enquiryHtml = Remove-RazorComments $enquiryHtml
+  # its model is the top-level category names in menu order
+  $options = for ($i = 0; $i -lt $categories.Count; $i++) {
+    $colour = $enquiryColours[$i % $enquiryColours.Count]
+    "<option value=""$(Enc $categories[$i].name)"" data-color=""$colour"" style=""color:$colour"">$(Enc $categories[$i].name)</option>"
+  }
+  $enquiryHtml = Replace-Block $enquiryHtml '@for \(int i = 0; i < categories\.Count; i\+\+\)\s*\{' ($options -join "`n") 'the pop-up''s category options loop'
+  Assert-NoRazor '_BulkEnquiryModal' $enquiryHtml
+
   # ---------- Views/Home/_HomePage.cshtml (the new homepage) ----------
   # Its loops are rebuilt here from the live site's data: banners, product tiles (image, price, trade price)
   # and categories. Card lists (offers, bestseller tabs) are read from the partial's own C# block.
@@ -273,24 +298,11 @@ function Invoke-Build {
 
     $offers = Get-CardList 'offers'
     $bestsellers = Get-CardList 'bestsellers'
-    $homeColours = [regex]::Matches([regex]::Match($homeSrc, 'string\[\] categoryColours = \{([^}]*)\}').Groups[1].Value, '"(#\w+)"') | ForEach-Object { $_.Groups[1].Value }
 
     $h = Get-Between $homeSrc '<div class="gm-home">' '<script src="/js/gm-home.js' 'the homepage'
     $h = $h.Substring(0, $h.LastIndexOf('<script'))
     $h = Remove-RazorComments $h
     $homeScript = [regex]::Match($homeSrc, '<script src="/js/gm-home\.js[^"]*"></script>').Value
-
-    function Replace-Block([string]$text, [string]$startPattern, [string]$replacement, [string]$what) {
-      # replaces a Razor block from its start (e.g. "@foreach (...)") to its matching closing brace
-      $m = [regex]::Match($text, $startPattern)
-      if (-not $m.Success) { throw "Couldn't find $what in _HomePage.cshtml" }
-      $open = $text.IndexOf('{', $m.Index)   # the block's own opening brace (the first one in the match)
-      $depth = 0
-      for ($i = $open; $i -lt $text.Length; $i++) {
-        if ($text[$i] -eq '{') { $depth++ } elseif ($text[$i] -eq '}') { $depth--; if ($depth -eq 0) { break } }
-      }
-      $text.Substring(0, $m.Index) + $replacement + $text.Substring($i + 1)
-    }
 
     # hero banners
     $bannerItems = @($data.banners)
@@ -331,12 +343,10 @@ function Invoke-Build {
     }
     $h = Replace-Block $h '@for \(int t = 0; t < bestsellers\.Length; t\+\+\)\s*\{\s*var tab = bestsellers\[t\];\s*<div class="bs-panel"' ($panels -join "`n") 'the bestseller panels loop'
 
-    # enquiry form categories
-    $options = for ($i = 0; $i -lt $categories.Count; $i++) {
-      $colour = $homeColours[$i % $homeColours.Count]
-      "<option value=""$(Enc $categories[$i].name)"" data-color=""$colour"" style=""color:$colour"">$(Enc $categories[$i].name)</option>"
-    }
-    $h = Replace-Block $h '@for \(int i = 0; i < categories\.Count; i\+\+\)\s*\{' ($options -join "`n") 'the enquiry category options loop'
+    # the shared bulk enquiry pop-up
+    $partialCall = '@Html.Partial("_BulkEnquiryModal", categories)'
+    if (-not $h.Contains($partialCall)) { throw "Couldn't find $partialCall in _HomePage.cshtml" }
+    $h = $h.Replace($partialCall, $enquiryHtml)
 
     Assert-NoRazor '_HomePage' $h
     $homeHtml = $h + "`n" + $homeScript
