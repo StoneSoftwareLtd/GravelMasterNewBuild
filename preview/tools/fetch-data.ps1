@@ -46,7 +46,7 @@ function Add-Tiles([string]$html) {
     $b = $m.Groups[1].Value
     $link = [regex]::Match($b, '<a href="/products/([^/"]+)/p/([^"]+)"')
     if (-not $link.Success -or $tiles.Contains($link.Groups[2].Value)) { continue }
-    $price = { param($cls) ([regex]::Match($b, '<span class="grid-price ' + $cls + '">\s*(?:&#163;|£)([\d,.]+)')).Groups[1].Value }
+    $price = { param($cls) ([regex]::Match($b, '<span class="grid-price ' + $cls + '">\s*(?:&#163;|\u00A3)([\d,.]+)')).Groups[1].Value }
     $tiles[$link.Groups[2].Value] = [ordered]@{
       category = $link.Groups[1].Value
       url      = $link.Groups[2].Value

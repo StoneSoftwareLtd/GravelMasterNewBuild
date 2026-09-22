@@ -71,7 +71,7 @@ $stayInPreviewScript = @'
     // Windows takes about 2 seconds to report that nothing is running, so say what's happening meanwhile
     var note = document.getElementById('preview-opening') || document.createElement('div');
     note.id = 'preview-opening';
-    note.textContent = 'Opening in the website preview…';
+    note.textContent = 'Opening in the website preview\u2026';
     note.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2147483647;background:#222;color:#fff;padding:10px 18px;border-radius:20px;font:14px "Segoe UI",Arial,sans-serif';
     document.body.appendChild(note);
     fetch(previewSite + '/__preview/changes', { mode: 'no-cors', cache: 'no-store' })
@@ -259,7 +259,7 @@ function Invoke-Build {
     # MasterLayoutViewModel.GetHomeProduct / GetCheapestHomeProduct and HomeProduct.FormatPrice
     function Get-HomeProduct([string]$url) { $tiles[$url] }
     function Get-CheapestHomeProduct([string]$category) {
-      # sample products (e.g. the £25 Sample Box in Gravels & Chippings) aren't bulk bags, so they don't count
+      # sample products (e.g. the GBP 25 Sample Box in Gravels & Chippings) aren't bulk bags, so they don't count
       $data.tiles | Where-Object { $_.category -eq $category -and $_.url -notmatch 'sample' -and $_.name -notmatch 'sample' } |
         Sort-Object { [decimal]$_.price } | Select-Object -First 1
     }
