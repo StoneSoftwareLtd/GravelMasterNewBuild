@@ -1,0 +1,74 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.BaseViewModel
+@{
+    var categories = Model.MasterLayoutViewModel.TopLevelCategories.OrderByDescending(c => c.PriorityOnSubMenu).ToList();
+    string[] accents = { "purple", "green", "brown", "red", "blue", "yellow", "cyan", "grey" };
+}
+@* Slide-in mobile menu opened by the header's .menu-toggle (js/gm-chrome.js). Not rendered on checkout. *@
+<div class="menu-backdrop" hidden></div>
+<aside class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="mobile-menu__head">
+        <span class="mobile-menu__title">Menu</span>
+        <button type="button" class="mobile-menu__close" aria-label="Close menu">&times;</button>
+    </div>
+
+    <nav aria-label="Categories">
+        <ul class="mobile-menu__list">
+            @for (int i = 0; i < categories.Count; i++)
+            {
+                var category = categories[i];
+                <li class="mobile-menu__item mm--@(accents[i % accents.Length])">
+                    <button type="button" class="mobile-menu__toggle" aria-expanded="false">
+                        <span class="mobile-menu__name">@category.Name</span>
+                        <span class="mobile-menu__chev" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18" /></svg></span>
+                    </button>
+                    <ul class="mobile-submenu">
+                        <li><a href="/@category.Url/products/">Shop all @category.Name</a></li>
+                        @foreach (var sub in category.SubCategories)
+                        {
+                            <li><a href="/@category.Url/@sub.Url/products/">@sub.Name</a></li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+    </nav>
+
+    <nav class="mobile-menu__util" aria-label="Utility">
+        <a href="/delivery">Delivery</a>
+        <a href="/about-us">About</a>
+        <a href="/blog">Blog</a>
+        <a href="#" data-toggle="modal" data-target="#trackModal">Track Order</a>
+        <a href="/account/login" data-account-link="name">Login</a>
+    </nav>
+
+    @* id="myInput2" is required: _Layout initialises the product autocomplete on it. *@
+    <form class="mobile-menu__search" role="search" action="/search" method="get" autocomplete="off">
+        <input type="search" id="myInput2" name="searchphrase" class="search__input" placeholder="I&rsquo;m looking for..." aria-label="Search for products">
+        <button type="submit" class="search__btn" aria-label="Search">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#5ca458" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" /><line x1="16.5" y1="16.5" x2="21" y2="21" />
+            </svg>
+        </button>
+    </form>
+
+    <div class="mobile-menu__actions">
+        <a href="/trade" class="mm-action">
+            <span class="mm-action__icon">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="#5ca458" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6z" /></svg>
+            </span>
+            <span class="mm-action__label">Trade<br>information</span>
+        </a>
+        <a href="/calculator" class="mm-action">
+            <span class="mm-action__icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="5.5" y="3" width="13" height="18" rx="2" fill="#5ca458" /><rect x="7.6" y="5.2" width="8.8" height="3.6" rx="0.8" fill="#cedd7c" /><rect x="7.6" y="10.5" width="2.4" height="2.4" rx="0.4" fill="#cedd7c" /><rect x="10.8" y="10.5" width="2.4" height="2.4" rx="0.4" fill="#cedd7c" /><rect x="14" y="10.5" width="2.4" height="5.6" rx="0.4" fill="#cedd7c" /><rect x="7.6" y="13.7" width="2.4" height="2.4" rx="0.4" fill="#cedd7c" /><rect x="10.8" y="13.7" width="2.4" height="2.4" rx="0.4" fill="#cedd7c" /></svg>
+            </span>
+            <span class="mm-action__label">Quantity<br>calculator</span>
+        </a>
+        <a href="/account/login" class="mm-action" data-account-link="href">
+            <span class="mm-action__icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#5ca458" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+            </span>
+            <span class="mm-action__label">Account<br>Login</span>
+        </a>
+    </div>
+</aside>

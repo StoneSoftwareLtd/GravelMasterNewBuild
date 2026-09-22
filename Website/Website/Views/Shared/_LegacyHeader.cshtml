@@ -1,0 +1,211 @@
+﻿@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.BaseViewModel
+@{
+    var catList = Model.MasterLayoutViewModel.TopLevelCategories.OrderByDescending(c => c.PriorityOnSubMenu).ToList();
+}
+@* The pre-Optima header, rendered by _Layout while the new chrome is off. Delete with _LegacyFooter once the new chrome is signed off. *@
+<header class="sticky">
+    <div id="header-top" style="overflow:hidden">
+        <div class="padding-wrap-header nofont">
+            <div class="header-col header-l-col" style="background:#fff">
+                <div class="col-tbl">
+                    <div class="col-tc"> <a class="logo-link" href="/"><img class="img-fluid" src="https://cdn.gravelmaster.co.uk/images/logo-comp.jpg" alt="gravelmaster.co.uk" /></a> </div>
+                </div>
+                <div class="mob-links">
+                    <ul class="nofont">
+                        <li class="block-btn-search">
+                            <a onclick="toggleSearch()">
+                                <i class="fas fa-search btn-icon-mob"></i><br>
+                                <span>
+                                    Search
+                                </span>
+                            </a>
+                        </li>
+                        <li class="block-btn-phone">
+                            <a href="tel:0330 058 5068">
+                                <i class="fas fa-phone btn-icon-mob"></i><br>
+                                <span>
+                                    Call
+                                </span>
+                            </a>
+                        </li>
+                        <a style="color:#fff;text-decoration:none" href="tel:0330 058 5068">0330 058 5068</a>
+
+
+                        <li class="block-btn-cart">
+                            <a href="/basket">
+                                <i class="fas fa-shopping-cart btn-icon-mob"></i><br>
+                                <span id="numItems">
+                                    0<br>
+                                    items
+                                </span>
+                            </a>
+                        </li>
+                        <li class="block-btn-open">
+                            <button class="menu-open othertoggle">
+                                <i class="fas fa-bars btn-menu-icon"></i><br>
+                                <span>Menu</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="header-col header-m-col">
+                <p>Call us 8am - 5pm</p>
+                <p class="t-number" style="font-size:28px;color:#fff"><a style="color:#fff;text-decoration:none" href="tel:0330 058 5068">0330 058 5068</a></p>
+                <form id="product-search" action="/search" method="get" autocomplete="off" style="line-height: 22px;">
+                    <div class="search-container search-desk autocomplete" style="font-size: 16px; color: #000;">
+                        <input id="myInput" type="text" placeholder="Search for products" name="searchphrase" style="font-size:16px">
+                        <button type="submit"><i class="fa fa-search"></i></button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="header-col header-r-col other-nav">
+                <button class="close-nav othertoggle"><i class="far fa-times-circle"></i></button>
+                <ul class="sub-nav top-nav prodListNav">
+                    @for (int i = 0; i < catList.Count; i++)
+                    {
+
+                        <li>
+
+
+                            <a href="/@catList[i].Url/products/" class="toplink cat-@(i + 1)" title="@catList[i].Name">
+                                <span class="at"><span class="ac">@catList[i].Name</span></span>
+                            </a>
+
+
+                            @if (catList[i].SubCategories.Count > 0)
+                            {
+
+
+
+                                foreach (Agilis.ECommerce.Mvc.Web.ViewModels.Store.CategoryViewModel sub in catList[i].SubCategories)
+                                {
+                                <li> <a class="topLink" href="/@catList[i].Url/@sub.Url/products/" title="@sub.Name"> <span class="at"><span class="ac">@sub.Name</span></span></a></li>
+                            }
+
+
+
+
+                        }
+                            </li>
+
+                        }
+
+                    <li> <a class="topLink" href="/articles" title="Help Guides"> <span class="at"><span class="ac">Help Guides</span></span></a></li>
+                </ul>
+                <ul class="sub-nav top-nav prodListNav2">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/ideas-advice">Ideas</a></li>
+                    <li><a href="/delivery">Delivery</a></li>
+                    <li><a href="/about-us">About</a></li>
+                    <li><a href="/contact-us">Contact</a></li>
+                    <li><a href="/trade">Trade</a></li>
+                    <li><a id="login" href="/account/login">Login</a></li>
+
+                </ul>
+                <ul class="sub-nav block-nav">
+                
+                    <li class="block-btn-one">
+                        <a class="match" href="/trade">
+                            <i class="fas fa-user-circle btn-icon"></i><br>
+                            Trade Information
+                        </a>
+                    </li>
+                    <li class="block-btn-two">
+                        <a class="match" href="/calculator">
+                            <i class="fas fa-calculator btn-icon"></i><br>
+                            Gravel calculator
+                        </a>
+                    </li>
+                      <li id="mobLogin" class="block-btn-two" style="background-color:#f39200">
+                        <a class="match" href="/account/login">
+                            <i class="fas fa-user-lock btn-icon"></i><br>
+                            Login
+                        </a>
+                    </li>
+                    <li class="block-btn-cart btn-hide">
+                        <a class="match" href="/basket">
+                            <i class="fas fa-shopping-cart btn-icon"></i><br>
+                            <span id="numItems2"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <style>
+        @@media (min-width: 900px)
+        {
+        #mobLogin
+        {
+        display:none;
+        }
+        }
+
+        </style>
+    @if (!Request.Url.ToString().Contains("checkout"))
+    {
+
+        <div id="header-btm">
+            <div class="padding-wrap header-promotions nofont text-center">
+
+                <div class="trustpilot-widget header-promo" data-locale="en-GB" data-template-id="5419b732fbfb950b10de65e5" data-businessunit-id="58ef93f90000ff0005a06bca" data-style-height="24px" data-style-width="100%" data-theme="light">
+                    <a href="https://uk.trustpilot.com/review/gravelmaster.co.uk" target="_blank" rel="noopener">Trustpilot</a>
+                </div>
+
+                <a class="header-promo" onclick="$('#trackModal').modal()">
+                    <img src="/img/next-day.png" alt="Next day delivery if ordered before 13:00" />
+                    <p>
+                        Track Order
+                    </p>
+                </a>
+                <a class="header-promo" style="min-width:240px">
+                    <img src="/img/price-match.png" alt="Price match promise" />
+                    <p>Price match promise</p>
+                </a>
+                <a class="header-promo">
+                    <img src="/img/map.png" alt="Nationwide delivery" />
+                    <p>Nationwide delivery</p>
+                </a>
+            </div>
+            <!--<div style="        background: #6e5682;
+                    color: #fff;
+                    padding: 10px;
+                    text-align: center;
+                    font-weight: bold;
+                    line-height: 15px;
+            ">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i><span style="padding-left:10px;font-size:14px">Please note: Due to high demand, some of our deliveries may be extended past their delivery date</span>
+                </div>-->
+            <div class="prod-nav-wrap">
+                <div class="padding-wrap-header">
+
+                    @Html.Partial("TopMenuComponentMobile", Model.MasterLayoutViewModel.TopLevelCategories.OrderByDescending(c => c.PriorityOnSubMenu).ToList())
+
+                </div>
+            </div>
+
+
+
+            <form id="product-search" class="mobSearch" action="/search" method="get" autocomplete="off" style="display:none">
+                <div class="search-container search-mob autocomplete">
+                    <input type="text" id="myInput2" placeholder="Search for products" name="searchphrase">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </div>
+            </form>
+        </div>}
+    else
+    {
+
+        <!--  <div style="        background: #6e5682;
+                color: #fff;
+                padding: 10px;
+                text-align: center;
+                font-weight: bold;
+                line-height: 15px;
+        ">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i><span style="padding-left:10px;font-size:14px">Please note: Due to high demand, some of our deliveries may be extended past their delivery date</span>
+            </div>-->
+    }
+</header>

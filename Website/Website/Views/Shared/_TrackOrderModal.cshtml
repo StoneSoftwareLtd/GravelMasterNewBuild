@@ -1,0 +1,38 @@
+﻿@* Opened from the header's Track Order link, so _Layout must render this on every page whichever header or footer is in use. *@
+<div class="modal fade show" id="trackModal" tabindex="-1" role="dialog" aria-modal="true">
+
+    <div class="container modal-dialog" style="max-width:500px;border-radius:4px">
+        <div class="row modal-content" style="border:solid 2px #000">
+            <div class="modal-header text-center">
+                <h3 class="modal-title w-100 font-weight-bold" style="font-size:25px">Check Order status</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            @*<div style="color:red;font-weight:bold">@Model.Message</div>*@
+            @using (Ajax.BeginForm("CheckMyOrder", "Checkout", new { id = "track" }, new AjaxOptions { UpdateTargetId = "trackBodyMessage", InsertionMode = InsertionMode.Replace }))
+            {
+                <div class="modal-body" id="trackBody">
+                    <form role="form" method="post">
+                        <div class="form-group">
+                            <label for="orderid" style="width:150px;color:#000">Order ID:</label>
+                            <input type="text" class="form-control" id="orderId" name="orderId">
+                        </div>
+                        <div class="form-group">
+                            <label for="postcode" style="width:250px;color:#000">Delivery or Billing Postcode:</label>
+                            <input type="text" class="form-control" id="postcode" name="postcode">
+                        </div>
+
+                        <button type="submit" class="btn btn-default" style="background: #5aa557;color: #fff;">Find my order</button>
+                    </form>
+
+                </div>
+            }
+            <div style="padding:20px;color:#000">
+                <div style="font-weight:bold">STATUS:</div>
+                <div id="trackBodyMessage"></div>
+            </div>
+        </div>
+    </div>
+</div>

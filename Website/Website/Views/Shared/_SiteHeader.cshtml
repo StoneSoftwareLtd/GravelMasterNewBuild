@@ -1,0 +1,229 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.BaseViewModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@{
+    var categories = Model.MasterLayoutViewModel.TopLevelCategories.OrderByDescending(c => c.PriorityOnSubMenu).ToList();
+    string[] accents = { "purple", "green", "brown", "red", "blue", "yellow", "cyan", "grey" };
+    bool isCheckout = Request.Url.ToString().Contains("checkout");
+
+    // Mega menu intros come from each category description's "Ideal for" heading; these prototype lines cover categories without one.
+    var introFallbacks = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        { "garden-chippings", "Ideal for driveways, pathways, borders and general garden use" },
+        { "play-area-surfaces", "Safe, soft and colourful surfacing for play areas and gardens" },
+        { "topsoil-and-compost", "Enrich beds and borders with quality soils and mulches" },
+        { "cobbles-and-pebbles-rockery", "Decorative stone for water features, rockeries and edging" },
+        { "building-aggregates", "Aggregates and materials for every building project" },
+        { "winter-salt-and-fuel", "Stay safe and warm through the colder months" },
+        { "accessories", "Everything you need to finish the job properly" },
+        { "bulbs", "Bring your garden to life season after season" }
+    };
+    // The calculator promo only shows where the gravel and slate calculator applies.
+    var calculatorTitles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        { "garden-chippings", "Find out how much gravel you need" },
+        { "play-area-surfaces", "Find out how much surfacing you need" },
+        { "topsoil-and-compost", "Find out how much topsoil you need" },
+        { "cobbles-and-pebbles-rockery", "Find out how much stone you need" },
+        { "building-aggregates", "Find out how much aggregate you need" }
+    };
+    const int menuListLimit = 36;
+    const int flowThreshold = 8;
+}
+@* New header from the Optima prototype (home.html). Styles: css/gm-chrome.css. Behaviour: js/gm-chrome.js. *@
+<header class="site-header@(isCheckout ? " site-header--checkout" : "")">
+
+    <div class="top-bar">
+        <div class="container top-bar__inner">
+            <span class="top-bar__phone">Call us 8am - 5pm <a href="tel:03300585068">0330 058 5068</a></span>
+            <nav class="top-bar__nav" aria-label="Utility">
+                <a href="/delivery">Delivery</a>
+                <a href="/about-us">About</a>
+                <a href="/blog">Blog</a>
+                <a href="#" data-toggle="modal" data-target="#trackModal">Track Order</a>
+                @* _Layout's /myaccount/getuser fetch swaps this for the customer's name. *@
+                <a id="login" href="/account/login">Login</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="main-bar">
+        <div class="container main-bar__inner">
+
+            @if (!isCheckout)
+            {
+                <button type="button" class="menu-toggle" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
+                    <span class="menu-toggle__bar"></span>
+                    <span class="menu-toggle__bar"></span>
+                    <span class="menu-toggle__bar"></span>
+                </button>
+            }
+
+            <a href="/" class="logo" aria-label="GravelMaster home">
+                <img src="/img/gm-logo-white.png" alt="GravelMaster.co.uk" class="logo__img">
+            </a>
+
+            @if (!isCheckout)
+            {
+                @* id="myInput" is required: _Layout initialises the product autocomplete on it. *@
+                <form class="search" role="search" action="/search" method="get" autocomplete="off">
+                    <input type="search" id="myInput" name="searchphrase" class="search__input" placeholder="I&rsquo;m looking for..." aria-label="Search for products">
+                    <button type="submit" class="search__btn" aria-label="Search">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#4a4a4a" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7" />
+                            <line x1="16.5" y1="16.5" x2="21" y2="21" />
+                        </svg>
+                    </button>
+                </form>
+            }
+
+            <div class="actions">
+                <a href="/trade" class="action">
+                    <span class="action__icon">
+                        <svg viewBox="0 0 24 24" width="25.3" height="25.3" fill="#5ca458" aria-hidden="true">
+                            <circle cx="12" cy="9.2" r="3.5" />
+                            <ellipse cx="12" cy="17" rx="5.4" ry="3" />
+                        </svg>
+                    </span>
+                    <span class="action__label">Trade information</span>
+                </a>
+                <a href="/calculator" class="action">
+                    <span class="action__icon">
+                        <svg viewBox="0 0 24 24" width="25.3" height="25.3" aria-hidden="true">
+                            <rect x="5.5" y="3" width="13" height="18" rx="2" fill="#5ca458" />
+                            <rect x="7.6" y="5.2" width="8.8" height="3.6" rx="0.8" fill="#ccde7e" />
+                            <rect x="7.6" y="10.5" width="2.4" height="2.4" rx="0.4" fill="#ccde7e" />
+                            <rect x="10.8" y="10.5" width="2.4" height="2.4" rx="0.4" fill="#ccde7e" />
+                            <rect x="14" y="10.5" width="2.4" height="5.6" rx="0.4" fill="#ccde7e" />
+                            <rect x="7.6" y="13.7" width="2.4" height="2.4" rx="0.4" fill="#ccde7e" />
+                            <rect x="10.8" y="13.7" width="2.4" height="2.4" rx="0.4" fill="#ccde7e" />
+                        </svg>
+                    </span>
+                    <span class="action__label">Quantity calculator</span>
+                </a>
+                <a href="/basket" class="action">
+                    <span class="action__icon">
+                        <svg viewBox="0 0 24 24" width="23" height="23" fill="#5ca458" aria-hidden="true">
+                            <g transform="translate(1 0)">
+                                <path d="M2.6 3.6a1 1 0 0 0 0 2h1.7l2.6 9.3a1 1 0 0 0 1 .73h8.9a1 1 0 0 0 .97-.76l1.85-7a.8.8 0 0 0-.78-1H6.2l-.63-2.28a1 1 0 0 0-.96-.72z" />
+                                <circle cx="9.4" cy="19" r="1.6" />
+                                <circle cx="16.4" cy="19" r="1.6" />
+                            </g>
+                        </svg>
+                    </span>
+                    <span class="action__label">My basket <span class="js-basket-total">@Model.MasterLayoutViewModel.BasketTotal</span></span>
+                    @* Page scripts write "N Items: £X" here after basket changes; gm-chrome.js mirrors the total into the label. *@
+                    <span id="numItems" hidden></span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    @if (!isCheckout)
+    {
+        <nav class="nav-bar" aria-label="Categories">
+            <ul class="nav-bar__list container">
+                @for (int i = 0; i < categories.Count; i++)
+                {
+                    var category = categories[i];
+                    string categoryUrl = category.Url ?? "";
+
+                    string introText = MasterLayoutViewModel.GetIdealFor(category);
+                    if (introText != null)
+                    {
+                        introText = "Ideal for: " + introText;
+                    }
+                    else if (introFallbacks.ContainsKey(categoryUrl))
+                    {
+                        introText = introFallbacks[categoryUrl];
+                    }
+                    string calculatorTitle;
+                    calculatorTitles.TryGetValue(categoryUrl, out calculatorTitle);
+
+                    var subGroups = category.SubCategories.Select(sub => new { Category = sub, Products = Model.MasterLayoutViewModel.GetMenuProducts(sub) }).ToList();
+                    var subProductUrls = new HashSet<string>(subGroups.SelectMany(g => g.Products).Select(p => p.Url));
+                    var mainProducts = Model.MasterLayoutViewModel.GetMenuProducts(category).Where(p => !subProductUrls.Contains(p.Url)).ToList();
+
+                    <li class="nav-item nav-item--@(accents[i % accents.Length])">
+                        <a href="/@category.Url/products/" aria-haspopup="true"><span class="nav-text">@category.Name</span> <span class="caret">&#9662;</span></a>
+                        <div class="dropdown mega">
+                            <div class="mega__inner container">
+                                <div class="mega__promo">
+                                    @if (introText != null)
+                                    {
+                                        <p class="mega__intro">@introText</p>
+                                    }
+                                    <a href="/@category.Url/products/" class="mega__shop-all">Shop all</a>
+                                    @if (calculatorTitle != null)
+                                    {
+                                        <div class="mega__calc">
+                                            <span class="mega__calc-icon">
+                                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#3f8f43" stroke-width="1.8" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1.5" /><line x1="8" y1="8" x2="16" y2="8" /><line x1="8" y1="12" x2="16" y2="12" /><line x1="8" y1="16" x2="12" y2="16" /></svg>
+                                            </span>
+                                            <div class="mega__calc-body">
+                                                <p class="mega__calc-title">@calculatorTitle</p>
+                                                <a href="/calculator" class="mega__calc-btn">Use our calculator</a>
+                                            </div>
+                                            <img class="mega__calc-img" src="/img/gm-bag-bulk.jpg" alt="">
+                                        </div>
+                                    }
+                                </div>
+                                <div class="mega__cols">
+                                    @if (mainProducts.Count > 0)
+                                    {
+                                        <div class="mega__group@(mainProducts.Count > flowThreshold ? " mega__group--flow" : "")">
+                                            <a href="/@category.Url/products/" class="mega__heading">@category.Name</a>
+                                            <ul class="mega__list">
+                                                @foreach (var product in mainProducts.Take(menuListLimit))
+                                                {
+                                                    <li><a href="@MasterLayoutViewModel.GetMenuProductUrl(product)">@product.Name</a></li>
+                                                }
+                                                @if (mainProducts.Count > menuListLimit)
+                                                {
+                                                    <li><a href="/@category.Url/products/">View all @mainProducts.Count</a></li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    }
+                                    @foreach (var group in subGroups)
+                                    {
+                                        <div class="mega__group@(group.Products.Count > flowThreshold ? " mega__group--flow" : "")">
+                                            <a href="/@category.Url/@group.Category.Url/products/" class="mega__heading">@group.Category.Name</a>
+                                            @if (group.Products.Count > 0)
+                                            {
+                                                <ul class="mega__list">
+                                                    @foreach (var product in group.Products.Take(menuListLimit))
+                                                    {
+                                                        <li><a href="@MasterLayoutViewModel.GetMenuProductUrl(product)">@product.Name</a></li>
+                                                    }
+                                                </ul>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+
+    <div class="trust-bar">
+        <div class="container trust-bar__inner">
+            <span class="trust-item">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ccde7e" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
+                Next day delivery
+            </span>
+            <span class="trust-item">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ccde7e" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4-3 7-7 8-4-1-7-4-7-8V6z" /><path d="M9 12l2 2 4-4" /></svg>
+                Price match promise
+            </span>
+            <span class="trust-item">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ccde7e" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><rect x="1" y="7" width="13" height="9" rx="1" /><path d="M14 10h4l3 3v3h-7z" /><circle cx="5.5" cy="17" r="1.4" /><circle cx="17.5" cy="17" r="1.4" /></svg>
+                UK nationwide delivery
+            </span>
+        </div>
+    </div>
+
+</header>
