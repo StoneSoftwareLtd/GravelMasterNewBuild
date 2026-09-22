@@ -33,9 +33,10 @@ Changed files
   Website/Website/Website.csproj                       lists the new files
 
 Also included
-  header-and-footer.patch - the same changes as a git patch. To apply it, run
-  this from the repository root on a branch taken from master:
-      git apply header-and-footer.patch
+  header-and-footer (before 2026-09-17 fixes).patch - the branch's changes as a
+  git patch, from BEFORE the fixes below. Don't apply it on its own: the files
+  in this folder are the up-to-date versions. Make a new patch after the fixes
+  are committed.
 
 NOT included
   Website/Website/Web.config, because it contains the live database password.
@@ -50,3 +51,64 @@ NOT included
 Building
   MasterLayoutViewModel.cs is C#, so rebuild the Website project after copying
   the files. Views, CSS, JavaScript and images need no build.
+
+BEFORE MERGING: the live site has moved on from this branch's master
+  Checked against www.gravelmaster.co.uk on 17 September 2026. The live pages
+  are built from a newer _Layout.cshtml than the one this branch changed. The
+  live one has things this copy doesn't:
+    - Google Tag Manager (GTM-KMX9ZL3) and Microsoft Clarity (skcynpme2d)
+    - global.css?v210 (this copy has ?v108)
+    - WebFont.load for Montserrat and Quicksand 400/500/700
+    - a different old footer: "Find Out About Our Latest Products & Offers",
+      an orange Ideas | About | Contact | Trade link bar, and the logo at
+      /cdn/logo-comp.jpg
+  Copying this _Layout.cshtml, _LegacyHeader.cshtml or _LegacyFooter.cshtml
+  over the live code would remove those. Take the latest master first and
+  redo the _Layout changes on top of it (the new partials, CSS, JS and images
+  can be copied as they are). MasterLayoutViewModel.cs may need the same check.
+
+  The "page not found" page (e.g. /this-page-does-not-exist-123) is not built
+  from _Layout.cshtml: it has its own copy of the old header and footer (no
+  newsletter band, no product search data). With UseNewChrome on it would
+  still show the old header and footer. Find its view or layout in the repo
+  and give it the same switch.
+
+Fixes made on 17 September 2026 (one commit each in this repository)
+  Each fix was tested in a static preview built from these files, sitting on
+  the live site's stylesheets and a real category page, at 1440, 1100, 1000,
+  900, 861, 768 and 375px wide. The layout measured the same before and after.
+
+  1. Search: pressing Enter didn't search
+     Views/Shared/_Layout.cshtml - autocomplete() blocked Enter even with no
+     suggestion highlighted, so the form never submitted. Enter now searches,
+     and Enter on a highlighted suggestion still opens that product. (The old
+     header uses the same function, so the live site has this bug too.)
+
+  2. gm-chrome.css no longer affects pages outside the new chrome
+     css/gm-chrome.css - the colour variables were set on :root, replacing
+     Bootstrap's --green, --blue, --red etc. for the whole page. They are now
+     set on the chrome elements only.
+     Views/Shared/_Layout.cshtml - gm-chrome.css is only loaded when the new
+     chrome is on, so with UseNewChrome off the site is unchanged.
+     The css and js links went from ?v1 to ?v2 so browsers fetch the new files.
+
+  3. Mobile menu: keyboard access
+     css/gm-chrome.css, js/gm-chrome.js - while closed, the menu's 31 links and
+     buttons could still be tabbed to, even though they were off-screen, and so
+     could the links in collapsed categories. They are now hidden until shown.
+     Opening the menu moves focus to its close button, Tab stays inside the
+     open menu, and closing it returns focus to the menu button.
+
+  4. Images
+     img/gm-payment-cards.png - was 1486x242 (125 KB) for a 215x35 display;
+     now 645x105 (42 KB), which is still sharp on high-resolution screens.
+     Views/Shared/_SiteHeader.cshtml, _SiteFooter.cshtml - every image now has
+     width and height so the page doesn't jump as images load, and the footer
+     images use loading="lazy".
+
+  5. Mega menu reads the product list once per page
+     ViewModels/Common/MasterLayoutViewModel.cs - GetMenuProducts called
+     productRepository.GetAllProducts() for every category and subcategory
+     (12 times per page with today's menu). It now loads the list once and
+     filters it. A test comparing the old and new method on 17,500 random
+     cases gave identical results in the same order.
