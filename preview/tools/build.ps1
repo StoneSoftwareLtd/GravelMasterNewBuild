@@ -7,7 +7,8 @@
 # The build fails if any Razor is left over, so the preview can't silently drift from the partials.
 #
 #   preview/index.html     the new homepage (Views/Home/_HomePage.cshtml) with the new chrome
-#   preview/category.html  a saved old category page with the new chrome
+#   preview/category.html  the new category page (Views/Shared/_CategoryPage.cshtml), filled from the saved
+#                          old Gravels & Chippings page (old-body.html) by category-page.ps1
 #   preview/checkout.html  the checkout variant (no search, category nav or mobile menu)
 #
 # The pages load /css, /js and /img from the package (see .vscode/settings.json for Live Server).
@@ -47,6 +48,7 @@ function Assert-NoRazor([string]$what, [string]$s) {
   $m = [regex]::Match($s, '(?<![\w.])@(?!media\b|keyframes\b|font-face\b|import\b|supports\b)[A-Za-z(*{]')
   if ($m.Success) { throw "$what still contains Razor near: " + $s.Substring([Math]::Max(0, $m.Index - 80), [Math]::Min(160, $s.Length - [Math]::Max(0, $m.Index - 80))) }
 }
+. (Join-Path $PSScriptRoot 'category-page.ps1')
 
 # The saved pages are one page each, so their links open the same address in the whole-website preview
 # (site-preview.ps1) instead of the live site, which still has the old header and footer.
@@ -78,7 +80,8 @@ $stayInPreviewScript = @'
     document.body.appendChild(box);
   }
 
-  function go(address) {
+  // postForm: a form to post to the address instead of opening it (e.g. Sort by)
+  function go(address, postForm) {
     // Windows takes about 2 seconds to report that nothing is running, so say what's happening meanwhile
     var note = document.getElementById('preview-opening') || document.createElement('div');
     note.id = 'preview-opening';
@@ -86,7 +89,11 @@ $stayInPreviewScript = @'
     note.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2147483647;background:#222;color:#fff;padding:10px 18px;border-radius:20px;font:14px "Segoe UI",Arial,sans-serif';
     document.body.appendChild(note);
     fetch(previewSite + '/__preview/changes', { mode: 'no-cors', cache: 'no-store' })
-      .then(function () { location.href = address; })
+      .then(function () {
+        if (!postForm) { location.href = address; return; }
+        postForm.action = address;
+        postForm.submit();
+      })
       .catch(function () { note.remove(); showHelp(); });
   }
 
@@ -103,11 +110,15 @@ $stayInPreviewScript = @'
 
   document.addEventListener('submit', function (e) {
     var form = e.target;
-    if ((form.method || 'get').toLowerCase() !== 'get' || !form.getAttribute('action')) return;
+    if (!form.getAttribute('action')) return;
     var address = previewAddress(form.action);
     if (!address) return;
     e.preventDefault();
-    go(address.split('?')[0] + '?' + new URLSearchParams(new FormData(form)).toString());
+    if ((form.method || 'get').toLowerCase() === 'get') {
+      go(address.split('?')[0] + '?' + new URLSearchParams(new FormData(form)).toString());
+    } else {
+      go(address, form);
+    }
   }, true);
 })();
 </script>
@@ -371,11 +382,21 @@ function Invoke-Build {
   $urls = @($data.products | ForEach-Object { "/products/$($_.category)/p/$($_.url)" }) | ConvertTo-Json -Compress
   $oldBody = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'old-body.html'))
 
-  # $kind: 'home' (the new homepage), 'category' (a saved old category page) or 'checkout'
+  # ---------- Views/Shared/_CategoryPage.cshtml (the new category page) ----------
+  # Filled from the saved old Gravels & Chippings page, as site-preview.ps1 fills it from each live category page
+  $categoryModel = ConvertFrom-OldCategoryPage $oldBody '/garden-chippings/products/' $null @($categories | ForEach-Object { $_.name })
+  if (-not $categoryModel) { throw "Couldn't read old-body.html as a category page" }
+  $categoryHtml = Format-CategoryPage (Join-Path $Package 'Views\Shared\_CategoryPage.cshtml') $categoryModel $enquiryHtml
+  # this saved page isn't at the category's address, so Sort by posts to it (in the whole-website preview)
+  $sortForm = '<form class="plp-sort" method="post">'
+  if (-not $categoryHtml.Contains($sortForm)) { throw "Couldn't find the Sort by form in _CategoryPage.cshtml" }
+  $categoryHtml = $categoryHtml.Replace($sortForm, '<form class="plp-sort" method="post" action="/garden-chippings/products/">')
+
+  # $kind: 'home' (the new homepage), 'category' (the new category page) or 'checkout'
   function Build-Page([string]$kind) {
     $isCheckout = $kind -eq 'checkout'
     $css = ($data.stylesheets | ForEach-Object { "<link href=""$_"" rel=""stylesheet"" />" }) -join "`n"
-    $title = @{ home = 'New homepage'; category = 'Category page'; checkout = 'Checkout' }[$kind]
+    $title = @{ home = 'New homepage'; category = 'New category page'; checkout = 'Checkout' }[$kind]
     switch ($kind) {
       'home' {
         # the homepage's Head section, and #mainBody without the old white box (as _Layout will render it)
@@ -388,8 +409,10 @@ function Invoke-Build {
         $content = '<div class="container" style="padding:40px 15px"><h1>Checkout</h1><p>Checkout page content would be here.</p></div>'
       }
       default {
-        $mainTag = $mainBodyTag
-        $content = $oldBody
+        # the category page's stylesheet, and #mainBody without the old white box
+        $css += "`n<link href=""/css/gm-category.css?v1"" rel=""stylesheet"" />"
+        $mainTag = '<div itemscope itemtype="http://schema.org/WebSite" id="mainBody">'
+        $content = $categoryHtml
       }
     }
     @"
@@ -450,9 +473,10 @@ $stayInPreviewScript
   Write-Fragment 'autocomplete.js' $autocomplete
   Write-Fragment 'autocomplete-init.js' $autocompleteInit
   if ($homeHtml) { Write-Fragment 'home.html' $homeHtml }
+  Write-Fragment 'enquiry.html' $enquiryHtml
   Write-Fragment 'built.txt' (Get-Date).ToString('o')
 
-  "$((Get-Date).ToString('HH:mm:ss')) built index.html (homepage), category.html, checkout.html and fragments from $Package (menu data fetched $($data.fetched))"
+  "$((Get-Date).ToString('HH:mm:ss')) built index.html (homepage), category.html (category page), checkout.html and fragments from $Package (menu data fetched $($data.fetched))"
 }
 
 Invoke-Build

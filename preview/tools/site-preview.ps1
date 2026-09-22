@@ -4,8 +4,12 @@
 # new ones built from the package's .cshtml files - the same swap _Layout makes when UseNewChrome is on -
 # so you can click around real pages and the new header and footer stay.
 #
+# The homepage and every category page (with or without filters) show the new homepage and category page
+# from Views/Home/_HomePage.cshtml and Views/Shared/_CategoryPage.cshtml, filled from the live page.
+#
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
-#   - adding to basket, sign-ups, enquiries and every form post are blocked
+#   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
+#     Sort by (only "sort=<one of the four sorts>"), which only changes the order of the products
 #   - no cookies are sent, so you are never logged in or using a real basket
 #   - analytics, ads, Hotjar, Clarity, Facebook and chat scripts are removed from the pages
 #
@@ -25,6 +29,9 @@ $site = 'https://www.gravelmaster.co.uk'
 $package = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..\Website\Website')).Path
 $fragments = Join-Path $PSScriptRoot 'fragments'
 $utf8 = New-Object System.Text.UTF8Encoding $false
+. (Join-Path $PSScriptRoot 'category-page.ps1')
+# a category page: /garden-chippings/products/, /garden-chippings/slate-chippings/products/, and either with filters after
+$categoryPathPattern = '^/(?!products/)[a-z0-9-]+(?:/[a-z0-9-]+)?/products(?:/|$)'
 
 # Requests with real effects on the live site (found in the live pages' scripts and forms)
 $blockedPattern = 'addtobasket|removefrombasket|updatequantity|newsletterregister|sendlooseenquiry|sendcalculatorcalculation|quicksignup|logoff|logout'
@@ -72,7 +79,7 @@ function Update-Chrome {
   $stamp = Join-Path $fragments 'built.txt'
   $inputs = @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Shared') -Filter '*.cshtml') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Home') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
-    @(Get-Item -LiteralPath (Join-Path $PSScriptRoot 'data.json'), (Join-Path $PSScriptRoot 'build.ps1'))
+    @(Get-Item -LiteralPath (Join-Path $PSScriptRoot 'data.json'), (Join-Path $PSScriptRoot 'build.ps1'), (Join-Path $PSScriptRoot 'category-page.ps1'))
   $newest = $inputs | ForEach-Object { $_.LastWriteTimeUtc } | Sort-Object -Descending | Select-Object -First 1
   $upToDate = (Test-Path -LiteralPath $stamp) -and (Get-Item -LiteralPath $stamp).LastWriteTimeUtc -ge $newest
   if ($upToDate -and $script:chrome) { return }
@@ -83,6 +90,7 @@ function Update-Chrome {
     Footer = Read-Fragment 'footer.html'; MobileMenu = Read-Fragment 'mobile-menu.html'; Scripts = Read-Fragment 'scripts.html'
     Autocomplete = Read-Fragment 'autocomplete.js'; AutocompleteInit = Read-Fragment 'autocomplete-init.js'
     Home = $(if (Test-Path -LiteralPath (Join-Path $fragments 'home.html')) { Read-Fragment 'home.html' } else { $null })
+    Enquiry = Read-Fragment 'enquiry.html'
   }
 }
 
@@ -95,7 +103,8 @@ function Get-ChangeStamp {
   "{0}-{1}" -f $files.Count, ($files | ForEach-Object { $_.LastWriteTimeUtc.Ticks } | Sort-Object -Descending | Select-Object -First 1)
 }
 
-function Get-Live([string]$rawUrl, [string]$accept) {
+# $formBody: a form post's body (only a category page's Sort by is ever passed on)
+function Get-Live([string]$rawUrl, [string]$accept, [string]$formBody) {
   $req = [Net.HttpWebRequest]::Create($site + $rawUrl)
   $req.Method = 'GET'
   $req.AllowAutoRedirect = $false
@@ -103,6 +112,14 @@ function Get-Live([string]$rawUrl, [string]$accept) {
   $req.UserAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) GravelMasterHeaderPreview'
   if ($accept) { $req.Accept = $accept }
   $req.Timeout = 30000
+  if ($formBody) {
+    $req.Method = 'POST'
+    $req.ContentType = 'application/x-www-form-urlencoded'
+    $bytes = [Text.Encoding]::UTF8.GetBytes($formBody)
+    $req.ContentLength = $bytes.Length
+    $stream = $req.GetRequestStream()
+    try { $stream.Write($bytes, 0, $bytes.Length) } finally { $stream.Close() }
+  }
   try {
     $res = $req.GetResponse()
   } catch {
@@ -119,10 +136,12 @@ function Get-Live([string]$rawUrl, [string]$accept) {
   }
 }
 
-function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome) {
+# $sort: the Sort by choice posted to a category page, if any
+function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [string]$sort) {
   # _Layout: bool isCheckout = Request.Url.ToString().Contains("checkout")
   $isCheckout = $rawUrl.Contains('checkout')
   $swapped = $false
+  $newPage = $null
 
   $footStart = $html.IndexOf('<div id="sign-up-wrapper">')
   $footEnd = if ($footStart -ge 0) { $html.IndexOf('</footer>', $footStart) } else { -1 }
@@ -143,17 +162,30 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome) {
     $html = [regex]::Replace($html, 'autocomplete\(document\.getElementById\("myInput"\), countries\);\s*autocomplete\(document\.getElementById\("myInput2"\), countries\);', [Text.RegularExpressions.MatchEvaluator] { param($m) $chrome.AutocompleteInit })
     $swapped = $true
 
-    # the new homepage (Views/Home/_HomePage.cshtml) in place of the old homepage content
-    if ($chrome.Home -and $rawUrl.Split('?')[0] -eq '/') {
-      $mainBody = [regex]::Match($html, '<div itemscope itemtype="http://schema.org/WebSite" id="mainBody"[^>]*>')
-      $modal = $html.IndexOf('<div class="modal fade show" id="priceModal"')
-      $mainEnd = if ($modal -gt 0) { $html.LastIndexOf('</div>', $modal) } else { -1 }
-      if ($mainBody.Success -and $mainEnd -gt $mainBody.Index) {
-        # full width, without the old white box and orange side borders
-        $html = $html.Substring(0, $mainBody.Index) + '<div itemscope itemtype="http://schema.org/WebSite" id="mainBody"><meta itemprop="url" content="https://www.gravelmaster.co.uk" />' + $chrome.Home + "`n" + $html.Substring($mainEnd)
-        $head = $html.IndexOf('<link href="/css/gm-chrome.css')
-        if ($head -ge 0) { $html = $html.Insert($head, "<link href=""/css/gm-home.css?v1"" rel=""stylesheet"" />`n") }
+    # the new homepage (Views/Home/_HomePage.cshtml) or category page (Views/Shared/_CategoryPage.cshtml)
+    # in place of the old page's content
+    $path = $rawUrl.Split('?')[0]
+    $mainBody = [regex]::Match($html, '<div itemscope itemtype="http://schema.org/WebSite" id="mainBody"[^>]*>')
+    $modal = $html.IndexOf('<div class="modal fade show" id="priceModal"')
+    $mainEnd = if ($modal -gt 0) { $html.LastIndexOf('</div>', $modal) } else { -1 }
+    $content = $null
+    if ($mainBody.Success -and $mainEnd -gt $mainBody.Index) {
+      if ($chrome.Home -and $path -eq '/') {
+        $content = $chrome.Home; $css = '/css/gm-home.css?v1'; $newPage = 'new homepage'
       }
+      elseif ($path -match $categoryPathPattern) {
+        $model = ConvertFrom-OldCategoryPage $html.Substring($mainBody.Index, $mainEnd - $mainBody.Index) $path $sort @()
+        if ($model) {
+          $content = Format-CategoryPage (Join-Path $package 'Views\Shared\_CategoryPage.cshtml') $model $chrome.Enquiry
+          $css = '/css/gm-category.css?v1'; $newPage = 'new category page'
+        }
+      }
+    }
+    if ($content) {
+      # full width, without the old white box and orange side borders
+      $html = $html.Substring(0, $mainBody.Index) + '<div itemscope itemtype="http://schema.org/WebSite" id="mainBody"><meta itemprop="url" content="https://www.gravelmaster.co.uk" />' + $content + "`n" + $html.Substring($mainEnd)
+      $head = $html.IndexOf('<link href="/css/gm-chrome.css')
+      if ($head -ge 0) { $html = $html.Insert($head, "<link href=""$css"" rel=""stylesheet"" />`n") }
     }
   }
 
@@ -170,7 +202,7 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome) {
   $html = ([regex]'(?i)<title>').Replace($html, '<title>[Preview] ', 1)   # the page title only, not SVG titles
   $bodyEnd = $html.LastIndexOf('</body>')
   if ($bodyEnd -ge 0) { $html = $html.Insert($bodyEnd, $reloadScript) }
-  [pscustomobject]@{ Html = $html; Swapped = $swapped }
+  [pscustomobject]@{ Html = $html; Swapped = $swapped; NewPage = $newPage }
 }
 
 function Send-Response($res, [int]$status, [string]$contentType, [byte[]]$body, [bool]$withBody) {
@@ -198,7 +230,7 @@ $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:$Port/")
 try { $listener.Start() } catch { Write-Host "Couldn't start the preview on port $Port - is it already running? ($($_.Exception.Message))" -ForegroundColor Red; exit 1 }
 Write-Host "GravelMaster preview with the new header and footer: http://localhost:$Port/"
-Write-Host "Read-only: basket, sign-ups, enquiries and forms are blocked. Press Ctrl+C to stop."
+Write-Host "Read-only: basket, sign-ups, enquiries and forms are blocked (only Sort by on category pages goes through). Press Ctrl+C to stop."
 if (-not $NoBrowser) { Start-Process "http://localhost:$Port/" }
 
 while ($listener.IsListening) {
@@ -225,7 +257,30 @@ while ($listener.IsListening) {
       Send-Response $res 200 'text/plain' ([Text.Encoding]::UTF8.GetBytes((Get-ChangeStamp))) $withBody
       continue
     }
-    if ($req.HttpMethod -ne 'GET' -and $req.HttpMethod -ne 'HEAD') {
+    # A category page's Sort by is the one form post passed on, and only as exactly "sort=<one of the sorts>"
+    $sort = $null
+    if ($req.HttpMethod -eq 'POST' -and $path -match $categoryPathPattern -and $rawUrl -notmatch $blockedPattern) {
+      $reader = New-Object IO.StreamReader($req.InputStream, [Text.Encoding]::UTF8)
+      $posted = [regex]::Match($reader.ReadToEnd(), '^sort=([^&=]*)$')
+      $reader.Close()
+      if ($posted.Success) {
+        $value = [Uri]::UnescapeDataString($posted.Groups[1].Value.Replace('+', ' '))
+        if ($script:categorySortOptions -contains $value) { $sort = $value }
+      }
+    }
+    if ($sort) {
+      $live = Get-Live $rawUrl 'text/html' ('sort=' + [Uri]::EscapeDataString($sort))
+      if ($live.Status -eq 200 -and $live.ContentType -and $live.ContentType.StartsWith('text/html')) {
+        Update-Chrome
+        $page = Convert-Page ($utf8.GetString($live.Body)) $rawUrl $useNewChrome $sort
+        Send-Response $res 200 'text/html; charset=utf-8' ($utf8.GetBytes($page.Html)) $withBody
+        $note = "sorted by $sort" + $(if ($page.NewPage) { " ($($page.NewPage))" } else { '' })
+      } else {
+        Send-Response $res 502 'text/plain; charset=utf-8' ([Text.Encoding]::UTF8.GetBytes("The live site answered the sort with $($live.Status)")) $true
+        $note = "sort failed: $($live.Status)"
+      }
+    }
+    elseif ($req.HttpMethod -ne 'GET' -and $req.HttpMethod -ne 'HEAD') {
       Send-Response $res 403 'text/html; charset=utf-8' $blockedPage $true
       $note = 'blocked (read-only preview)'
     }
@@ -266,9 +321,9 @@ while ($listener.IsListening) {
       }
       elseif ($live.ContentType -and $live.ContentType.StartsWith('text/html')) {
         Update-Chrome
-        $page = Convert-Page ($utf8.GetString($live.Body)) $rawUrl $useNewChrome
+        $page = Convert-Page ($utf8.GetString($live.Body)) $rawUrl $useNewChrome $null
         Send-Response $res $live.Status 'text/html; charset=utf-8' ($utf8.GetBytes($page.Html)) $withBody
-        $note = if ($page.Swapped) { 'new header and footer' } elseif (-not $useNewChrome) { 'old header and footer (newchrome=0)' } else { 'page left as it is (no old header/footer found)' }
+        $note = if ($page.NewPage) { "new header and footer, $($page.NewPage)" } elseif ($page.Swapped) { 'new header and footer' } elseif (-not $useNewChrome) { 'old header and footer (newchrome=0)' } else { 'page left as it is (no old header/footer found)' }
       }
       else {
         Send-Response $res $live.Status $live.ContentType $live.Body $withBody
