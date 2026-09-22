@@ -10,7 +10,7 @@ Each piece is built to drop into the **GravelMasterSoftware** repository behind 
 |---|---|---|
 | Header, footer and mobile menu | Done and tested | Needs redoing on the latest GravelMasterSoftware master before merging |
 | Homepage | Built and tested in the preview | Needs wiring into the site |
-| Category page | Next | [docs/category-page.md](docs/category-page.md) |
+| Category page | Built and tested in the preview | Needs wiring into the site |
 
 Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
@@ -26,9 +26,9 @@ Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
 ## See it
 
-Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer and homepage swapped in. Keep the black window open while you use it. It's read-only, so nothing is sent to the real site.
+Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage and category pages swapped in. Keep the black window open while you use it. It's read-only, so nothing is sent to the real site (the only exception is Sort by on category pages, which just reorders the products).
 
-Or open this folder in VS Code and use Live Server on `preview/index.html`. See [preview/README.md](preview/README.md) for both.
+Or open this folder in VS Code and use Live Server on `preview/index.html` or `preview/category.html`. See [preview/README.md](preview/README.md) for both.
 
 ## Documents
 
@@ -37,7 +37,7 @@ Or open this folder in VS Code and use Live Server on `preview/index.html`. See 
 | [docs/progress-log.md](docs/progress-log.md) | What was done, step by step |
 | [docs/header-and-footer.md](docs/header-and-footer.md) | The new header, footer and mobile menu: files, how the switch works, the fixes |
 | [docs/homepage.md](docs/homepage.md) | The new homepage: sections, what it keeps from the old one |
-| [docs/category-page.md](docs/category-page.md) | Plan for the category page |
+| [docs/category-page.md](docs/category-page.md) | The new category page: what it keeps from the old one, choices, what was tested |
 | [docs/merging.md](docs/merging.md) | Everything to do in GravelMasterSoftware to put this live |
 | [docs/open-questions.md](docs/open-questions.md) | Things found along the way that need a decision |
 

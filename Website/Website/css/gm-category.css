@@ -25,11 +25,11 @@ div:where(.gm-category) {
 :where(.gm-category) :is(*, *::before, *::after) { box-sizing: border-box; }
 :where(.gm-category) :is(section, aside, nav) { padding: 0; }   /* global.css: section { padding: 60px 0 } */
 :where(.gm-category) nav {
-  position: static;             /* the old base CSS turns every <nav> into an off-canvas panel on phones */
+  position: static;             /* the old base CSS turns every <nav> into an off-canvas panel below 900px */
   top: auto;
   left: auto;
   width: auto;
-  height: auto;                 /* and fixes it at 50px tall on wider screens */
+  height: auto;                 /* and fixes it at 50px tall from 900px up */
   overflow: visible;
   z-index: auto;
   background-color: transparent;

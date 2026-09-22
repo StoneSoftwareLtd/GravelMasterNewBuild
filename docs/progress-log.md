@@ -43,6 +43,24 @@ Raised for a decision: the sand calculator formula, trade prices above retail, 1
 - The "rebuild and watch" task now also rebuilds when the homepage partial changes.
 - Wrote these documents.
 
-## Next: category page
+## 22 September 2026: category page
 
-Mapped what the live category pages do, and how that fits the prototype's category page: [category-page.md](category-page.md).
+Rebuilt the prototype's category page as `_CategoryPage.cshtml`, for every category, subcategory and filtered page. Details: [category-page.md](category-page.md).
+
+1. Mapped what the live category pages do (six pages checked) and how each part fits the prototype.
+2. Moved the homepage's bulk enquiry pop-up into a shared partial so the category page can use it, and made Tab stay inside it while it's open.
+3. Added `CategoryPageModel` and `CategoryDescription.Parse`, which splits a category description into its "Ideal for" uses, intro and "Read more" part. Tested on six live descriptions.
+4. Built the page: the live filters (as links, shown as the prototype's checkboxes), Sort by, every product with customer and trade prices, the description with Read more, the promo card, trade card, PayPal message and the bulk banner.
+5. The previews now show it on every live category page, and let Sort by through to the live site (the only form they pass on).
+
+Found and fixed along the way:
+
+- the old base CSS hides every `<nav>` below 900px wide, which would have hidden the breadcrumb;
+- the promo card broke the order of sorted pages, so it now shows in the default order only;
+- PayPal hid its message in the 280px sidebar, so it now uses the style that fits.
+
+Raised for a decision: "Ideal for" icons, which product each promo card shows, the old left-column images, a real delivery countdown, Klarna, and some of the prototype's colours. See [open-questions.md](open-questions.md).
+
+## Next
+
+Waiting on the GravelMasterSoftware repository to wire the homepage and category page in ([merging.md](merging.md)). The prototype's other pages (product, basket, checkout, about, trade) are still to come.

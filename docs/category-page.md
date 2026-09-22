@@ -1,48 +1,66 @@
-# Category page: plan
+# Category page
 
-The next piece: the prototype's category page (`gravel-master-category.html`) in place of the old category pages, keeping everything they do.
+The Optima prototype's category page (`gravel-master-category.html`), rebuilt to show the site's real categories, subcategories and filtered pages. Built on 22 September 2026 and tested in the preview. **Not on the site yet**: wiring it in needs the GravelMasterSoftware repository (see [merging.md](merging.md#category-page)).
 
-## What the live category pages do
+## Files
 
-Checked on six live pages: Gravels & Chippings, its Slate Chippings subcategory, Gravels & Chippings filtered to Black, Topsoil and Mulches, Accessories, and Bulbs.
-
-- **Breadcrumb**: a top-level category shows just its name; a subcategory links back to its parent.
-- **Heading and description**: the `h1`, then the category description from the database: an "Ideal for: ..." heading, an intro paragraph, and a longer part (types, uses, care, related articles) behind a **Read More / Read Less** button.
-- **Filters**: the groups depend on the category (Gravels & Chippings: Colour, Price Range, Size; Accessories: Colour, Price Range; Bulbs: none). Each option is a link, and choices stack up in the address, e.g. `/garden-chippings/products/filter-colour-black-2/filter-size-10mm-55`. A chosen option is marked `selected`, and its link takes that filter off. Some filtered pages have their own heading and description, e.g. "Black Gravels & Chippings".
-- **Sort by**: Relevance, Name, Price (Low to High), Price (High to Low). Changing it submits a form (POST) to the same address.
-- **Product tiles**: photo (lazy-loaded), name, short description, "Price including delivery", "From" customer and trade prices (the site-wide `/product/istrade` check shows the right one), a trade badge for trade customers, and "Shop now". All products are on one page, with no paging: 40 on Gravels & Chippings, 27 on Topsoil and Mulches, 24 on Accessories, 22 on Bulbs, 8 on Slate Chippings.
-- **Left column**: "Order before 12:00PM for next day delivery" (the same fixed text on every page), PayPal's "Pay in 3" message, the filters, then six promo images (delivery, a turf article, Instagram, play sand, ITV, the blog).
-- **Phones**: a Filter button opens the filters in a slide-in menu, and there's a Sort dropdown.
-- **Page script**: `/scripts/Controllers/Root/Brand/DisplayCategory.js` (Read More, the slide-in filter menu, the basket summary). So the view is probably `Views/Brand/DisplayCategory.cshtml`; to confirm in the repository.
-
-## How the prototype's parts map onto it
-
-| Prototype | Plan |
+| File | What it is |
 |---|---|
-| Breadcrumb and intro band: title, text, "Ideal for" with round icons | Real breadcrumb and `h1`; the intro paragraph from the description; "Ideal for" items taken from the "Ideal for:" heading; the longer description behind "Read more" |
-| Delivery countdown (placeholder "Order in the next 2h 50m for delivery on Wednesday 11th March") | The live cut-off message for now. A real countdown needs the cut-off time, working days and bank holidays |
-| Filters as checkboxes, with "Clear all filters" | Keep the live filter links, styled as checkboxes: they work without JavaScript and every filtered page keeps its own address. "Clear all" goes to the unfiltered category. Groups collapse and expand |
-| Klarna and PayPal badges | PayPal's Pay in 3 message, as now |
-| Trade card ("Get trade prices") | Trade sign-up link, as on the homepage |
-| "Showing 14 Products" and Sort by | The real count; the live sort form, restyled |
-| Product cards, 3 / 2 / 1 columns | The real tiles: photo, name, description, customer and trade "From" price, "Shop now" |
-| Promo tile in the grid (Flamenco Gravel, "NOW FROM £117 BULK BAG") | A highlighted product per category, priced from the data, saying "FROM" as on the homepage |
-| "Ordering 10 tonnes or more?" banner | Opens the same bulk enquiry pop-up as the homepage |
-| Phone filter drawer | Replaces the old slide-in filter menu |
+| `Views/Shared/_CategoryPage.cshtml` | the new category page, as a partial that shows a `CategoryPageModel` |
+| `ViewModels/Common/CategoryPageModels.cs` | `CategoryPageModel` and its parts, and `CategoryDescription.Parse` |
+| `css/gm-category.css` | its styles, scoped to `.gm-category`, with a shield against the old site's CSS |
+| `js/gm-category.js` | Sort by, and the phone filter drawer |
+| `img/gm-cat-*` | the four "Ideal for" icons and the two backgrounds |
+| `Views/Shared/_BulkEnquiryModal.cshtml`, `css/gm-enquiry.css`, `js/gm-enquiry.js` | the bulk delivery pop-up, shared with the homepage |
 
-## Decisions needed
+The partial takes a small model of its own, rather than the category controller's view model, so it could be built and previewed without the repository. The category view fills it from its own data (see [merging.md](merging.md#category-page)).
 
-- **"Ideal for" icons**: the prototype has four (Mulch, Aquatics, Landscaping, Pond & Water Features), but the live "Ideal for" terms differ per category (e.g. "Driveways, Pathways, Borders and General Garden Use"). Icons are needed for the live terms, or one general icon.
-- **Left-column promo images**: not in the prototype. Keep, drop, or move them.
-- **The promo tile**: which product each category highlights.
-- **Klarna**: the prototype shows it, but the live category pages don't mention it. Leave it out unless the site offers Klarna.
+## What the live category pages do, and where each part went
 
-## How it will be built
+Checked on six live pages on 22 September 2026: Gravels & Chippings, its Slate Chippings subcategory, Gravels & Chippings filtered to Black, Topsoil and Mulches, Accessories, and Bulbs.
 
-The same way as the homepage:
+| Live page | New page |
+|---|---|
+| Breadcrumb (a subcategory links back to its parent) | The prototype's breadcrumb, starting from Home |
+| `h1`, and the description from the database: "Ideal for: ..." heading, intro, and a longer part behind **Read More / Read Less** | The intro band: heading, intro, the longer part behind **Read more / Read less**, and the "Ideal for" uses as the prototype's icon list |
+| Filters (Colour, Price Range, Size, depending on the category). Each option is a link; choices stack up in the address (`/garden-chippings/products/filter-colour-black-2/filter-size-10mm-55`), and a chosen option's link takes it off. Some filtered pages have their own heading and description | The same links, shown as the prototype's checkboxes, in groups that open and close. "Clear all filters" goes back to the unfiltered page. Filtered pages keep their own heading and description |
+| **Sort by**: Relevance, Name, Price (Low to High), Price (High to Low), posted back to the same address | The same form. It now shows the sort in use (the old one always went back to "Relevance") |
+| Product tiles: photo, name, short description, "From" customer and trade prices, trade badge, "Shop now". All products on one page | The prototype's cards with the same content. `_Layout`'s `/product/istrade` check shows the right price and the "Trade price" badge |
+| "Order before 12:00PM for next day delivery" | The prototype's delivery box, with the same message |
+| PayPal's Pay in 3 message | The same, in the prototype's payment spot |
+| Six promo images in the left column (delivery, a turf article, Instagram, play sand, ITV, the blog) | Left out: the prototype has the trade card there instead. See [open-questions.md](open-questions.md) |
+| Phones: a Filter button opening a slide-in menu, and a Sort dropdown | The prototype's sticky "Filters" bar and drawer; Sort by stays above the products |
 
-- a partial for the page, taking a small model (like `HomeProduct`), so it can be tested in the preview now and connected to the controller later;
-- `css/gm-category.css` scoped to the page, and `js/gm-category.js` for Read more, the filter groups and the phone drawer;
-- the whole-website preview swaps it into every live category page, filled from that page, so every category, subcategory and filter combination can be clicked through.
+New from the prototype: the trade card ("Get trade prices", linking to trade sign-up), the promo card in the grid, and the "Ordering 10 tonnes or more?" banner, which opens the same bulk enquiry pop-up as the homepage.
 
-The preview blocks every POST, so sorting can't be tried there as things stand. It needs either a read-only exception for the sort form or a test on the real site.
+## Choices
+
+- **"Ideal for" icons.** The prototype has four (mulch, aquatics, landscaping, pond and water features), made for Slate Chippings, whose uses match them exactly. Other categories' uses (e.g. Driveways, Pathways, Borders) get the icon for a matching word, or a tick. The list is at the top of `_CategoryPage.cshtml`.
+- **Splitting "Ideal for".** "Schools, Nurseries and Home Play Areas" becomes three uses. A list with no commas stays whole ("Construction and Landscaping Projects"), because its "and" may be part of a single use.
+- **Promo card.** Each category can highlight one product (listed at the top of `_CategoryPage.cshtml`): Flamenco Gravel on Gravels & Chippings, as in the prototype, and the homepage offers' picks for Slate Chippings, Topsoil and Mulches, and Cobbles (and Scottish). It takes that product's place, after the first five cards, and says "FROM" as on the homepage. It only shows on the unfiltered page in the default order, so filtered and sorted pages list exactly what was asked for.
+- **Klarna** is left out: the prototype shows it, but the live category pages don't mention it.
+- **The countdown.** The prototype's "Order in the next 2h 50m for delivery on Wednesday 11th March" is a placeholder. The page shows the live site's fixed message until there's a real cut-off rule to count down to.
+- **No JavaScript needed** for Read more and the filter groups (they're `<details>`), or for the filters themselves (links).
+
+## Found and fixed while building it
+
+- **The old base CSS hides every `<nav>` below 900px wide.** It turns `nav` into an off-canvas panel (`position: fixed; left: -100%`), and from 900px up fixes it at 50px tall. The new header already guarded against this; the category page's shield now does the same for its breadcrumb. Without it the breadcrumb would have vanished on phones and tablets.
+- **PayPal hid its message** in the 280px sidebar, because the inline-logo style needs 350px. The message now puts the logo above the text, which fits.
+- **The old page's PayPal message** was set up with `data-pp-amount="ENTER_VALUE_HERE"`, a leftover placeholder. The new page doesn't send an amount.
+
+## Accessibility
+
+- Breadcrumb as an ordered list, with the current page marked.
+- Chosen filters say "(chosen, select to remove)" to screen readers.
+- The phone filter drawer moves focus to its close button, keeps Tab inside while open, closes with Escape or the backdrop, and returns focus to the Filters button. While closed, its links can't be reached with Tab.
+- Visible focus outlines on links, buttons, Read more and Sort by.
+- A hidden "Products" heading keeps the page's heading order.
+
+## Tested
+
+- `CategoryPageModels.cs` compiled with the .NET Framework 4 C# compiler (warnings as errors). `CategoryDescription.Parse` was checked on the six live descriptions, with and without the old wrapper, and edge cases.
+- The saved page (`preview/category.html`) was compared with the prototype at 1440, 1100, 860 and 375px wide. Sidebar, grid columns, cards, promo card, banner and breakpoints match; heights differ only where the real text is longer.
+- In the whole-website preview, against the live site: all 8 categories and 4 subcategories, a three-filter page and a price filter; choosing and removing filters; Clear all; Sort by (cheapest first after "Price (Low to High)"); the phone filter bar and drawer; PayPal's message; customer prices shown and trade prices hidden when not logged in as trade; no script errors from the new page.
+- A filter combination with no products shows "No products match these filters" with a Clear all link (tested offline; no live filter combination was empty).
+
+Not tested yet: a trade login (the preview never logs in), and the page inside the real site (needs the repository).

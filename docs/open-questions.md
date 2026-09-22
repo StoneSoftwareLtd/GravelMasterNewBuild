@@ -21,8 +21,18 @@ Things found along the way that need someone to decide. Nothing here has been ch
 
 | Found | Detail | Suggestion |
 |---|---|---|
-| **Low-contrast colours in the prototype** | e.g. white text on the orange is 2.48:1; WCAG AA needs 4.5:1 for normal text. | Darken the orange behind text, or use dark text |
+| **Low-contrast colours in the prototype** | e.g. white text on the orange is 2.48:1; WCAG AA needs 4.5:1 for normal text. On the category page: the green product names are 3.0:1 (just enough for large bold text only), the white text on the blue bulk banner about 3.2:1, and the white "FROM" on the promo card's orange badge about 2.6:1. | Darken the colours behind text, or use dark text |
 | **"NOW FROM" on offer roundels** | Changed to "FROM", because the prices are normal product prices, not a reduction. | Confirm |
 | **Delivering to: postcode** | In the prototype's header; not ported. | Keep out, or plan how it would work |
 | **LinkedIn icon** | In the prototype's footer; not ported. | Add if GravelMaster has a LinkedIn page |
 | **Contact link** | The old header has one; the new header (like the prototype) doesn't. The footer has the contact details. | Decide if the header needs it |
+
+## Category page
+
+| Found | Detail | Suggestion |
+|---|---|---|
+| **"Ideal for" icons** | The prototype has four icons (mulch, aquatics, landscaping, pond and water features). The live categories' uses are wider (driveways, pathways, borders, schools, planting, gritting...), so most get a tick instead. | Design icons for the common uses, or keep the ticks |
+| **Promo card products** | Gravels & Chippings shows Flamenco Gravel (as the prototype). Slate Chippings, Topsoil and Mulches, and Cobbles (and Scottish) show the homepage offers' picks. Other categories have no promo card. | Choose a product per category, or none |
+| **The old left-column images** | The live category pages show six promo images down the left (delivery, a turf article, Instagram, play sand, ITV, the blog). The prototype has the trade card there instead, so they're left out. | Keep them out, or find them a place |
+| **Delivery countdown** | The prototype counts down to a cut-off ("Order in the next 2h 50m for delivery on..."). The live site shows a fixed "Order before 12:00PM for next day delivery", so that's what the new page shows. | Decide whether a real countdown is wanted (needs the cut-off time, working days and bank holidays) |
+| **Klarna** | In the prototype's payment badges, but not on the live category pages. Left out. | Add only if the site offers Klarna |
