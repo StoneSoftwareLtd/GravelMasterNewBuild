@@ -1,0 +1,426 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.BaseViewModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@{
+    var layoutModel = Model.MasterLayoutViewModel;
+
+    // Hero slides: the banners managed in the admin site, passed in by Home/Index.cshtml.
+    var banners = (IEnumerable<HomeBanner>)ViewData["HomeBanners"] ?? Enumerable.Empty<HomeBanner>();
+    var bannerList = banners.ToList();
+
+    // "Shop our offers" cards, in order. The photo comes from Product; the price from Product, or from the
+    // cheapest product in Cheapest (a category or subcategory URL, ignoring sample products such as the
+    // Sample Box). Cards whose product isn't on the site are left out.
+    var offers = new[]
+    {
+        new { Title = "Special Offers", Text = "Limited-time deals across our gravels, soils, cobbles and aggregates.", Button = "Shop Our Deals", Link = "/special-offers", Product = "panda-20mm", Cheapest = (string)null, Style = "deals", ShowPrice = false },
+        new { Title = "Topsoil", Text = "Rich, screened topsoil that gives beds, borders and lawns the best possible start.", Button = "Shop Our Soil Range", Link = "/topsoil-and-compost/products/", Product = "screened-topsoil", Cheapest = "topsoil-and-compost", Style = "soil", ShowPrice = true },
+        new { Title = "Yorkshire Cream", Text = "One of our bestsellers. Yorkshire cream stone, 20mm, brings brightness to any garden.", Button = "Shop Yorkshire Cream", Link = (string)null, Product = "yorkshire-cream-20mm", Cheapest = (string)null, Style = "cream", ShowPrice = true },
+        new { Title = "Cotswold Chippings", Text = "Warm, contemporary cream chippings for driveways, paths and borders.", Button = "Shop Cotswold Chippings", Link = (string)null, Product = "cotswold-chippings-20mm", Cheapest = (string)null, Style = "cream", ShowPrice = true },
+        new { Title = "Play Sand", Text = "Soft, washed and graded play sand – safe for sandpits and children’s play areas.", Button = "Shop Play Sand", Link = (string)null, Product = "play-sand", Cheapest = (string)null, Style = "sand", ShowPrice = true },
+        new { Title = "Scottish Cobbles", Text = "Smooth, naturally rounded Scottish cobbles and pebbles for borders, water features and rockeries.", Button = "Shop Scottish Cobbles", Link = "/cobbles-and-pebbles-rockery/scottish/products/", Product = "scottish-cobbles-30-50mm", Cheapest = "scottish", Style = "chip", ShowPrice = true },
+        new { Title = "Decorative Chippings", Text = "Hard-wearing decorative chippings for paths, driveways and low-maintenance borders.", Button = "Shop Chippings", Link = "/garden-chippings/products/", Product = "golden-gravel-20mm", Cheapest = "garden-chippings", Style = "chip", ShowPrice = true },
+        new { Title = "Blue Slate 20mm", Text = "Contemporary blue-grey slate that deepens in colour when wet. A modern classic.", Button = "Shop Slate", Link = "/garden-chippings/slate-chippings/products/", Product = "blue-slate-20mm", Cheapest = (string)null, Style = "slate", ShowPrice = true },
+        new { Title = "Bark & Mulch", Text = "Lock in moisture and keep weeds down with our natural bark and mulch range.", Button = "Shop Bark & Mulch", Link = "/search?searchphrase=bark", Product = "landscaping-bark", Cheapest = (string)null, Style = "mulch", ShowPrice = true }
+    };
+
+    // "Our Bestsellers" tabs: five products each, in order.
+    var bestsellers = new[]
+    {
+        new { Id = "gravel", Label = "Gravel & Chippings", ShopAll = "/garden-chippings/products/", ShopAllText = "Shop all Gravel & Chippings",
+              Products = new[] { "black-basalt-20mm", "golden-gravel-20mm", "quartz-pea-gravel-20mm", "polar-white-10mm", "yorkshire-cream-20mm" },
+              Icon = "<svg viewBox=\"0 0 24 24\" width=\"28.2\" height=\"28.2\" fill=\"#5a9a4f\" aria-hidden=\"true\"><polygon points=\"6.3,7.3 9.5,5.8 10.9,8.7 8.5,11 5.5,9.6\"/><polygon points=\"13,6.1 16.7,7 16,10.3 12.6,9.8 12.1,7.5\"/><polygon points=\"5.9,12.8 9.2,12.1 10.3,15.1 7.9,17.1 5.3,15.6\"/><polygon points=\"12.5,13.1 16.3,12.3 17.5,15.4 15,17.3 12.1,16\"/></svg>" },
+        new { Id = "soil", Label = "Topsoil and Mulches", ShopAll = "/topsoil-and-compost/products/", ShopAllText = "Shop all Topsoil and Mulches",
+              Products = new[] { "multi-purpose-soil", "screened-topsoil", "gold-topsoil", "landscaping-bark", "mushroom-compost" },
+              Icon = "<svg viewBox=\"0 0 24 24\" width=\"24.8\" height=\"24.8\" fill=\"#5a9a4f\" aria-hidden=\"true\"><path d=\"M4.5 19.6c2.2-2.7 12.8-2.7 15 0z\"/><rect x=\"11.3\" y=\"10.3\" width=\"1.4\" height=\"8.4\" rx=\"0.7\"/><path d=\"M12 13.1c-.2-3-2.7-5.1-5.7-5.3C6.1 10.7 8.6 12.9 12 13.1z\"/><path d=\"M12 11.6c.2-2.7 2.5-4.5 5.3-4.7C17.5 9.5 15.3 11.4 12 11.6z\"/></svg>" },
+        new { Id = "cobbles", Label = "Cobbles and Pebbles", ShopAll = "/cobbles-and-pebbles-rockery/products/", ShopAllText = "Shop all Cobbles, Pebbles & Rockery",
+              Products = new[] { "scottish-cobbles-30-50mm", "scottish-pebbles-20-30mm", "polar-white-pebbles", "black-pebbles", "everest-pebbles-20-40" },
+              Icon = "<svg viewBox=\"0 0 24 24\" width=\"23.5\" height=\"23.5\" fill=\"#5a9a4f\" aria-hidden=\"true\"><ellipse cx=\"12\" cy=\"8\" rx=\"3.6\" ry=\"1.7\"/><ellipse cx=\"12\" cy=\"12.4\" rx=\"4.7\" ry=\"1.9\"/><ellipse cx=\"12\" cy=\"16.9\" rx=\"5.4\" ry=\"2.1\"/></svg>" }
+    };
+
+    // Colours for the enquiry form's category list, in menu order (as the header's accents).
+    string[] categoryColours = { "#8e44ad", "#37853f", "#8a7524", "#d81b47", "#1f6fb0", "#b8940a", "#17a6d6", "#6b6b6b" };
+    var categories = layoutModel.TopLevelCategories.OrderByDescending(c => c.PriorityOnSubMenu).ToList();
+}
+@* New homepage from the Optima prototype (home.html). Styles: css/gm-home.css. Behaviour: js/gm-home.js. *@
+<div class="gm-home">
+
+    <section class="hero">
+        <div class="container">
+            <div class="carousel" data-carousel aria-roledescription="carousel" aria-label="Featured offers">
+                <div class="carousel__track">
+                    @for (int i = 0; i < bannerList.Count; i++)
+                    {
+                        @* Banners from the admin site are 1400x467. Slides after the first load once the page has (gm-home.js). *@
+                        <a href="@bannerList[i].Link" class="carousel__slide">
+                            <img src="@bannerList[i].ImageUrl" alt="@bannerList[i].Alt" class="hero__img" width="1400" height="467" @(i == 0 ? "fetchpriority=high" : "loading=lazy")>
+                        </a>
+                    }
+                </div>
+                @if (bannerList.Count > 1)
+                {
+                    <button type="button" class="carousel__arrow carousel__arrow--prev" aria-label="Previous slide">&#8249;</button>
+                    <button type="button" class="carousel__arrow carousel__arrow--next" aria-label="Next slide">&#8250;</button>
+                    <div class="carousel__dots">
+                        @for (int i = 0; i < bannerList.Count; i++)
+                        {
+                            <button type="button" class="carousel__dot@(i == 0 ? " is-active" : "")" aria-label="Go to slide @(i + 1)"></button>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <section class="offers">
+        <div class="container">
+            <div class="offers__head">
+                <h2 class="offers__title">Shop our offers</h2>
+                <p class="offers__sub">Great products. Great prices. Delivered to your door.</p>
+                <div class="offers__nav">
+                    <button type="button" class="offers__arrow" data-offers-prev aria-label="Previous offers">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#1e2822" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="14.5 5.5 8 12 14.5 18.5" /></svg>
+                    </button>
+                    <button type="button" class="offers__arrow" data-offers-next aria-label="Next offers">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#1e2822" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9.5 5.5 16 12 9.5 18.5" /></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="offers__viewport" data-offers>
+                <div class="offers__track">
+                    @foreach (var offer in offers)
+                    {
+                        var product = layoutModel.GetHomeProduct(offer.Product);
+                        var priced = offer.Cheapest != null ? layoutModel.GetCheapestHomeProduct(offer.Cheapest) : product;
+                        if (product == null || (offer.ShowPrice && priced == null))
+                        {
+                            continue;
+                        }
+                        <a href="@(offer.Link ?? product.Url)" class="card offer-card offer-card--@offer.Style">
+                            <img class="offer-card__img" src="@product.ImageUrl(600)" alt="" width="600" height="600" loading="lazy">
+                            @if (offer.ShowPrice)
+                            {
+                                <span class="offer-card__roundel">
+                                    <small>FROM</small>
+                                    <strong><span class="cust-price">@HomeProduct.FormatPrice(priced.Price, false)</span><span class="trade-price">@HomeProduct.FormatPrice(priced.TradePrice, false)</span></strong>
+                                    <small>Bulk Bag</small>
+                                </span>
+                            }
+                            <span class="offer-card__body">
+                                <span class="offer-card__title">@offer.Title</span>
+                                <span class="offer-card__desc">@offer.Text</span>
+                                <span class="offer-card__btn">@offer.Button <span class="offer-card__arrow" aria-hidden="true">&rarr;</span></span>
+                            </span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="calc" data-calc>
+        <div class="container">
+            <h2 class="calc__title">
+                <span class="calc__icon">
+                    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="5.5" y="3" width="13" height="18" rx="2" fill="#5ca458" /><rect x="7.6" y="5.2" width="8.8" height="3.6" rx="0.8" fill="#ccde7e" /><rect x="7.6" y="10.5" width="2.4" height="2.4" rx="0.4" fill="#ccde7e" /><rect x="10.8" y="10.5" width="2.4" height="2.4" rx="0.4" fill="#ccde7e" /><rect x="14" y="10.5" width="2.4" height="5.6" rx="0.4" fill="#ccde7e" /><rect x="7.6" y="13.7" width="2.4" height="2.4" rx="0.4" fill="#ccde7e" /><rect x="10.8" y="13.7" width="2.4" height="2.4" rx="0.4" fill="#ccde7e" /></svg>
+                </span>
+                Quantity calculator
+            </h2>
+            <p class="calc__sub">Our helpful calculator will help you get an approximate volume of aggregate required for your area.</p>
+
+            <div class="calc__type">
+                <label class="calc__type-label" for="calc-type">I&rsquo;m looking for...</label>
+                <select class="calc__select" id="calc-type" data-colour-select>
+                    <option value="gravel" data-color="#8e44ad" style="color:#8e44ad">Gravel &amp; Chippings</option>
+                    <option value="mulch" data-color="#37853f" style="color:#37853f">Barks &amp; Mulches</option>
+                    <option value="topsoil" data-color="#8a7524" style="color:#8a7524">Topsoil</option>
+                    <option value="sand" data-color="#b8940a" style="color:#b8940a">Sand</option>
+                </select>
+            </div>
+
+            <form class="calc__form" novalidate>
+                <label class="field">
+                    <span class="field__label">Length</span>
+                    <input class="field__input" type="number" name="calc-length" min="0" step="any" inputmode="decimal" value="4">
+                </label>
+                <label class="field">
+                    <span class="field__label">Width</span>
+                    <input class="field__input" type="number" name="calc-width" min="0" step="any" inputmode="decimal" value="3">
+                </label>
+                <label class="field">
+                    <span class="field__label">Measure</span>
+                    <select class="field__input field__input--select" name="calc-measure">
+                        <option value="m">Metres</option>
+                        <option value="f">Feet</option>
+                        <option value="y">Yards</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span class="field__label">Depth</span>
+                    <input class="field__input" type="number" name="calc-depth" min="0" step="any" inputmode="decimal" value="2">
+                    <select class="field__unit field__unit--select" name="calc-depth-unit" aria-label="Depth unit">
+                        <option value="cm">cm</option>
+                        <option value="in">inches</option>
+                    </select>
+                </label>
+                <button type="submit" class="calc__btn">Calculate</button>
+            </form>
+
+            <div class="calc__results" aria-live="polite">
+                <div class="result">
+                    <span class="result__label" data-calc-total-label>Total weight</span>
+                    <span class="result__value" data-calc-total></span>
+                </div>
+                <span class="calc__divider"></span>
+                <div class="result" data-calc-first>
+                    <span class="result__label"></span>
+                    <span class="result__value"><span class="result__count"></span> <span class="result__icon" aria-hidden="true">&#128230;</span></span>
+                </div>
+                <span class="calc__or">Or</span>
+                <div class="result" data-calc-second>
+                    <span class="result__label"></span>
+                    <span class="result__value"><span class="result__count"></span> <span class="result__icon" aria-hidden="true">&#128230;</span></span>
+                </div>
+                <button type="button" class="calc__estimate">Send me my estimate</button>
+            </div>
+
+            <form class="calc__email" hidden>
+                <input class="calc__email-input" type="email" required placeholder="Your email address" aria-label="Your email address" autocomplete="email">
+                <button type="submit" class="calc__btn">Send</button>
+                <p class="calc__email-status" aria-live="polite"></p>
+            </form>
+
+            <div class="calc__bulk">
+                <strong class="calc__bulk-title">Ordering 10 tonnes or more?</strong>
+                <span class="calc__bulk-text">Call <a href="tel:03300585068">0330 058 5068</a> or enquire online to book a loose load delivery on bulk orders over 10 tonnes</span>
+                <button type="button" class="calc__bulk-btn" data-bulk-open>Enquire Here</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="bestsellers">
+        <div class="container">
+            <h2 class="bestsellers__title">Our Bestsellers</h2>
+
+            <div class="bs-tabs" role="tablist" aria-label="Bestsellers by category">
+                @for (int t = 0; t < bestsellers.Length; t++)
+                {
+                    var tab = bestsellers[t];
+                    <button type="button" class="bs-tab@(t == 0 ? " bs-tab--active" : "")" role="tab" id="bs-tab-@tab.Id" aria-controls="bs-panel-@tab.Id" aria-selected="@(t == 0 ? "true" : "false")" tabindex="@(t == 0 ? "0" : "-1")">
+                        <span class="bs-tab__icon">@Html.Raw(tab.Icon)</span>
+                        @tab.Label
+                    </button>
+                }
+            </div>
+
+            @for (int t = 0; t < bestsellers.Length; t++)
+            {
+                var tab = bestsellers[t];
+                <div class="bs-panel" id="bs-panel-@tab.Id" role="tabpanel" aria-labelledby="bs-tab-@tab.Id" @(t == 0 ? "" : "hidden")>
+                    <div class="bs-grid">
+                        @foreach (var productUrl in tab.Products)
+                        {
+                            var product = layoutModel.GetHomeProduct(productUrl);
+                            if (product == null)
+                            {
+                                continue;
+                            }
+                            <a href="@product.Url" class="bs-card">
+                                <img class="bs-card__img" src="@product.ImageUrl(330)" alt="" width="330" height="330" loading="lazy">
+                                <h3 class="bs-card__name">@product.Name</h3>
+                                <p class="bs-card__meta">Price (inc. VAT &amp; delivery)</p>
+                                <p class="bs-card__price">From <span class="cust-price">@HomeProduct.FormatPrice(product.Price, true)</span><span class="trade-price">@HomeProduct.FormatPrice(product.TradePrice, true)</span></p>
+                            </a>
+                        }
+                    </div>
+                    <div class="bs-banner">
+                        <span class="bs-banner__text">Try before you buy with our samples bags</span>
+                        <a href="@tab.ShopAll" class="bs-banner__link">@tab.ShopAllText</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="reviews">
+        <div class="container reviews__grid">
+            <div class="reviews__left">
+                @* Trustpilot Mini: live TrustScore, stars and review count. The TrustBox script loads in _Layout. *@
+                <div class="trustpilot-widget reviews__widget" data-locale="en-GB" data-template-id="53aa8807dec7e10d38f59f36" data-businessunit-id="58ef93f90000ff0005a06bca" data-style-height="150px" data-style-width="100%" data-theme="light">
+                    <a href="https://uk.trustpilot.com/review/gravelmaster.co.uk" target="_blank" rel="noopener">Read our reviews on Trustpilot</a>
+                </div>
+                <p class="reviews__blurb">Join the thousands of customers who trust Gravel Master for premium-quality aggregates, decorative gravel and landscaping materials.</p>
+            </div>
+
+            <div class="reviews__right">
+                @* Trustpilot Carousel: the latest 4 and 5 star reviews, as on the product pages. *@
+                <div class="trustpilot-widget" data-locale="en-GB" data-template-id="53aa8912dec7e10d38f59f36" data-businessunit-id="58ef93f90000ff0005a06bca" data-style-height="140px" data-style-width="100%" data-stars="4,5" data-review-languages="en">
+                    <a href="https://uk.trustpilot.com/review/gravelmaster.co.uk" target="_blank" rel="noopener">Read our reviews on Trustpilot</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="insta">
+        <div class="container">
+            <h2 class="insta__title">Inspiration Gallery</h2>
+            <p class="insta__sub">Discover outdoor spaces brought to life with Gravel Master.</p>
+
+            <div class="insta__viewport" data-insta>
+                <div class="insta__track">
+                    <div class="insta__col">
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-1.jpg" alt="Customer garden with white pebble border and tree planters" loading="lazy"></figure>
+                    </div>
+                    <div class="insta__col insta__col--split">
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-2.jpg" alt="Modern garden room with pale gravel patio" loading="lazy"></figure>
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-3.jpg" alt="Planted garden path finished with gravel" loading="lazy"></figure>
+                    </div>
+                    <div class="insta__col">
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-4.jpg" alt="Terraced garden with stone stepping path" loading="lazy"></figure>
+                    </div>
+                    <div class="insta__col">
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-5.jpg" alt="Lawn with curved stone stepping stones" loading="lazy"></figure>
+                    </div>
+                    <div class="insta__col insta__col--split">
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-6.jpg" alt="Decorative gravel border along a lawn" loading="lazy"></figure>
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-7.jpg" alt="Landscaped garden feature with planting" loading="lazy"></figure>
+                    </div>
+                    <div class="insta__col">
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-8.jpg" alt="Finished patio project with decorative gravel" loading="lazy"></figure>
+                    </div>
+                </div>
+            </div>
+
+            <div class="insta__controls">
+                <div class="insta__progress" aria-hidden="true"><span class="insta__progress-fill" data-insta-progress></span></div>
+                <div class="insta__nav">
+                    <button type="button" class="insta__arrow" data-insta-prev aria-label="Previous">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
+                    </button>
+                    <button type="button" class="insta__arrow" data-insta-next aria-label="Next">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="trade">
+        <div class="container trade__inner">
+            <div class="trade__intro">
+                <h2 class="trade__title">Built for everyone</h2>
+                <p class="trade__text">Professional landscapers, builders, and contractors trust Gravelmaster for quality aggregates and reliable supply. Open a Trade Account for exclusive pricing, priority support, and fast delivery nationwide.</p>
+                <div class="trade__actions">
+                    <a href="/account/login?isTradeRegister=true" class="trade__btn">Sign up for a trade account</a>
+                    <a href="/trade" class="trade__btn trade__btn--outline">More about trade</a>
+                </div>
+            </div>
+
+            <div class="trade__features">
+                <div class="trade__feature">
+                    <span class="trade__icon">
+                        <svg viewBox="0 0 24 24" width="63" height="63" fill="none" stroke="#fff" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <g transform="translate(24,0) scale(-1,1)">
+                                <path d="M11.5 3H5a2 2 0 0 0-2 2v6.5a2 2 0 0 0 .6 1.4l7.5 7.5a2 2 0 0 0 2.8 0l6.1-6.1a2 2 0 0 0 0-2.8L12.9 3.6A2 2 0 0 0 11.5 3z" />
+                                <circle cx="7.5" cy="7.5" r="1.2" />
+                            </g>
+                            <path d="M16.9 6.3c1.3-1.1 2.9-.8 3.3.5" />
+                            <circle cx="10" cy="10.6" r="1.15" />
+                            <circle cx="14.2" cy="14.2" r="1.15" />
+                            <line x1="15" y1="9.7" x2="9.2" y2="15.1" />
+                        </svg>
+                    </span>
+                    <span class="trade__feature-label">Exclusive Pricing</span>
+                </div>
+                <div class="trade__feature">
+                    <span class="trade__icon">
+                        <svg viewBox="0 0 24 24" width="63" height="63" fill="none" stroke="#fff" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4.5 5.5h15A1.5 1.5 0 0 1 21 7v7.5A1.5 1.5 0 0 1 19.5 16h-5.2L12 18.8 9.7 16H4.5A1.5 1.5 0 0 1 3 14.5V7a1.5 1.5 0 0 1 1.5-1.5z" />
+                            <path d="M12 6.85 13 9.38 15.71 9.55 13.62 11.28 14.29 13.91 12 12.45 9.71 13.91 10.38 11.28 8.29 9.55 11 9.38Z" />
+                        </svg>
+                    </span>
+                    <span class="trade__feature-label">Priority Support</span>
+                </div>
+                <div class="trade__feature">
+                    <span class="trade__icon">
+                        <svg viewBox="0 0 24 24" width="63" height="63" fill="none" stroke="#fff" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <g transform="translate(0 -1.5)">
+                                <rect x="4.5" y="9.4" width="15" height="10.6" rx="0.8" />
+                                <line x1="4.5" y1="13.4" x2="19.5" y2="13.4" />
+                                <line x1="12" y1="9.4" x2="12" y2="20" />
+                                <path d="M12 9.4C12 7.3 10.7 5.8 9.2 5.8 8 5.8 7.6 7.1 8.5 7.9 9.4 8.7 12 9.4 12 9.4z" />
+                                <path d="M12 9.4C12 7.3 13.3 5.8 14.8 5.8 16 5.8 16.4 7.1 15.5 7.9 14.6 8.7 12 9.4 12 9.4z" />
+                            </g>
+                        </svg>
+                    </span>
+                    <span class="trade__feature-label">Free Samples</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="supplier">
+        <div class="container supplier__inner">
+            <div class="supplier__intro">
+                <h1 class="supplier__title">We are a leading supplier of decorative aggregates and landscaping products in the UK.</h1>
+                <div class="supplier__actions">
+                    <a href="/about-us" class="supplier__btn">More about us</a>
+                    <a href="/contact-us" class="supplier__btn">Get in touch</a>
+                </div>
+            </div>
+            <div class="supplier__copy">
+                <p>We have extensive knowledge and experience supplying our customers in the commercial, public and private sectors, and pride ourselves in supplying a wide range of high quality products. To cater for our diverse customer base and their requirements, our products are available in loose loads, bulk bags, palletised and even 3D Samples.</p>
+                <p>At Gravelmaster all our products are naturally quarried within the UK and Europe and are all of the highest quality as well as being competitively priced. To compliment our modern production and packaging facility we have a dedicated team of friendly aggregate specialists who are committed to ensuring all our customers receive a professional and reliable service.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="bulk-modal" id="bulkModal" hidden>
+        <div class="bulk-modal__overlay" data-bulk-close></div>
+        <div class="bulk-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="bulkModalTitle">
+            <button type="button" class="bulk-modal__close" aria-label="Close" data-bulk-close>
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#26331f" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+            </button>
+            <h2 class="bulk-modal__title" id="bulkModalTitle">Request a bulk delivery</h2>
+            <p class="bulk-modal__intro">Simply complete the form below, and our team will work their magic to generate a delivery quote tailored to your specified delivery address.</p>
+            <p class="bulk-modal__req">All fields required</p>
+            @* Same field names as the product page's quick enquiry (#miniForm), posted to /basket/sendlooseenquiry by gm-home.js *@
+            <form class="bulk-form">
+                <div class="bulk-form__row">
+                    <label class="bulk-form__label" for="bulk-name">Name<span>*</span></label>
+                    <input class="bulk-form__input" id="bulk-name" name="name-request" type="text" autocomplete="name" maxlength="255" required>
+                </div>
+                <div class="bulk-form__row">
+                    <label class="bulk-form__label" for="bulk-email">Email<span>*</span></label>
+                    <input class="bulk-form__input" id="bulk-email" name="email-request" type="email" autocomplete="email" maxlength="255" required>
+                </div>
+                <div class="bulk-form__row">
+                    <label class="bulk-form__label" for="bulk-postcode">Postcode<span>*</span></label>
+                    <input class="bulk-form__input" id="bulk-postcode" name="postcode-request" type="text" autocomplete="postal-code" maxlength="10" required>
+                </div>
+                <div class="bulk-form__row">
+                    <label class="bulk-form__label" for="bulk-product">Product<span>*</span></label>
+                    <select class="bulk-form__input bulk-form__select" id="bulk-product" name="product" data-colour-select required>
+                        <option value="">Select</option>
+                        @for (int i = 0; i < categories.Count; i++)
+                        {
+                            <option value="@categories[i].Name" data-color="@categoryColours[i % categoryColours.Length]" style="color:@categoryColours[i % categoryColours.Length]">@categories[i].Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="bulk-form__row">
+                    <label class="bulk-form__label" for="bulk-amount">Amount required<span>*</span></label>
+                    <input class="bulk-form__input" id="bulk-amount" name="amount" type="text" maxlength="255" required>
+                </div>
+                <label class="bulk-form__consent">
+                    <input type="checkbox" required>
+                    <span>I consent to Gravel Master using my details to process this form and contact me.</span>
+                </label>
+                <button type="submit" class="bulk-form__submit">Submit</button>
+                <p class="bulk-form__status" aria-live="polite" hidden></p>
+            </form>
+        </div>
+    </div>
+
+</div>
+<script src="/js/gm-home.js?v1"></script>

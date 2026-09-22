@@ -73,6 +73,42 @@ BEFORE MERGING: the live site has moved on from this branch's master
   still show the old header and footer. Find its view or layout in the repo
   and give it the same switch.
 
+New homepage (in progress, 17 September 2026)
+  The Optima prototype's homepage, built to take the site's real data. Not
+  wired into the site yet: that needs the latest master (see "BEFORE MERGING").
+
+  Done
+  Website/Website/Views/Home/_HomePage.cshtml  the new homepage (partial)
+  Website/Website/css/gm-home.css             its styles, scoped to .gm-home
+  Website/Website/js/gm-home.js               carousels, tabs, calculator, enquiry
+  Website/Website/ViewModels/Common/HomePageModels.cs  HomeBanner, HomeProduct
+  Website/Website/img/gm-home-*               backgrounds and gallery photos
+
+  What it keeps from the live site
+  - hero slides: the banners managed in the admin site
+  - offer and bestseller cards: product photos and customer/trade "From"
+    prices from the product data (the old homepage had them typed in, and
+    some had drifted, e.g. Panda Gravel's trade price showed GBP 106, not 100)
+  - quantity calculator: the live /calculator formulas for gravel, barks &
+    mulches, topsoil and sand, and its Email Results post
+    (/email/sendcalculatorcalculation); checked against the live code on 24
+    measurements
+  - "Enquire Here": the product page quick enquiry's fields posted to
+    /basket/sendlooseenquiry
+  - reviews: the real Trustpilot widgets; trade sign-up and page links
+  - old homepage tiles (Deals, Cotswold, Scottish Cobbles, Top Soil) and the
+    10-tonne phone band are folded into the offers and calculator sections
+
+  Still to do, needs the repo
+  - MasterLayoutViewModel: GetHomeProduct(productUrl) and
+    GetCheapestHomeProduct(categoryUrl) returning HomeProduct (price, trade
+    price, photo), ignoring sample products such as the GBP 25 Sample Box
+  - Home/Index.cshtml: show _HomePage when the new chrome is on, pass the
+    existing banners as ViewData["HomeBanners"], load gm-home.css in the Head
+    section
+  - _Layout.cshtml: no white box / orange borders around the new homepage
+  - Website.csproj: list the new files
+
 Fixes made on 17 September 2026 (one commit each in this repository)
   Each fix was tested in a static preview built from these files, sitting on
   the live site's stylesheets and a real category page, at 1440, 1100, 1000,
