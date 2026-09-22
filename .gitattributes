@@ -1,0 +1,10 @@
+# Store text files with LF line endings; Windows checkouts get CRLF back
+* text=auto
+
+# Batch files only run properly with CRLF
+*.cmd text eol=crlf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
