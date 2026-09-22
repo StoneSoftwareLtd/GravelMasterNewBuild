@@ -34,6 +34,24 @@
     if (e.key === 'Escape' && !modal.hidden) close();
   });
 
+  // Keep Tab inside the open pop-up: it covers the page, so focus shouldn't move behind it
+  modal.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') return;
+    var items = Array.prototype.filter.call(modal.querySelectorAll('a[href], button, input, select, textarea'), function (el) {
+      return !el.disabled && el.getClientRects().length > 0;
+    });
+    if (!items.length) return;
+    var first = items[0];
+    var last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
   // The Product list shows the chosen category in its colour
   var select = modal.querySelector('select[data-colour-select]');
   if (select) {

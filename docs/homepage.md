@@ -55,7 +55,7 @@ Which products the offer cards and bestseller tabs show is set in a list at the 
 - Hidden carousel slides are taken out of the Tab order; the carousel pauses on hover and focus.
 - The offers and gallery sliders scroll a focused card into view, and adjust when the window is resized.
 - The bestseller tabs use ARIA tab roles and arrow keys.
-- The enquiry pop-up moves focus to its first field when it opens, closes with Escape and returns focus to the button that opened it. Tab can still move out of it to the page behind; unlike the mobile menu, it doesn't keep focus inside yet.
+- The enquiry pop-up moves focus to its first field when it opens, keeps Tab inside while open, closes with Escape and returns focus to the button that opened it.
 - Form messages are announced (`aria-live`).
 
 ## Tested
