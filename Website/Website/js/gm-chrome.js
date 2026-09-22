@@ -20,9 +20,12 @@
     toggle.setAttribute('aria-expanded', 'true');
     menu.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    // move keyboard focus into the menu (it becomes visible straight away, see gm-chrome.css)
+    if (closeBtn) closeBtn.focus();
   }
 
   function closeMenu() {
+    var hadFocus = menu.contains(document.activeElement);
     // collapse any expanded category submenus
     menu.querySelectorAll('.mobile-menu__item.is-open').forEach(function (item) {
       item.classList.remove('is-open');
@@ -35,6 +38,8 @@
     toggle.setAttribute('aria-expanded', 'false');
     menu.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    // hand focus back to the button that opened the menu
+    if (hadFocus) toggle.focus();
     // hide backdrop after the fade-out
     setTimeout(function () {
       if (!menu.classList.contains('is-open')) backdrop.hidden = true;
@@ -50,6 +55,24 @@
   // Close on Escape
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && menu.classList.contains('is-open')) closeMenu();
+  });
+
+  // Keep Tab inside the open menu: it covers the whole page, so focus shouldn't move behind it
+  menu.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') return;
+    var items = Array.prototype.filter.call(menu.querySelectorAll('a[href], button, input'), function (el) {
+      return el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+    });
+    if (!items.length) return;
+    var first = items[0];
+    var last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
   });
 
   // Close when a menu link is tapped
