@@ -23,7 +23,7 @@
     },
     {
       "label": "Preview: rebuild and watch .cshtml files",
-      "detail": "For the single Live Server page (preview/index.html): rebuilds it now and whenever a .cshtml file in Views/Shared is saved",
+      "detail": "For the saved Live Server pages (preview/*.html): rebuilds them now and whenever a .cshtml file under Views is saved",
       "type": "process",
       "command": "powershell.exe",
       "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\preview\\tools\\build.ps1", "-Watch"],

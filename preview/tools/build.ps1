@@ -12,7 +12,7 @@
 #
 # The pages load /css, /js and /img from the package (see .vscode/settings.json for Live Server).
 #   build.ps1          build once
-#   build.ps1 -Watch   build, then rebuild whenever a .cshtml file in Views/Shared is saved
+#   build.ps1 -Watch   build, then rebuild whenever a .cshtml file under Views is saved
 param(
   [string]$Package = (Join-Path $PSScriptRoot '..\..\Website\Website'),
   [switch]$Watch
@@ -448,8 +448,10 @@ $stayInPreviewScript
 Invoke-Build
 
 if ($Watch) {
-  $views = Join-Path $Package 'Views\Shared'
+  # all of Views, so the homepage partial (Views/Home) rebuilds as well as the header and footer
+  $views = Join-Path $Package 'Views'
   $watcher = New-Object IO.FileSystemWatcher $views, '*.cshtml'
+  $watcher.IncludeSubdirectories = $true
   $watcher.NotifyFilter = [IO.NotifyFilters]'LastWrite, FileName'
   "watching $views for .cshtml changes (Ctrl+C to stop)"
   while ($true) {
