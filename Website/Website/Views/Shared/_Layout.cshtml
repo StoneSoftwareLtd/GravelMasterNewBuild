@@ -93,7 +93,10 @@ else
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/js/bootstrap.min.js" integrity="sha384-7aThvCh9TypR7fIc2HV4O/nFMVCBwyIUKL8XCtKE+8xgCgl/PQGuFsvShjr74PBp" crossorigin="anonymous"></script>*@
 
     @RenderSection("Head", false)
-    <link href="~/css/gm-chrome.css?v1" rel="stylesheet" />
+    @if (useNewChrome)
+    {
+    <link href="~/css/gm-chrome.css?v2" rel="stylesheet" />
+    }
     <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">

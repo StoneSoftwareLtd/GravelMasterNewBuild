@@ -1,14 +1,17 @@
 /* ===== GravelMaster header, footer and mobile menu =====
-   Ported from the Optima prototype's styles.css. Loaded on every page after the
-   old stylesheets, so it must not change anything outside .site-header, .footer,
+   Ported from the Optima prototype's styles.css. _Layout loads it after the old
+   stylesheets only when the new chrome is on, but the old page content is still
+   underneath, so it must not change anything outside .site-header, .footer,
    .mobile-menu and .postcode-modal:
    - the prototype's global *, body, form-control, a and .container rules are not
      ported; scoped equivalents are in the shield below;
    - class names shared with Bootstrap (.container, .dropdown) are scoped;
+   - the colour variables are set on the chrome elements, not :root, because
+     Bootstrap 4 defines --green, --blue, --red etc. on :root for the whole page;
    - the shield resets the old element rules (Bootstrap 4 Reboot, global.css,
      nav.css) at element-level specificity, so any designer class still wins. */
 
-:root {
+:where(.site-header, .footer, .mobile-menu, .postcode-modal) {
   --green-dark:  #388038;
   --green:       #5ca458;
   --green-mid:   #5ca458;
