@@ -1,6 +1,6 @@
 # Putting it live: what to do in GravelMasterSoftware
 
-Everything here needs the GravelMasterSoftware repository, which isn't on this PC yet. The files in `Website/Website` are at the same paths as in that repository.
+Everything here is done in the GravelMasterSoftware repository, cloned to `Documents\Projects\GravelMasterSoftware` on this PC on 23 September 2026. The files in `Website/Website` are at the same paths as in that repository.
 
 ## First: start from the latest master
 
@@ -58,9 +58,24 @@ The live category pages load `/scripts/Controllers/Root/Brand/DisplayCategory.js
 
 ## Product page
 
-Being built; this list will grow with it. Product addresses (`/products/{category}/p/{product}`) are routed to `ProductController.Detail`, which renders `Views/Product/Detail.cshtml`. The `DetailNew`, `DetailNewVideo` and `Detail2` actions answer other addresses (`/pnew/`, `/pvid/`, `/p2/`) and are left alone.
+Product addresses (`/products/{category}/p/{product}`) are routed to `ProductController.Detail`, which renders `Views/Product/Detail.cshtml`. The `DetailNew`, `DetailNewVideo` and `Detail2` actions answer other addresses (`/pnew/`, `/pvid/`, `/p2/`) and are left alone.
 
-- [ ] **`Views/Product/Detail.cshtml`**: when the new chrome is on, render the new product page in place of everything between the breadcrumb and the end of the page's own content. Keep `@section Head` (canonical link, Open Graph tags) and the `view_item` event as they are.
+- [ ] **`Views/Product/Detail.cshtml`**: when the new chrome is on, render `_ProductPage` in place of everything from the breadcrumb to the end of the view (including its inline scripts and pop-ups, and the `view_item` script at the end: the new page sends the analytics events itself). Keep `@section Head` (canonical link, Open Graph tags, TrustBox script) and add `/css/gm-product.css` to it. Build the `ProductPageModel` from the view's own model, exactly as the old view shows it:
+  - `Name`, `Code`, `ProductId`, `CategoryName` (`Model.Category.Name`), `AddToBasketUrl` (`Url.Action("AddToBasket", "Basket", new { id = Model.Code })`, which the old `Ajax.BeginForm` used);
+  - `Breadcrumbs`: the parent category (if `Category.ParentCategoryId > 0`), the category, then the product with no link, with the old view's links (`/<url>/products`);
+  - `Photos`: first `FullLargeGraphicUrl` / `FullLargeZoomGraphicUrl` / `FullGraphicUrl`, then each of `Model.Images` as `FullLargeGraphicUrl` / `FullZoomGraphicUrl` / `FullProductGraphicUrl`. Leave out any whose filename contains "youtube" (`ProductImageViewModel` turns those into a video link, which the new gallery doesn't show as a photo);
+  - `VideoUrl`: `https://fast.wistia.net/embed/iframe/<id>?videoFoam=true`, with the ids the old view picks by product code (20COTS, 20ICEB, 20FLAM, 20GOLD, 20MOON, 20YORCR, 20ONYX, 10POLAR); `ThreeSixtyUrl`: `https://spinzam.com/shot/embed/?idx=` + `Model.Threed` when it's set;
+  - `Price` and `TradePrice`: `Model.Price` and `Model.Cost`; `IsSimple`, `IsInStock` (`Model.IsVisible`), `MinQuantity` (10 when `Model.IsTurf`, else 1);
+  - `Options`: the items of the variant whose Type is 11, as the old view loops over them, without the sample: `new ProductOption(id, row["Name"], Model.GetVariantCode(id), decimal.Parse(Model.GetVariantPrice(id)), row["PreOrderDate"] as DateTime?)`; `SelectedOptionId`: `GetDefaultVariantItemId` of that variant;
+  - `SampleOption`: `Model.SampleWithHalf` when `Model.HasHalf`, otherwise the item whose name contains "sample", or null;
+  - `NextDeliveryDate`: `Model.FastestAvailableDate` when `Model.Calc` is set (the old view only shows it then);
+  - `Description`: `ProductDescription.Parse(Model.Description)`;
+  - `Related`: the FeatherSnap Bird Feeder (unless this is it), then `Model.Related`, leaving out this product and repeats, up to four, as `HomeProduct`s (the old view's photo is `FullGraphicUrl`; the image format is that URL with the width as `{0}`);
+  - `EnquiryCategories`: the top-level category names in menu order.
+- [ ] **`@section requirecontroller`** in `Detail.cshtml`: when the new page shows, require `/scripts/Controllers/Root/Content/Display.js` instead of `Product/Detail.js`. `Detail.js` calls functions that only the old view defines (`calculatePrices`, `onJqueryLoaded`) and would throw. The new page does its jobs (the quantity buttons in the basket pop-up, the postcode).
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new product page too, as for the homepage and category page.
+- [ ] **`Website.csproj`**: add `Views/Shared/_ProductPage.cshtml`, `ViewModels/Common/ProductPageModels.cs`, `css/gm-product.css`, `js/gm-product.js` and the `img/gm-prod-*` files.
+- [ ] Test on the real site with the new chrome on: add each kind of size to the basket (bulk bag, sealed bags, sample, a pre-order size if there is one), check the basket's lines and delivery prices against the old page for the same postcode, the + and - buttons and "ADD" tiles in the pop-up, the header's basket total, turf (10 up), glue or bulbs (no postcode), an out-of-stock product, a trade login (trade prices in the sizes and total), and the three analytics events in Google Tag Assistant.
 
 ## After merging
 

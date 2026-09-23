@@ -70,9 +70,9 @@ Answering open questions: the prices and the quantity calculator stay exactly as
 - **Colour contrast.** Ten text and icon colours on the homepage and category page, and five in the header, footer and mobile menu, were below WCAG AA. All now pass, measured against the colour behind them. On orange the text is near-black rather than white, which keeps the brand colour and reads better than a darker orange would. The worst was the mobile menu's yellow category name at 1.9:1.
 - Left for a decision: white on the header's main green is 3.04:1, and changing it means changing the site's dominant colour.
 
-## 23 September 2026: product page (in progress)
+## 23 September 2026: product page
 
-Rebuilding the prototype's product page (`product2.html`). The GravelMasterSoftware repository is on this PC now, so the page is being mapped from the real code as well as the live pages. Details: [product-page.md](product-page.md).
+Rebuilt the prototype's product page (`product2.html`) as `_ProductPage.cshtml`, for every product. The GravelMasterSoftware repository is on this PC now, so the page was mapped from the real code as well as the live pages. Details: [product-page.md](product-page.md). The quantity calculator section is still to do.
 
 1. Mapped what the live product page does, from `Detail.cshtml`, its script, the product controller and the basket's add-to-basket action, checked on eight live pages, and where each part goes in the prototype.
 2. Added `ProductPageModel` and `ProductDescription.Parse`. The live descriptions follow the prototype's layout already (intro, a list of "Label: value" lines, then "Colour and Shape" and "Availability"), so Parse splits them into the intro, the specification table, the uses and the other sections. A section that has anything besides those lines is shown as written. Tested on the eight live descriptions and edge cases; `GetPostcodeArea` tested on full, partial and invalid postcodes and areas the site doesn't deliver to.
@@ -80,8 +80,21 @@ Rebuilding the prototype's product page (`product2.html`). The GravelMasterSoftw
 4. Built the page (`_ProductPage.cshtml`, `gm-product.css`, `gm-product.js`, `img/gm-prod-*`): photos with the video and 360&deg; view as extra thumbnails, the three steps (postcode, size, quantity) priced by the live site's own price lookup, the sample, the delivery date, Add to cart posting exactly what the old form posted, the basket pop-up, the description panels, the delivery panel, Trustpilot, and "You might also like". It sends the old page's three Google Analytics events with the same fields. The view was compiled with MVC 5.2's own Razor, which caught two mistakes before they could reach the site.
 5. The whole-website preview now shows the new page on every product page, with real prices from the live site's price lookup. `preview/tools/product-page.ps1` reads an old product page and fills in the partial; it runs the real C# model rather than a copy, so the preview can't drift from the site. Ran it over all 153 live products.
 
-Raised for a decision: the random "purchases during last 24 hours" pop-up, the rating, badge and selling points the site has no data for, add-ons, and Blue Slate's photos. See [open-questions.md](open-questions.md#product-page).
+6. Wrote up the page, the merge steps and the questions.
+
+Found and fixed along the way:
+
+- the stray `</div>` from splitting descriptions (step 3);
+- out-of-stock products with no sizes said "can't be ordered online"; they now say "Out of stock", as the old page does;
+- "You might also like" showed the bird feeder twice on Accessories, and a product among its own suggestions;
+- keyboard focus was lost after confirming a postcode.
+
+Found on the live site: seven slate descriptions have a phone link that dials a different number from the one shown, and the controller deletes dashes from descriptions ("30-50cm" shows as "3050cm").
+
+Raised for a decision: the random "purchases during last 24 hours" pop-up, the rating, badge and selling points the site has no data for, add-ons, use icons, the delivery panel's wording, the basket pop-up's old styling, the two live content problems, and Blue Slate's photos. See [open-questions.md](open-questions.md#product-page).
 
 ## Next
 
-Waiting on the GravelMasterSoftware repository to wire the homepage and category page in ([merging.md](merging.md)). The prototype's other pages (product, basket, checkout, about, trade) are still to come.
+- The product page's quantity calculator: move the homepage calculator into a shared partial and use it on both pages.
+- Wire the homepage, category page and product page into the site. The GravelMasterSoftware repository is on this PC now (`Documents\Projects\GravelMasterSoftware`), so this can start; the first job is redoing the header and footer on its latest master ([merging.md](merging.md)).
+- The prototype's other pages (basket, checkout, about, trade) are still to come.
