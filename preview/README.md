@@ -1,6 +1,6 @@
 # Previewing the work
 
-Two ways to see the new header, footer, homepage and category page before they go anywhere near the real site.
+Two ways to see the new header, footer, homepage, category page and product page before they go anywhere near the real site.
 
 ## 1. The whole website: http://localhost:8780
 
@@ -10,7 +10,9 @@ In VS Code, **Terminal > Run Task > "Preview: open the whole website with the ne
 
 Every page comes from www.gravelmaster.co.uk with its old header and footer swapped for the new ones. The homepage (`/`) is replaced by the new homepage, and every category and subcategory page, with or without filters, by the new category page filled with that page's products, filters and description. So you can click around and they stay.
 
-- Saving `gm-chrome.css`, `gm-home.css`, `gm-category.css`, the `.js` files, a `gm-*` image or any `.cshtml` file reloads the page with the change. (A change to a script in `tools/` needs the preview restarting.)
+Every product page (`/products/<category>/p/<product>`) is replaced by the new product page, filled with that product's photos, sizes, description and related products. Its prices come from the live site's own price lookup (`/product/calculateprices`), which only reads prices, so entering a postcode shows the real prices for that area. Add to cart is blocked like every other basket action: the page says it couldn't add, which is what a customer would see if the basket failed.
+
+- Saving a `gm-*.css` or `gm-*.js` file, a `gm-*` image or any `.cshtml` file reloads the page with the change. (A change to a script in `tools/`, or to a `ViewModels/Common/*.cs` file, needs the preview restarting: the product page runs the real C# model, compiled when the preview starts.)
 - Add `?newchrome=0` to an address to compare with the old header, footer, homepage and category pages (it sticks while you click around). `?newchrome=1` switches back. Page titles start with `[Preview]`.
 - It is read-only. Adding to basket, sign-ups, enquiries, "Send me my estimate", Track Order and logging in are blocked (the forms say they couldn't send). The one form let through is **Sort by** on category pages, and only with one of its four choices, because it only changes the order of the products. No cookies are sent, so the basket is always empty. Analytics, Hotjar, Clarity, Facebook and chat are removed so preview visits aren't counted.
 
@@ -18,7 +20,7 @@ Every page comes from www.gravelmaster.co.uk with its old header and footer swap
 
 - The "page not found" page keeps the old header and footer. That page is built from a different template to the rest of the site, and the branch only changes `_Layout.cshtml`, so the real site would show it the same way.
 - Checkout redirects to the basket while the basket is empty, so the checkout version of the header can't be reached here. `preview/checkout.html` shows it.
-- The two console errors on product pages (reading `'className'`, and "Unexpected identifier 'Object'") happen on the live site too. They are not caused by the new header or footer.
+- The old product pages show two console errors (reading `'className'`, and "Unexpected identifier 'Object'"), on the live site too. They come from the old page's own scripts, so the new product page doesn't have them; add `?newchrome=0` to see them.
 
 ## 2. Single saved pages with VS Code Live Server
 
@@ -44,6 +46,7 @@ Menus, product photos and prices come from the live site and are saved in `tools
 |---|---|
 | `build.ps1` | Turns the `.cshtml` files in `Website/Website` into the saved pages and the pieces `site-preview.ps1` uses. Plain markup is taken from the `.cshtml` files as it is; only the Razor loops are re-created, and the build fails if any Razor is left over. |
 | `category-page.ps1` | Reads an old category page into what the new one shows (the same split of the description as `CategoryDescription.Parse`) and fills in `_CategoryPage.cshtml`. It finds each Razor block in the file, so the markup always comes from the partial, and fails if any Razor is left over. |
+| `product-page.ps1` | Reads an old product page into what the new one shows, and fills in `_ProductPage.cshtml` the same way. The description is split by the real `ProductDescription.Parse`, compiled from `ViewModels/Common` with `Add-Type`. |
 | `site-preview.ps1` | The whole-website preview. |
 | `fetch-data.ps1` | Re-reads menus, products, banners and a sample category page from the live site, then runs `build.ps1`. |
 | `data.json` | The live site's menus, products, prices and homepage banners (fetched 17 September 2026). |

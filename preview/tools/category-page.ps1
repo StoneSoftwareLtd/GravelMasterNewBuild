@@ -154,7 +154,7 @@ function Format-GbpPrice([decimal]$price, [bool]$withPence) {
 # Finds a Razor block (the pattern ends at its opening brace) and any else block after it
 function Find-RazorBlock([string]$text, [string]$startPattern) {
   $m = [regex]::Match($text, $startPattern)
-  if (-not $m.Success) { throw "Couldn't find $startPattern in _CategoryPage.cshtml" }
+  if (-not $m.Success) { throw "Couldn't find $startPattern in the partial" }
   $open = $m.Index + $m.Length - 1
   if ($text[$open] -ne '{') { throw "The pattern $startPattern must end at the block's opening brace" }
   $close = Find-ClosingBrace $text $open
@@ -173,7 +173,7 @@ function Find-ClosingBrace([string]$text, [int]$open) {
   for ($i = $open; $i -lt $text.Length; $i++) {
     if ($text[$i] -eq '{') { $depth++ } elseif ($text[$i] -eq '}') { $depth--; if ($depth -eq 0) { return $i } }
   }
-  throw "Unbalanced braces in _CategoryPage.cshtml"
+  throw "Unbalanced braces in the partial"
 }
 # Replaces a Razor block with what $fill returns for it
 function Set-RazorBlock([string]$text, [string]$startPattern, [scriptblock]$fill) {
@@ -185,8 +185,8 @@ function Set-EachRazorBlock([string]$text, [string]$startPattern, [scriptblock]$
   while ([regex]::IsMatch($text, $startPattern)) { $text = Set-RazorBlock $text $startPattern $fill }
   $text
 }
-# A loop body without its leading C# statements ("var product = gridProducts[i];")
-function Get-LoopMarkup([string]$inner) { [regex]::Replace($inner, '(?m)^[ \t]*var \w+ = [^\r\n]*;[ \t]*\r?\n', '') }
+# A loop body without its leading C# statements ("var product = gridProducts[i];", "string imageUrl = ...;")
+function Get-LoopMarkup([string]$inner) { [regex]::Replace($inner, '(?m)^[ \t]*(?:var|string|int|bool) \w+ = [^\r\n]*;[ \t]*\r?\n', '') }
 
 function Format-CategoryPage([string]$templatePath, $model, [string]$enquiryHtml) {
   $src = [IO.File]::ReadAllText($templatePath)

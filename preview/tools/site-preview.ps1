@@ -4,8 +4,10 @@
 # new ones built from the package's .cshtml files - the same swap _Layout makes when UseNewChrome is on -
 # so you can click around real pages and the new header and footer stay.
 #
-# The homepage and every category page (with or without filters) show the new homepage and category page
-# from Views/Home/_HomePage.cshtml and Views/Shared/_CategoryPage.cshtml, filled from the live page.
+# The homepage, every category page (with or without filters) and every product page show the new homepage,
+# category page and product page from Views/Home/_HomePage.cshtml, Views/Shared/_CategoryPage.cshtml and
+# Views/Shared/_ProductPage.cshtml, filled from the live page. Product prices come from the live site's own
+# price lookup, as they do on the real page.
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -30,6 +32,7 @@ $package = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..\Website\We
 $fragments = Join-Path $PSScriptRoot 'fragments'
 $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'category-page.ps1')
+. (Join-Path $PSScriptRoot 'product-page.ps1')
 # a category page: /garden-chippings/products/, /garden-chippings/slate-chippings/products/, and either with filters after
 $categoryPathPattern = '^/(?!products/)[a-z0-9-]+(?:/[a-z0-9-]+)?/products(?:/|$)'
 
@@ -180,12 +183,24 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
           $css = '/css/gm-category.css?v1'; $newPage = 'new category page'
         }
       }
+      elseif ($path -match $script:productPathPattern) {
+        $model = ConvertFrom-OldProductPage $html.Substring($mainBody.Index, $mainEnd - $mainBody.Index) $path
+        if ($model) {
+          $content = Format-ProductPage (Join-Path $package 'Views\Shared\_ProductPage.cshtml') $model $chrome.Enquiry
+          $css = '/css/gm-product.css?v1'; $newPage = 'new product page'
+        }
+      }
     }
     if ($content) {
       # full width, without the old white box and orange side borders
       $html = $html.Substring(0, $mainBody.Index) + '<div itemscope itemtype="http://schema.org/WebSite" id="mainBody"><meta itemprop="url" content="https://www.gravelmaster.co.uk" />' + $content + "`n" + $html.Substring($mainEnd)
       $head = $html.IndexOf('<link href="/css/gm-chrome.css')
       if ($head -ge 0) { $html = $html.Insert($head, "<link href=""$css"" rel=""stylesheet"" />`n") }
+      # The old product page's script works its own markup, which is gone: load the site's default page
+      # script instead, as Detail.cshtml will when the new page shows (docs/merging.md)
+      if ($newPage -eq 'new product page') {
+        $html = [regex]::Replace($html, 'require\(\["/scripts/Controllers/Root/Product/Detail\.js[^"]*"\]\)', 'require(["/scripts/Controllers/Root/Content/Display.js"])')
+      }
     }
   }
 
