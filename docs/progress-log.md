@@ -81,6 +81,7 @@ Rebuilt the prototype's product page (`product2.html`) as `_ProductPage.cshtml`,
 5. The whole-website preview now shows the new page on every product page, with real prices from the live site's price lookup. `preview/tools/product-page.ps1` reads an old product page and fills in the partial; it runs the real C# model rather than a copy, so the preview can't drift from the site. Ran it over all 153 live products.
 
 6. Wrote up the page, the merge steps and the questions.
+7. Recording a walkthrough for Mollie showed blank thumbnails on some products: the 300px photo files only exist for some products, while every photo has a 330px one. Thumbnails now use 330px (preview and merging.md). The preview's check for Razor left in a page now also catches C# statements without an `@`, which it missed once while the preview was running an older script.
 
 Found and fixed along the way:
 

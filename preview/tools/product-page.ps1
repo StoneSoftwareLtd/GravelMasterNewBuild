@@ -62,8 +62,9 @@ function ConvertFrom-OldProductPage([string]$html, [string]$path) {
   $categoryCrumb = @($model.Breadcrumbs | Where-Object { $_.Url }) | Select-Object -Last 1
   if ($categoryCrumb) { $model.CategoryName = $categoryCrumb.Name }
 
-  # photos: the zoomable main photo, then the thumbnail strip's (600px shown, 1000px zoom); thumbnails at 300px
-  $thumb = { param($url) [regex]::Replace($url, '-\d+(\.\w+)$', '-300$1') }
+  # photos: the zoomable main photo, then the thumbnail strip's (600px shown, 1000px zoom); thumbnails at 330px,
+  # the CDN's thumbnail width that every photo has (many have no 300px file)
+  $thumb = { param($url) [regex]::Replace($url, '-\d+(\.\w+)$', '-330$1') }
   $main = [regex]::Match($html, '<a href="([^"]+)" class="MagicZoom"[^>]*>\s*<img src="([^"]+)"')
   if ($main.Success) { $model.Photos += [pscustomobject]@{ Url = $main.Groups[2].Value; ZoomUrl = $main.Groups[1].Value; ThumbUrl = (& $thumb $main.Groups[2].Value) } }
   foreach ($a in [regex]::Matches($html, '<a [^>]*data-slide-id="zoom" class="active selste" href="([^"]+)" data-image="([^"]+)"')) {
@@ -301,7 +302,8 @@ function Format-ProductPage([string]$templatePath, $model, [string]$enquiryHtml)
   # the shared bulk enquiry pop-up (rendered by build.ps1)
   $h = Sub $h @{ '@Html.Partial("_BulkEnquiryModal", Model.EnquiryCategories)' = (Put $enquiryHtml) }
 
-  $m = [regex]::Match($h, '(?<![\w.])@(?!media\b|keyframes\b|font-face\b|import\b|supports\b)[A-Za-z(*{]')
+  # C# statements inside a block don't start with @ (e.g. "if (Model.IsInStock) {"), so look for those too
+  $m = [regex]::Match($h, '(?<![\w.])@(?!media\b|keyframes\b|font-face\b|import\b|supports\b)[A-Za-z(*{]|(?m)^\s*(?:(?:if|foreach|for|while)\s*\(|else\s*(?:\{|$))')
   if ($m.Success) { throw "_ProductPage still contains Razor near: " + $h.Substring([Math]::Max(0, $m.Index - 80), [Math]::Min(160, $h.Length - [Math]::Max(0, $m.Index - 80))) }
   [regex]::Replace($h, [string][char]2 + '(\d+)' + [char]3, { param($x) $values[[int]$x.Groups[1].Value] })
 }
