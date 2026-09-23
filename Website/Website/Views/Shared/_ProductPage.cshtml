@@ -1,0 +1,481 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.ProductPageModel
+@using System.Globalization
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@{
+    var uk = CultureInfo.GetCultureInfo("en-GB");
+    var description = Model.Description;
+    var selected = Model.SelectedOption;
+    bool canBuy = Model.IsInStock && selected != null;
+    bool preOrder = selected != null && selected.PreOrderDate != null;
+    string availability = !Model.IsInStock ? "OutOfStock" : preOrder ? "PreOrder" : "InStock";
+    int slideCount = Model.Photos.Count + (Model.VideoUrl != null ? 1 : 0) + (Model.ThreeSixtyUrl != null ? 1 : 0);
+
+    // Size pictures: the first entry whose word is in the size's name gives its picture. The prototype's bags
+    // replace the old page's for the four bag sizes; the rest are the old page's, in its order. A size with no
+    // match gets /img/<name without spaces>.gif, as on the old page (gm-product.js hides it if it's missing).
+    var optionImages = new[]
+    {
+        new { Word = "1000", Image = "/img/gm-prod-opt-1000kg.png" },
+        new { Word = "2m3", Image = "/img/1000.png" },
+        new { Word = "half", Image = "/img/gm-prod-opt-500kg.png" },
+        new { Word = "500kg", Image = "/img/gm-prod-opt-500kg.png" },
+        new { Word = "850", Image = "/img/gm-prod-opt-850kg.png" },
+        new { Word = "bulk bag", Image = "/img/bulk-bag.png" },
+        new { Word = "sealed bags", Image = "/img/gm-prod-opt-sealed.png" },
+        new { Word = "crate", Image = "/img/crate.png" },
+        new { Word = "membrane", Image = "/img/membrane.png" },
+        new { Word = "steel", Image = "/img/steelpegs.png" },
+        new { Word = "plastic", Image = "/img/plaspegs.png" },
+        new { Word = "200", Image = "/img/200litre.png" },
+        new { Word = "5kg", Image = "/img/5kgicon.png" },
+        new { Word = "10kg", Image = "/img/10kgicon.png" },
+        new { Word = "20kg", Image = "/img/20kgicon.png" },
+        new { Word = "m2 rolls", Image = "/img/turf.png" },
+        new { Word = "90", Image = "/img/90litre.png" },
+        new { Word = "bulb", Image = "/img/20bulbs.png" },
+        new { Word = "tuber", Image = "/img/20bulbs.png" },
+        new { Word = "corm", Image = "/img/20bulbs.png" }
+    };
+
+    // "Product Use" icons, as the category page's "Ideal for": the first entry whose word is in a use gives it
+    // that icon. Other uses get a tick.
+    var useIcons = new[]
+    {
+        new { Word = "pond", Icon = "/img/gm-cat-ideal-pond.png" },
+        new { Word = "water", Icon = "/img/gm-cat-ideal-pond.png" },
+        new { Word = "aquatic", Icon = "/img/gm-cat-ideal-aquatics.png" },
+        new { Word = "mulch", Icon = "/img/gm-cat-ideal-mulch.png" },
+        new { Word = "landscap", Icon = "/img/gm-cat-ideal-landscaping.png" },
+        new { Word = "garden", Icon = "/img/gm-cat-ideal-landscaping.png" }
+    };
+}
+@* New product page from the Optima prototype (product2.html). Styles: css/gm-product.css. Behaviour:
+   js/gm-product.js. The buy box is a form that adds to the basket exactly as the old page's did: it posts
+   postcodeData (the postcode area), selectedVariantItem (the size) and qty to the same address. Prices come
+   from /product/calculateprices, as on the old page. The bulk enquiry pop-up is the shared _BulkEnquiryModal. *@
+<div class="gm-product" itemscope itemtype="http://schema.org/Product">
+    <meta itemprop="sku" content="@Model.Code">
+
+    <nav class="container pdp-crumbs" aria-label="Breadcrumb">
+        <ol class="pdp-crumbs__list">
+            <li><a href="/">Home</a></li>
+            @foreach (var crumb in Model.Breadcrumbs)
+            {
+                if (crumb.Url != null)
+                {
+                    <li><a href="@crumb.Url">@crumb.Name</a></li>
+                }
+                else
+                {
+                    <li><span class="pdp-crumbs__current" aria-current="page">@crumb.Name</span></li>
+                }
+            }
+        </ol>
+    </nav>
+
+    <div class="container pdp-product">
+
+        @* Left: photos, then the trade and bulk banners *@
+        <div class="pdp-media">
+            <div class="pdp-gallery" data-gallery>
+                <div class="pdp-gallery__stage">
+                    @if (Model.Photos.Count > 0)
+                    {
+                        <img class="pdp-gallery__main" src="@Model.Photos[0].Url" alt="@Model.Name" width="600" height="600" itemprop="image" data-gallery-main>
+                    }
+                    @* The video and 360 view load here when their thumbnail is chosen *@
+                    <div class="pdp-gallery__frame" data-gallery-frame hidden></div>
+                    <span class="pdp-gallery__roundel"><small>FROM</small><strong><span class="cust-price">@HomeProduct.FormatPrice(Model.Price, false)</span><span class="trade-price">@HomeProduct.FormatPrice(Model.TradePrice, false)</span></strong><small>inc. VAT</small></span>
+                    @if (slideCount > 1)
+                    {
+                        <button class="pdp-gallery__arrow pdp-gallery__arrow--prev" type="button" aria-label="Previous photo" data-gallery-prev>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2a2a2a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
+                        </button>
+                        <button class="pdp-gallery__arrow pdp-gallery__arrow--next" type="button" aria-label="Next photo" data-gallery-next>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2a2a2a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+                        </button>
+                    }
+                    @if (Model.Photos.Count > 0)
+                    {
+                        <a class="pdp-gallery__zoom" href="@Model.Photos[0].ZoomUrl" target="_blank" rel="noopener" data-gallery-zoom>
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><line x1="16.5" y1="16.5" x2="21" y2="21" /></svg>
+                            Click to zoom
+                        </a>
+                    }
+                </div>
+
+                @if (slideCount > 1)
+                {
+                    <div class="pdp-thumbs">
+                        <ul class="pdp-thumbs__list" data-gallery-thumbs>
+                            @for (int i = 0; i < Model.Photos.Count; i++)
+                            {
+                                var photo = Model.Photos[i];
+                                <li><button class="pdp-thumb@(i == 0 ? " is-active" : "")" type="button" aria-label="Photo @(i + 1) of @Model.Photos.Count" aria-pressed="@(i == 0 ? "true" : "false")" data-src="@photo.Url" data-zoom="@photo.ZoomUrl"><img src="@photo.ThumbUrl" alt="" width="150" height="117" loading="lazy"></button></li>
+                            }
+                            @if (Model.VideoUrl != null)
+                            {
+                                <li><button class="pdp-thumb pdp-thumb--media" type="button" aria-label="Video" aria-pressed="false" data-frame="@Model.VideoUrl"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#2f6b34" /><path d="M10 8l6 4-6 4z" fill="#fff" /></svg><span>Video</span></button></li>
+                            }
+                            @if (Model.ThreeSixtyUrl != null)
+                            {
+                                <li><button class="pdp-thumb pdp-thumb--media" type="button" aria-label="360 degree view" aria-pressed="false" data-frame="@Model.ThreeSixtyUrl"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#2f6b34" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="12" rx="10" ry="4.5" /><path d="M15 17.6l-2 -1.1 1.2 -2" /></svg><span>360&deg; view</span></button></li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+
+            <a href="/account/login?isTradeRegister=true" class="pdp-promo pdp-promo--trade">
+                <span class="pdp-promo__text">Trade? We&rsquo;ve got<br>you covered</span>
+                <span class="pdp-promo__btn">Get trade prices</span>
+            </a>
+            <button type="button" class="pdp-promo pdp-promo--bulk" data-bulk-open>
+                <span class="pdp-promo__text">Ordering 10 tonnes<br>or more?</span>
+                <span class="pdp-promo__btn">Enquire Here</span>
+            </button>
+        </div>
+
+        @* Right: the buy box *@
+        <div class="pdp-buy">
+            @if (Model.IsInStock)
+            {
+                <p class="pdp-stock" data-stock>
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17.5 19 7" /></svg>
+                    <span data-stock-text>@(preOrder ? "Available to pre-order" : "In stock")</span>
+                </p>
+            }
+            <h1 class="pdp-title" itemprop="name">@Model.Name</h1>
+            <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                <meta itemprop="price" content="@Model.Price.ToString("0.00", CultureInfo.InvariantCulture)">
+                <meta itemprop="priceCurrency" content="GBP">
+                <meta itemprop="availability" content="http://schema.org/@availability">
+                <meta itemprop="itemCondition" content="http://schema.org/NewCondition">
+            </div>
+
+            @if (Model.Options.Count == 0)
+            {
+                @* An out-of-stock product can have no sizes to show (the old page hid them too) *@
+                if (Model.IsInStock)
+                {
+                    <p class="pdp-unavailable">This product can&rsquo;t be ordered online. Call us on <a href="tel:03300585068">0330 058 5068</a>.</p>
+                }
+                else
+                {
+                    <button type="button" class="pdp-addcart pdp-addcart--off" disabled>Out of stock</button>
+                }
+            }
+            else
+            {
+                <form class="pdp-form" action="@Model.AddToBasketUrl" method="post" novalidate data-buy
+                      data-product-id="@Model.ProductId" data-name="@Model.Name" data-category="@Model.CategoryName" data-simple="@(Model.IsSimple ? "true" : "false")"
+                      data-areas="@string.Join(",", ProductPageModel.PostcodeAreas)">
+                    @{ int step = 1; }
+                    @if (!Model.IsSimple)
+                    {
+                        <h2 class="pdp-label pdp-label--step" id="pdp-step-postcode"><span class="pdp-step">Step @(step++)</span> Where are we delivering to?</h2>
+                        <div class="pdp-postcode" data-postcode>
+                            @* Shown once a postcode is set *@
+                            <div class="pdp-deliverbar" data-postcode-bar hidden>
+                                <span class="pdp-deliverbar__to">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg>
+                                    Delivering to: <strong data-postcode-current></strong>
+                                </span>
+                                <button type="button" class="pdp-deliverbar__change" aria-expanded="false" aria-controls="pdp-postcode-panel" data-postcode-toggle>
+                                    Change delivery address
+                                    <svg class="pdp-deliverbar__chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+                                </button>
+                            </div>
+                            <p class="pdp-postcode__ok" role="status" data-postcode-ok hidden>
+                                <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#2e7d3f" /><polyline points="7.5 12.4 10.6 15.4 16.5 8.9" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                <span>Great news &ndash; we deliver to <strong data-postcode-current></strong>. Prices below include delivery.</span>
+                            </p>
+                            @* Open until a postcode is set, then from "Change delivery address" *@
+                            <div class="pdp-postcode__panel" id="pdp-postcode-panel" data-postcode-panel>
+                                <label class="pdp-postcode__title" for="pdp-postcode-input">Please enter your postcode</label>
+                                <p class="pdp-postcode__intro" id="pdp-postcode-intro">Prices include delivery, so we need to know where it&rsquo;s going.</p>
+                                <div class="pdp-postcode__form">
+                                    @* The basket takes the area from what's typed if the script doesn't run *@
+                                    <input class="pdp-postcode__input" id="pdp-postcode-input" name="postcodeData" type="text" placeholder="e.g. NG5 6AB" autocomplete="postal-code" autocapitalize="characters" spellcheck="false" maxlength="10" aria-describedby="pdp-postcode-intro pdp-postcode-error" data-postcode-input>
+                                    <button type="button" class="pdp-postcode__submit" data-postcode-submit>
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><line x1="16.5" y1="16.5" x2="21" y2="21" /></svg>
+                                        Check prices
+                                    </button>
+                                </div>
+                                <p class="pdp-postcode__error" id="pdp-postcode-error" role="alert" data-postcode-error></p>
+                                <ul class="pdp-postcode__notes">
+                                    <li>Delivery to most mainland UK postcodes</li>
+                                    <li>Prices include VAT &amp; delivery</li>
+                                </ul>
+                            </div>
+                        </div>
+                    }
+
+                    <fieldset class="pdp-fieldset">
+                        <legend class="pdp-label pdp-label--step pdp-label--qty"><span class="pdp-step">Step @(step++)</span> Select your @(Model.Options.Count == 1 ? "size" : "bag size")</legend>
+                        <div class="pdp-options@(Model.Options.Count == 1 ? " pdp-options--one" : "")">
+                            @foreach (var option in Model.Options)
+                            {
+                                var image = optionImages.FirstOrDefault(o => option.Name.IndexOf(o.Word, StringComparison.OrdinalIgnoreCase) >= 0);
+                                string imageUrl = image != null ? image.Image : "/img/" + option.Name.Replace(" ", "").ToLower() + ".gif";
+                                <label class="pdp-option">
+                                    <input class="pdp-option__input" type="radio" name="selectedVariantItem" value="@option.Id" @(option == selected ? "checked" : "") data-code="@option.Code" data-price="@option.Price.ToString("0.00", CultureInfo.InvariantCulture)" data-preorder="@(option.PreOrderDate.HasValue ? option.PreOrderDate.Value.ToString("d MMMM", uk) : "")">
+                                    <img class="pdp-option__img" src="@imageUrl" alt="" width="80" height="92">
+                                    <span class="pdp-option__label">
+                                        <strong>@option.Name</strong>
+                                        @if (option.PreOrderDate.HasValue)
+                                        {
+                                            <span class="pdp-option__pre">Pre-order for @option.PreOrderDate.Value.ToString("d MMMM", uk)</span>
+                                        }
+                                        <span class="pdp-option__price" data-option-price="@option.Id"></span>
+                                    </span>
+                                    <span class="pdp-option__radio" aria-hidden="true"></span>
+                                </label>
+                            }
+                        </div>
+                    </fieldset>
+
+                    @if (Model.SampleOption != null && canBuy)
+                    {
+                        <p class="pdp-sample">
+                            <span class="pdp-sample__q">Try before you buy?</span>
+                            <button type="button" class="pdp-sample__btn" data-sample="@Model.SampleOption.Id" data-code="@Model.SampleOption.Code" data-price="@Model.SampleOption.Price.ToString("0.00", CultureInfo.InvariantCulture)">Order a sample for just &pound;4.99</button>
+                            <span class="pdp-sample__note">(under 1kg)</span>
+                        </p>
+                    }
+
+                    <h2 class="pdp-label pdp-label--step" id="pdp-step-qty"><span class="pdp-step">Step @(step++)</span> How many do you need?</h2>
+                    <div class="pdp-qty" data-qty>
+                        <label class="pdp-qty__label" for="pdp-qty">Qty</label>
+                        <button class="pdp-qty__step" type="button" aria-label="Decrease quantity" data-qty-down>&minus;</button>
+                        <input class="pdp-qty__input" id="pdp-qty" name="qty" type="number" inputmode="numeric" min="@Model.MinQuantity" step="1" value="@Model.MinQuantity" aria-describedby="pdp-step-qty" data-qty-input>
+                        <button class="pdp-qty__step" type="button" aria-label="Increase quantity" data-qty-up>+</button>
+                    </div>
+
+                    @if (Model.NextDeliveryDate.HasValue || !Model.IsSimple)
+                    {
+                        <div class="pdp-notice">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg>
+                            <span class="pdp-notice__text">
+                                @if (Model.NextDeliveryDate.HasValue)
+                                {
+                                    <span data-delivery-date @(preOrder ? "hidden" : "")>Next available delivery: <strong>@Model.NextDeliveryDate.Value.ToString("dddd d MMMM", uk)</strong></span>
+                                }
+                                <span data-delivery-pre @(preOrder ? "" : "hidden")>Pre-order for <strong data-delivery-pre-date>@(preOrder ? selected.PreOrderDate.Value.ToString("d MMMM", uk) : "")</strong></span>
+                                @if (!Model.IsSimple)
+                                {
+                                    <small data-postcode-line hidden>Delivering to: <span data-postcode-current></span></small>
+                                }
+                            </span>
+                            @if (!Model.IsSimple)
+                            {
+                                <button type="button" class="pdp-notice__change" aria-controls="pdp-postcode-panel" data-postcode-toggle>
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" /><circle cx="12" cy="10" r="2.3" /></svg>
+                                    <span data-postcode-change-label>Enter postcode</span>
+                                </button>
+                            }
+                        </div>
+                    }
+
+                    <div class="pdp-total-row">
+                        <p class="pdp-total">
+                            <span class="pdp-total__label">Total cost <span class="pdp-total__vat">(inc. VAT@(Model.IsSimple ? "" : " & delivery"))</span></span>
+                            <span class="pdp-total__value" aria-live="polite" data-total>@(Model.IsSimple ? "" : "Enter your postcode")</span>
+                        </p>
+                        @* Trustpilot Micro Star: the live TrustScore and stars. The TrustBox script loads in _Layout. *@
+                        <div class="trustpilot-widget pdp-total-tp" data-locale="en-GB" data-template-id="5419b732fbfb950b10de65e5" data-businessunit-id="58ef93f90000ff0005a06bca" data-style-height="24px" data-style-width="100%" data-theme="light">
+                            <a href="https://uk.trustpilot.com/review/gravelmaster.co.uk" target="_blank" rel="noopener">Trustpilot</a>
+                        </div>
+                    </div>
+                    <p class="pdp-error" role="alert" data-buy-error></p>
+
+                    @if (canBuy)
+                    {
+                        <button type="submit" class="pdp-addcart" data-addcart>
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M2.6 3.6a1 1 0 0 0 0 2h1.7l2.6 9.3a1 1 0 0 0 1 .73h8.9a1 1 0 0 0 .97-.76l1.85-7a.8.8 0 0 0-.78-1H6.2l-.63-2.28a1 1 0 0 0-.96-.72z" /><circle cx="9.4" cy="19" r="1.6" /><circle cx="16.4" cy="19" r="1.6" /></svg>
+                            <span data-addcart-text>@(preOrder ? "Pre-order" : "Add to cart")</span>
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" class="pdp-addcart pdp-addcart--off" disabled>Out of stock</button>
+                    }
+                </form>
+            }
+        </div>
+    </div>
+
+    @* Specification, uses, the description's own sections, and delivery. <details>, so they work without JavaScript. *@
+    <section class="pdp-spec" aria-label="Product details">
+        <div class="container">
+            <details class="pdp-spec__item" open>
+                <summary class="pdp-spec__head"><h2 class="pdp-spec__title">Product Specification</h2><svg class="pdp-spec__chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15" /></svg></summary>
+                <div class="pdp-spec__body">
+                    @if (description.IntroHtml.Length > 0)
+                    {
+                        <div class="pdp-spec__intro">@Html.Raw(description.IntroHtml)</div>
+                    }
+                    @if (description.Specs.Count > 0)
+                    {
+                        <table class="pdp-spec__table">
+                            <tbody>
+                                @foreach (var spec in description.Specs)
+                                {
+                                    <tr><th scope="row">@spec.Label</th><td>@spec.Value</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </details>
+
+            @if (description.Uses.Count > 0)
+            {
+                <details class="pdp-spec__item" open>
+                    <summary class="pdp-spec__head"><h2 class="pdp-spec__title">Product Use</h2><svg class="pdp-spec__chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15" /></svg></summary>
+                    <div class="pdp-spec__body">
+                        <ul class="pdp-uses">
+                            @foreach (var use in description.Uses)
+                            {
+                                var icon = useIcons.FirstOrDefault(i => use.IndexOf(i.Word, StringComparison.OrdinalIgnoreCase) >= 0);
+                                <li class="pdp-use">
+                                    <span class="pdp-use__icon">
+                                        @if (icon != null)
+                                        {
+                                            <img src="@icon.Icon" alt="" width="38" height="38">
+                                        }
+                                        else
+                                        {
+                                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17.5 19 7.5" /></svg>
+                                        }
+                                    </span>
+                                    <span>@use</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </details>
+            }
+
+            @foreach (var part in description.Sections)
+            {
+                <details class="pdp-spec__item">
+                    <summary class="pdp-spec__head"><h2 class="pdp-spec__title">@part.Heading</h2><svg class="pdp-spec__chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15" /></svg></summary>
+                    <div class="pdp-spec__body pdp-spec__prose">@Html.Raw(part.Html)</div>
+                </details>
+            }
+
+            <details class="pdp-spec__item" open>
+                <summary class="pdp-spec__head"><h2 class="pdp-spec__title">Delivery</h2><svg class="pdp-spec__chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15" /></svg></summary>
+                <div class="pdp-spec__body">
+                    <p class="pdp-spec__line"><strong>Standard Delivery:</strong> Available across most mainland UK postcodes.</p>
+                    <p class="pdp-spec__line"><strong>Next Day Delivery:</strong> Often available on orders placed before 12pm (additional charges may apply).</p>
+                    <p class="pdp-spec__line"><strong>Large Orders:</strong> For projects requiring 10+ pallets or loose loads, our team can provide a tailored delivery quote.</p>
+
+                    <h3 class="pdp-spec__subhead">How it&rsquo;s delivered</h3>
+                    <ul class="pdp-deliver">
+                        <li class="pdp-deliver__step">
+                            <img class="pdp-deliver__icon" src="/img/gm-prod-del-access.jpg" alt="" width="108" height="108" loading="lazy">
+                            <h4 class="pdp-deliver__title">Access</h4>
+                            <p class="pdp-deliver__text">Your order may arrive on a 7.5, 18 or 26 tonne vehicle with a tail-lift and a manual pump trolley.</p>
+                        </li>
+                        <li class="pdp-deliver__step">
+                            <img class="pdp-deliver__icon" src="/img/gm-prod-del-area.jpg" alt="" width="108" height="108" loading="lazy">
+                            <h4 class="pdp-deliver__title">Area</h4>
+                            <p class="pdp-deliver__text">A minimum width of 3 metres is required for vehicle access to allow for the tail lift.</p>
+                        </li>
+                        <li class="pdp-deliver__step">
+                            <img class="pdp-deliver__icon" src="/img/gm-prod-del-surface.jpg" alt="" width="108" height="108" loading="lazy">
+                            <h4 class="pdp-deliver__title">Surface</h4>
+                            <p class="pdp-deliver__text">The driver will unload using a tail-lift and pallet truck on flat, solid ground only, no grass or gravel.</p>
+                        </li>
+                        <li class="pdp-deliver__step">
+                            <img class="pdp-deliver__icon" src="/img/gm-prod-del-placement.jpg" alt="" width="108" height="108" loading="lazy">
+                            <h4 class="pdp-deliver__title">Placement</h4>
+                            <p class="pdp-deliver__text">Driver will leave goods as close as safely possible, kerbside if needed.</p>
+                        </li>
+                    </ul>
+
+                    <p class="pdp-spec__note"><strong>Please note:</strong> This delivery method only applies to small pallet orders. If you are ordering in bulk, please use the enquiry form below to arrange delivery. <a href="/delivery">Full delivery information</a></p>
+
+                    <button type="button" class="pdp-promo pdp-promo--bulk pdp-spec__banner" data-bulk-open>
+                        <span class="pdp-promo__text">Ordering 10 tonnes or more?<small class="pdp-promo__sub">Contact us to book a loose load delivery on bulk orders over 10 tonnes</small></span>
+                        <span class="pdp-promo__btn">Enquire Here</span>
+                    </button>
+
+                    <p class="pdp-spec__contact">If you have any questions about delivery, access, or placing your order, please contact our team and we&rsquo;ll be happy to help. Call us on <a href="tel:03300585068">0330 058 5068</a> or email <a href="mailto:customerservices@gravelmaster.co.uk">customerservices@gravelmaster.co.uk</a></p>
+                </div>
+            </details>
+        </div>
+    </section>
+
+    <section class="pdp-reviews">
+        <div class="container pdp-reviews__grid">
+            <div class="pdp-reviews__left">
+                @* Trustpilot Mini: live TrustScore, stars and review count, as on the homepage *@
+                <div class="trustpilot-widget pdp-reviews__widget" data-locale="en-GB" data-template-id="53aa8807dec7e10d38f59f36" data-businessunit-id="58ef93f90000ff0005a06bca" data-style-height="150px" data-style-width="100%" data-theme="light">
+                    <a href="https://uk.trustpilot.com/review/gravelmaster.co.uk" target="_blank" rel="noopener">Read our reviews on Trustpilot</a>
+                </div>
+                <p class="pdp-reviews__blurb">Join the thousands of customers who trust Gravel Master for premium-quality aggregates, decorative gravel and landscaping materials.</p>
+            </div>
+            <div class="pdp-reviews__right">
+                @* Trustpilot Carousel: the latest 4 and 5 star reviews, as on the old product page *@
+                <div class="trustpilot-widget" data-locale="en-GB" data-template-id="53aa8912dec7e10d38f59f36" data-businessunit-id="58ef93f90000ff0005a06bca" data-style-height="140px" data-style-width="100%" data-stars="4,5" data-review-languages="en">
+                    <a href="https://uk.trustpilot.com/review/gravelmaster.co.uk" target="_blank" rel="noopener">Read our reviews on Trustpilot</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @if (Model.Related.Count > 0)
+    {
+        <section class="pdp-recommend" aria-labelledby="pdp-recommend-title" data-carousel>
+            <div class="container">
+                <h2 class="pdp-recommend__title" id="pdp-recommend-title">You might also like</h2>
+                <div class="pdp-recommend__viewport" data-carousel-viewport>
+                    <ul class="pdp-recommend__track" data-carousel-track>
+                        @foreach (var product in Model.Related)
+                        {
+                            <li class="pdp-rec">
+                                <img class="pdp-rec__img" src="@product.ImageUrl(330)" alt="" width="330" height="330" loading="lazy">
+                                <h3 class="pdp-rec__name"><a href="@product.Url">@product.Name</a></h3>
+                                <p class="pdp-rec__price">From <span class="cust-price">@HomeProduct.FormatPrice(product.Price, true)</span><span class="trade-price">@HomeProduct.FormatPrice(product.TradePrice, true)</span></p>
+                                <a class="pdp-rec__btn" href="@product.Url" tabindex="-1" aria-hidden="true">Shop now</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="pdp-recommend__controls">
+                    <div class="pdp-recommend__progress" aria-hidden="true"><span class="pdp-recommend__fill" data-carousel-progress></span></div>
+                    <div class="pdp-recommend__nav">
+                        <button type="button" class="pdp-recommend__arrow" aria-label="Previous products" data-carousel-prev>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
+                        </button>
+                        <button type="button" class="pdp-recommend__arrow" aria-label="More products" data-carousel-next>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+
+    @* "Added to your basket": the basket's own summary (the same HTML the old page's pop-up showed) *@
+    <div class="pdp-added" data-added hidden>
+        <div class="pdp-added__overlay" data-added-close></div>
+        <div class="pdp-added__dialog" role="dialog" aria-modal="true" aria-labelledby="pdp-added-title" tabindex="-1">
+            <button type="button" class="pdp-added__close" aria-label="Close" data-added-close>
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+            </button>
+            <h2 class="pdp-added__title" id="pdp-added-title">Added to your basket</h2>
+            <div class="pdp-added__summary" data-added-summary></div>
+            <div class="pdp-added__actions">
+                <a class="pdp-added__basket" href="/basket">Go to basket</a>
+                <button type="button" class="pdp-added__continue" data-added-close>Continue shopping</button>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("_BulkEnquiryModal", Model.EnquiryCategories)
+<script src="/js/gm-product.js?v1"></script>
+
