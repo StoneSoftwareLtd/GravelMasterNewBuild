@@ -346,7 +346,7 @@ div:where(.gm-home) {
   padding: 6px 8px 6px 22px;
   margin-bottom: 22px;
 }
-.gm-home .calc__type-label { color: #888; font-size: 16px; }
+.gm-home .calc__type-label { color: #767676; font-size: 16px; }   /* #888 on white is 3.5:1 */
 .gm-home .calc__select {
   border: none;
   font-family: inherit;
@@ -600,13 +600,13 @@ div:where(.gm-home) {
 .gm-home .bs-card__meta {
   margin: 0 0 6px;
   font-size: 12px;
-  color: #777;
+  color: #6c6c6c;         /* #777 on the pale green is 3.9:1 */
 }
 .gm-home .bs-card__price {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
-  color: #4a8a3f;
+  color: #417937;         /* #4a8a3f on the pale green is 3.6:1 */
 }
 
 .gm-home .bs-banner {
@@ -618,17 +618,17 @@ div:where(.gm-home) {
   background: #f9853f url("/img/gm-home-orange.png") center / cover no-repeat;
   border-radius: 10px;
   padding: 22px 28px;
-  color: #fff;
+  color: #2b1405;         /* dark ink: white on this orange is 2.5:1 */
 }
 .gm-home .bs-banner__text { font-size: 19px; font-weight: 700; }
 .gm-home .bs-banner__link {
-  color: #fff;
+  color: #2b1405;
   font-size: 14px;
   font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.gm-home .bs-banner__link:hover { color: #fff; text-decoration: underline; }
+.gm-home .bs-banner__link:hover { color: #2b1405; text-decoration: underline; }
 
 /* ===== Reviews ===== */
 .gm-home .reviews {
@@ -848,7 +848,7 @@ div:where(.gm-home) {
   align-items: center;
   justify-content: center;
 }
-.gm-home .trade__feature-label { font-size: 15px; font-weight: 600; color: #e6cbe4; }
+.gm-home .trade__feature-label { font-size: 15px; font-weight: 600; color: #f7ecf6; }   /* #e6cbe4 on the purple is 4.5:1 */
 
 /* ===== Leading supplier ===== */
 .gm-home .supplier {

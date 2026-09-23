@@ -10,7 +10,8 @@
 
 .gm-category {
   --green:  #5ca458;
-  --orange: #f5a623;
+  --orange: #f5a623;      /* surfaces only: white text on it is 2.5:1 */
+  --orange-ink: #a86a12;  /* text and icons on light backgrounds */
 }
 
 /* ---- Shield against the old site's element rules ---- */
@@ -208,7 +209,7 @@ div:where(.gm-category) {
   border-radius: 8px;
   padding: 14px 15px;
   margin-bottom: 26px;
-  color: var(--orange);
+  color: var(--orange-ink);
 }
 .gm-category .plp-count svg { flex: none; margin-top: 2px; }
 .gm-category .plp-count p { margin: 0; font-size: 14px; line-height: 1.5; color: #3b2a0e; }
@@ -383,7 +384,7 @@ div:where(.gm-category) {
   margin: 16px 0 8px;
   font-size: 22px;
   font-weight: 700;
-  color: #5aa557;
+  color: #488446;         /* #5aa557 on white is 3.0:1 */
   text-transform: uppercase;
 }
 .gm-category .plp-card__desc {
@@ -394,7 +395,7 @@ div:where(.gm-category) {
   flex-grow: 1;
 }
 .gm-category .plp-card__pricelabel { margin: 0 0 3px; font-size: 13px; color: #2f2f2f; }
-.gm-category .plp-card__price { margin: 0 0 14px; font-size: 20px; font-weight: 700; color: #47965a; }
+.gm-category .plp-card__price { margin: 0 0 14px; font-size: 20px; font-weight: 700; color: #3d7f4d; }
 .gm-category .plp-card__btn {
   display: block;
   background: #cede7b;
@@ -434,7 +435,7 @@ div:where(.gm-category) {
   height: 92px;
   border-radius: 50%;
   background: #f8811b;
-  color: #fff;
+  color: #2b1405;         /* dark ink: white on this orange is 2.6:1 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -487,7 +488,7 @@ div:where(.gm-category) {
   position: relative;
   overflow: hidden;
   border-radius: 8px;
-  background: #0c9ad1 url("/img/gm-cat-blue.png") center / cover no-repeat;
+  background: #0a7fad url("/img/gm-cat-blue.png") center / cover no-repeat;   /* white on #0c9ad1 is 3.2:1 */
   color: #fff;
   display: flex;
   align-items: center;
