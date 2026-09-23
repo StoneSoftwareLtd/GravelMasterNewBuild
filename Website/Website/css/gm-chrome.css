@@ -259,7 +259,7 @@ footer:where(.footer) :is(p, ul) {
 .nav-item--red    { --accent: var(--red); }
 .nav-item--blue   { --accent: var(--blue); }
 .nav-item--yellow { --accent: #b8940a; }
-.nav-item--cyan   { --accent: var(--cyan); }
+.nav-item--cyan   { --accent: #1280a5; }   /* white on var(--cyan) is 2.8:1 */
 .nav-item--grey   { --accent: var(--grey); }
 
 .nav-item--purple > a { background: var(--purple); }
@@ -268,7 +268,7 @@ footer:where(.footer) :is(p, ul) {
 .nav-item--red    > a { background: var(--red); }
 .nav-item--blue   > a { background: var(--blue); }
 .nav-item--yellow > a { background: var(--yellow); color: #333; }
-.nav-item--cyan   > a { background: var(--cyan); }
+.nav-item--cyan   > a { background: #1280a5; }
 .nav-item--grey   > a { background: var(--grey); }
 
 /* ---- Jumbo (mega) dropdown menus ---- */
@@ -543,12 +543,12 @@ a.mega__heading:hover { color: var(--accent, var(--green)); }
   border-top: 1px solid #ededed;
 }
 .mm--purple { --mm-accent: #9c4397; }
-.mm--green  { --mm-accent: #2ea549; }
+.mm--green  { --mm-accent: #26873c; }   /* #2ea549 on white is 3.2:1 */
 .mm--brown  { --mm-accent: #a36127; }
 .mm--red    { --mm-accent: #d40032; }
 .mm--blue   { --mm-accent: #1e5b87; }
-.mm--yellow { --mm-accent: #ddb901; }
-.mm--cyan   { --mm-accent: #08a5de; }
+.mm--yellow { --mm-accent: #8c7501; }   /* #ddb901 on white is 1.9:1 */
+.mm--cyan   { --mm-accent: #067fab; }   /* #08a5de on white is 2.8:1 */
 .mm--grey   { --mm-accent: #696969; }
 
 .mobile-menu__toggle {
@@ -781,7 +781,7 @@ a.mega__heading:hover { color: var(--accent, var(--green)); }
   margin: 0 0 18px;
   font-size: 18px;
   font-weight: 700;
-  color: #4f9a4f;
+  color: #407c40;         /* #4f9a4f on the footer's pale ground is 3.1:1 */
 }
 .foot-col p { margin: 0 0 8px; font-size: 14.5px; line-height: 1.5; color: #3a3a3a; }
 .foot-col a { color: #3a3a3a; }
