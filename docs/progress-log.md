@@ -75,6 +75,7 @@ Answering open questions: the prices and the quantity calculator stay exactly as
 Rebuilding the prototype's product page (`product2.html`). The GravelMasterSoftware repository is on this PC now, so the page is being mapped from the real code as well as the live pages. Details: [product-page.md](product-page.md).
 
 1. Mapped what the live product page does, from `Detail.cshtml`, its script, the product controller and the basket's add-to-basket action, checked on eight live pages, and where each part goes in the prototype.
+2. Added `ProductPageModel` and `ProductDescription.Parse`. The live descriptions follow the prototype's layout already (intro, a list of "Label: value" lines, then "Colour and Shape" and "Availability"), so Parse splits them into the intro, the specification table, the uses and the other sections. A section that has anything besides those lines is shown as written. Tested on the eight live descriptions and edge cases; `GetPostcodeArea` tested on full, partial and invalid postcodes and areas the site doesn't deliver to.
 
 Raised for a decision: the random "purchases during last 24 hours" pop-up, the rating, badge and selling points the site has no data for, add-ons, and Blue Slate's photos. See [open-questions.md](open-questions.md#product-page).
 
