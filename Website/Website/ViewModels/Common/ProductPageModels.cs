@@ -41,8 +41,14 @@ namespace Agilis.ECommerce.Mvc.Web.ViewModels.Common
         // e.g. "20BLSL"
         public string Code { get; set; }
 
+        // The product's category name, e.g. "Slate Chippings": item_category in the Google Analytics events.
+        public string CategoryName { get; set; }
+
         // What /product/calculateprices takes as productId.
         public int ProductId { get; set; }
+
+        // Where Add to cart posts, as the old page's form: /basket/addtobasket?id=<code>
+        public string AddToBasketUrl { get; set; }
 
         // The trail after "Home": the parent category (if there is one), the category, then this product
         // (its Url is null).
@@ -77,8 +83,8 @@ namespace Agilis.ECommerce.Mvc.Web.ViewModels.Common
         // The size chosen when the page opens (the old page's GetDefaultVariantItemId).
         public int SelectedOptionId { get; set; }
 
-        // The sample's size id (the old page's SampleWithHalf, or its "Sample" size), or null.
-        public int? SampleOptionId { get; set; }
+        // The sample (the old page's SampleWithHalf, or its "Sample" size), or null.
+        public ProductOption SampleOption { get; set; }
 
         // "Next available delivery day", shown when set (the old page shows it on products with a calculator).
         public DateTime? NextDeliveryDate { get; set; }
@@ -132,10 +138,12 @@ namespace Agilis.ECommerce.Mvc.Web.ViewModels.Common
     // A size to choose, e.g. "Approx 850Kg Bulk Bag" (a variant item on the old page).
     public class ProductOption
     {
-        public ProductOption(int id, string name, DateTime? preOrderDate)
+        public ProductOption(int id, string name, string code, decimal price, DateTime? preOrderDate)
         {
             Id = id;
             Name = name ?? "";
+            Code = code ?? "";
+            Price = price;
             PreOrderDate = preOrderDate;
         }
 
@@ -143,6 +151,12 @@ namespace Agilis.ECommerce.Mvc.Web.ViewModels.Common
         public int Id { get; private set; }
 
         public string Name { get; private set; }
+
+        // The size's own product code and base price (the old page's GetVariantCode and GetVariantPrice), for
+        // the Google Analytics view_item and add_to_cart events.
+        public string Code { get; private set; }
+
+        public decimal Price { get; private set; }
 
         // Set for a size that can only be pre-ordered.
         public DateTime? PreOrderDate { get; private set; }
@@ -156,6 +170,16 @@ namespace Agilis.ECommerce.Mvc.Web.ViewModels.Common
         private static readonly Regex Heading = new Regex(@"<h3\b[^>]*>(.*?)</h3\s*>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
         private static readonly Regex SpecLine = new Regex(@"<(b|strong)\b[^>]*>(?<label>[^<]*)</\1\s*>(?<value>.*?)(?=<br\b[^>]*>|</?p\b[^>]*>|</?div\b[^>]*>|<(?:b|strong)\b|$)", RegexOptions.IgnoreCase | RegexOptions.Singleline);
         private static readonly Regex UsesLabel = new Regex(@"^(product\s+)?uses?$", RegexOptions.IgnoreCase);
+        private static readonly Regex Tag = new Regex(@"<!--.*?-->|<(/?)([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>", RegexOptions.Singleline);
+        private static readonly HashSet<string> VoidElements = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"
+        };
+        // Browsers close these themselves, and turn a stray </p> into an empty paragraph, so they're never added
+        private static readonly HashSet<string> OptionalEndElements = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "p", "li", "dt", "dd", "option", "tr", "td", "th"
+        };
 
         private ProductDescription()
         {
@@ -222,7 +246,65 @@ namespace Agilis.ECommerce.Mvc.Web.ViewModels.Common
                     break;
                 }
             }
+
+            // Cutting at the headings can split an element, e.g. "<div><h3>Loose Load Deliveries</h3>...</div>",
+            // and a stray </div> would close the page's own layout, so each piece is made whole
+            result.IntroHtml = Balance(result.IntroHtml);
+            result.Sections = result.Sections.Select(s => new ProductDescriptionSection(s.Heading, Balance(s.Html))).ToList();
             return result;
+        }
+
+        // The HTML with a closing tag dropped when nothing in it opened that element, and elements left open
+        // closed at the end.
+        public static string Balance(string html)
+        {
+            var result = new System.Text.StringBuilder();
+            var open = new List<string>();
+            int last = 0;
+            foreach (Match tag in Tag.Matches(html ?? ""))
+            {
+                result.Append(html, last, tag.Index - last);
+                last = tag.Index + tag.Length;
+                string name = tag.Groups[2].Value.ToLowerInvariant();
+                if (name.Length == 0 || VoidElements.Contains(name) || tag.Value.EndsWith("/>"))
+                {
+                    result.Append(tag.Value);   // a comment, or an element with no closing tag
+                }
+                else if (tag.Groups[1].Value.Length == 0)
+                {
+                    open.Add(name);
+                    result.Append(tag.Value);
+                }
+                else
+                {
+                    int at = open.LastIndexOf(name);
+                    if (at < 0)
+                    {
+                        continue;   // nothing here to close: drop it
+                    }
+                    for (int i = open.Count - 1; i > at; i--)
+                    {
+                        if (!OptionalEndElements.Contains(open[i]))
+                        {
+                            result.Append("</" + open[i] + ">");
+                        }
+                    }
+                    open.RemoveRange(at, open.Count - at);
+                    result.Append(tag.Value);
+                }
+            }
+            if (html != null)
+            {
+                result.Append(html, last, html.Length - last);
+            }
+            for (int i = open.Count - 1; i >= 0; i--)
+            {
+                if (!OptionalEndElements.Contains(open[i]))
+                {
+                    result.Append("</" + open[i] + ">");
+                }
+            }
+            return result.ToString().Trim();
         }
 
         // The lines of a section that has two or more "<b>Label:</b> value" lines and nothing else, or null.
