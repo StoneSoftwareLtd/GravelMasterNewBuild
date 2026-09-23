@@ -4,6 +4,8 @@ Things found along the way that need someone to decide. Nothing here has been ch
 
 ## Data and pricing
 
+Decided 23 September 2026: the prices and the quantity calculator stay exactly as the live site has them. The notes below are for the business to check, not code changes.
+
 | Found | Detail | Suggestion |
 |---|---|---|
 | **Sand calculator looks too light** | The live calculator works out sand as m³ ÷ 0.0015 kg, about 667kg per m³. Sand is usually 1,500 to 1,700kg per m³. For 4m x 3m at 2cm deep it says 160kg; at typical sand weights it would be about 400kg. The new homepage copies the live formula. | Confirm the right figure, then fix both calculators |
@@ -14,14 +16,15 @@ Things found along the way that need someone to decide. Nothing here has been ch
 
 | Found | Detail | Suggestion |
 |---|---|---|
-| **Homepage banners are heavy** | The admin site's banners are PNGs of about 1MB each, which slows the homepage on phones. | Upload them as JPEG or WebP, about 150KB each |
+| **Homepage banners are heavy** (copies ready) | The admin site's banners are PNGs of about 1MB each: 5.6MB for the six on the homepage. | Optimised JPEGs, same 1400x467, 911KB for all six, are in `D:\Users\user\Documents\GravelMaster\Optimised homepage banners`. Upload them in the admin site to replace the PNGs |
 | **Gallery photo 8 is small** | `gm-home-insp-8.jpg` is only 225px wide, so it looks soft on large screens. | Find a bigger original |
 
 ## Design
 
 | Found | Detail | Suggestion |
 |---|---|---|
-| **Low-contrast colours in the prototype** | e.g. white text on the orange is 2.48:1; WCAG AA needs 4.5:1 for normal text. On the category page: the green product names are 3.0:1 (just enough for large bold text only), the white text on the blue bulk banner about 3.2:1, and the white "FROM" on the promo card's orange badge about 2.6:1. | Darken the colours behind text, or use dark text |
+| **Low-contrast colours** (done 23 September 2026) | Fifteen text and icon colours were below WCAG AA across the homepage, category page, header, footer and mobile menu. The worst was the mobile menu's yellow category name on white, at 1.9:1. | Fixed: on orange the text is now near-black, keeping the brand colour; elsewhere the colour itself was darkened just enough to pass |
+| **White on the header's main green** | White text on the main bar (`#5ca458`) is 3.04:1, below the 4.5:1 AA needs. It was left alone because it is the site's dominant colour and the header is already signed off. | Darken it to about `#4a8346` (4.5:1), or keep the green as it is |
 | **"NOW FROM" on offer roundels** | Changed to "FROM", because the prices are normal product prices, not a reduction. | Confirm |
 | **Delivering to: postcode** | In the prototype's header; not ported. | Keep out, or plan how it would work |
 | **LinkedIn icon** | In the prototype's footer; not ported. | Add if GravelMaster has a LinkedIn page |

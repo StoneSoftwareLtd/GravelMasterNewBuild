@@ -61,6 +61,15 @@ Found and fixed along the way:
 
 Raised for a decision: "Ideal for" icons, which product each promo card shows, the old left-column images, a real delivery countdown, Klarna, and some of the prototype's colours. See [open-questions.md](open-questions.md).
 
+## 23 September 2026: page weight and colour contrast
+
+Answering open questions: the prices and the quantity calculator stay exactly as they are.
+
+- **Page weight.** The header logo was 600x200 (78 KB) for a 192x64 space, and is now 384x128 (37 KB). The widest gallery photo is capped at 860px (181 KB to 148 KB) and the advisor photo re-encoded (29 KB to 23 KB). The other gallery photos were left alone: re-encoding them saved less than 15%, which is not worth the quality loss. The gallery photos now carry their sizes so the page does not jump as they load, images decode off the main thread, and the homepage script is deferred.
+- **The admin site's banners are the homepage's real weight**: six PNGs, 5.6 MB in total. Optimised JPEGs of the same 1400x467 size, 911 KB in total, are ready to upload; see [open-questions.md](open-questions.md).
+- **Colour contrast.** Ten text and icon colours on the homepage and category page, and five in the header, footer and mobile menu, were below WCAG AA. All now pass, measured against the colour behind them. On orange the text is near-black rather than white, which keeps the brand colour and reads better than a darker orange would. The worst was the mobile menu's yellow category name at 1.9:1.
+- Left for a decision: white on the header's main green is 3.04:1, and changing it means changing the site's dominant colour.
+
 ## Next
 
 Waiting on the GravelMasterSoftware repository to wire the homepage and category page in ([merging.md](merging.md)). The prototype's other pages (product, basket, checkout, about, trade) are still to come.

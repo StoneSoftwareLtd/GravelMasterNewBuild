@@ -49,6 +49,8 @@ Which products the offer cards and bestseller tabs show is set in a list at the 
 
 - The offer roundel says **"FROM"**, not "NOW FROM": the prices are the normal product prices, not a reduction.
 - The phone-width rule that squashed hero images to 3:4 is removed, because it distorted the real 1400x467 banners.
+- Some colours were darkened on 23 September 2026 to meet WCAG AA: the bestseller price and meta text, the calculator's label, and the trade feature labels. On the samples banner the text is near-black instead of white, keeping the prototype's orange.
+- The gallery photos carry their sizes, images decode off the main thread and the page script is deferred, so the page settles sooner.
 
 ## Accessibility
 

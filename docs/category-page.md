@@ -41,6 +41,7 @@ New from the prototype: the trade card ("Get trade prices", linking to trade sig
 - **Klarna** is left out: the prototype shows it, but the live category pages don't mention it.
 - **The countdown.** The prototype's "Order in the next 2h 50m for delivery on Wednesday 11th March" is a placeholder. The page shows the live site's fixed message until there's a real cut-off rule to count down to.
 - **No JavaScript needed** for Read more and the filter groups (they're `<details>`), or for the filters themselves (links).
+- **Colour contrast** (23 September 2026). The product name and price greens, the blue bulk banner and the delivery icon were darkened to meet WCAG AA, and the promo badge now uses near-black text on the prototype's orange instead of white.
 
 ## Found and fixed while building it
 
