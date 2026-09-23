@@ -97,7 +97,7 @@
                             continue;
                         }
                         <a href="@(offer.Link ?? product.Url)" class="card offer-card offer-card--@offer.Style">
-                            <img class="offer-card__img" src="@product.ImageUrl(600)" alt="" width="600" height="600" loading="lazy">
+                            <img class="offer-card__img" src="@product.ImageUrl(600)" alt="" width="600" height="600" loading="lazy" decoding="async">
                             @if (offer.ShowPrice)
                             {
                                 <span class="offer-card__roundel">
@@ -226,7 +226,7 @@
                                 continue;
                             }
                             <a href="@product.Url" class="bs-card">
-                                <img class="bs-card__img" src="@product.ImageUrl(330)" alt="" width="330" height="330" loading="lazy">
+                                <img class="bs-card__img" src="@product.ImageUrl(330)" alt="" width="330" height="330" loading="lazy" decoding="async">
                                 <h3 class="bs-card__name">@product.Name</h3>
                                 <p class="bs-card__meta">Price (inc. VAT &amp; delivery)</p>
                                 <p class="bs-card__price">From <span class="cust-price">@HomeProduct.FormatPrice(product.Price, true)</span><span class="trade-price">@HomeProduct.FormatPrice(product.TradePrice, true)</span></p>
@@ -268,25 +268,26 @@
 
             <div class="insta__viewport" data-insta>
                 <div class="insta__track">
+                    @* Sizes match the files, so the browser keeps room for each photo while it loads. *@
                     <div class="insta__col">
-                        <figure class="insta__cell"><img src="/img/gm-home-insp-1.jpg" alt="Customer garden with white pebble border and tree planters" loading="lazy"></figure>
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-1.jpg" alt="Customer garden with white pebble border and tree planters" width="700" height="712" loading="lazy" decoding="async"></figure>
                     </div>
                     <div class="insta__col insta__col--split">
-                        <figure class="insta__cell"><img src="/img/gm-home-insp-2.jpg" alt="Modern garden room with pale gravel patio" loading="lazy"></figure>
-                        <figure class="insta__cell"><img src="/img/gm-home-insp-3.jpg" alt="Planted garden path finished with gravel" loading="lazy"></figure>
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-2.jpg" alt="Modern garden room with pale gravel patio" width="700" height="525" loading="lazy" decoding="async"></figure>
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-3.jpg" alt="Planted garden path finished with gravel" width="700" height="845" loading="lazy" decoding="async"></figure>
                     </div>
                     <div class="insta__col">
-                        <figure class="insta__cell"><img src="/img/gm-home-insp-4.jpg" alt="Terraced garden with stone stepping path" loading="lazy"></figure>
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-4.jpg" alt="Terraced garden with stone stepping path" width="860" height="473" loading="lazy" decoding="async"></figure>
                     </div>
                     <div class="insta__col">
-                        <figure class="insta__cell"><img src="/img/gm-home-insp-5.jpg" alt="Lawn with curved stone stepping stones" loading="lazy"></figure>
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-5.jpg" alt="Lawn with curved stone stepping stones" width="447" height="447" loading="lazy" decoding="async"></figure>
                     </div>
                     <div class="insta__col insta__col--split">
-                        <figure class="insta__cell"><img src="/img/gm-home-insp-6.jpg" alt="Decorative gravel border along a lawn" loading="lazy"></figure>
-                        <figure class="insta__cell"><img src="/img/gm-home-insp-7.jpg" alt="Landscaped garden feature with planting" loading="lazy"></figure>
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-6.jpg" alt="Decorative gravel border along a lawn" width="447" height="447" loading="lazy" decoding="async"></figure>
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-7.jpg" alt="Landscaped garden feature with planting" width="447" height="447" loading="lazy" decoding="async"></figure>
                     </div>
                     <div class="insta__col">
-                        <figure class="insta__cell"><img src="/img/gm-home-insp-8.jpg" alt="Finished patio project with decorative gravel" loading="lazy"></figure>
+                        <figure class="insta__cell"><img src="/img/gm-home-insp-8.jpg" alt="Finished patio project with decorative gravel" width="225" height="225" loading="lazy" decoding="async"></figure>
                     </div>
                 </div>
             </div>
@@ -377,4 +378,4 @@
 
 </div>
 @Html.Partial("_BulkEnquiryModal", categories)
-<script src="/js/gm-home.js?v1"></script>
+<script src="/js/gm-home.js?v1" defer></script>
