@@ -39,3 +39,14 @@ Decided 23 September 2026: the prices and the quantity calculator stay exactly a
 | **The old left-column images** | The live category pages show six promo images down the left (delivery, a turf article, Instagram, play sand, ITV, the blog). The prototype has the trade card there instead, so they're left out. | Keep them out, or find them a place |
 | **Delivery countdown** | The prototype counts down to a cut-off ("Order in the next 2h 50m for delivery on..."). The live site shows a fixed "Order before 12:00PM for next day delivery", so that's what the new page shows. | Decide whether a real countdown is wanted (needs the cut-off time, working days and bank holidays) |
 | **Klarna** | In the prototype's payment badges, but not on the live category pages. Left out. | Add only if the site offers Klarna |
+
+## Product page
+
+| Found | Detail | Suggestion |
+|---|---|---|
+| **"N purchases during last 24 hours"** | The live page pops this up on six products (codes 20COTS, 20DERB, 20POLAR, 20BBAS, 20YORCR and 20MOON). The number is random, between 10 and 29, each time the page loads. It's left out of the new page. | Keep it out, or show a real count from the orders |
+| **Star rating and review count** | The prototype shows "4.8 (124 reviews)" and "Write a review" under the product name. The site has product reviews, but the controller has them switched off. Left out. | Switch product reviews back on, show the Trustpilot rating instead, or leave it out |
+| **"A popular choice" badge and the three selling points** | Written for Blue Slate ("Stylish blue-grey finish" and so on); there's nothing per product behind them. Left out. | Write them per product (a new field in the admin site), or leave them out |
+| **"Product Use" icons, "Colour & Shape" and "Availability"** | The prototype has four use icons and two empty headings. Left out; the product's own features (Colour, Size and so on) show in the specification table. | Decide what these should say, or leave them out |
+| **"Add to your order" add-ons** | The prototype suggests pegs, glue and membrane. The live page offers no add-ons, although the controller works out a list of linked products. Left out. | Decide which products to offer with which, then it can be built on the existing list |
+| **Blue Slate 20mm's extra photos** | They're the files named after Grey Slate (`20GYSL`, `20GYSL1` to `20GYSL4`). They look much the same, so this may be deliberate. | Check they're the right photos |

@@ -56,6 +56,12 @@ The live category pages load `/scripts/Controllers/Root/Brand/DisplayCategory.js
 - [ ] **`Website.csproj`**: add `Views/Shared/_CategoryPage.cshtml`, `ViewModels/Common/CategoryPageModels.cs`, `css/gm-category.css`, `js/gm-category.js` and the `img/gm-cat-*` files.
 - [ ] Test on the real site: filters (adding, removing, Clear all), Sort by, the phone filter drawer, a trade login (trade prices and the "Trade price" badge), and the bulk enquiry.
 
+## Product page
+
+Being built; this list will grow with it. Product addresses (`/products/{category}/p/{product}`) are routed to `ProductController.Detail`, which renders `Views/Product/Detail.cshtml`. The `DetailNew`, `DetailNewVideo` and `Detail2` actions answer other addresses (`/pnew/`, `/pvid/`, `/p2/`) and are left alone.
+
+- [ ] **`Views/Product/Detail.cshtml`**: when the new chrome is on, render the new product page in place of everything between the breadcrumb and the end of the page's own content. Keep `@section Head` (canonical link, Open Graph tags) and the `view_item` event as they are.
+
 ## After merging
 
 - [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, account, search, content pages and the 404 page.

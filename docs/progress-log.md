@@ -70,6 +70,14 @@ Answering open questions: the prices and the quantity calculator stay exactly as
 - **Colour contrast.** Ten text and icon colours on the homepage and category page, and five in the header, footer and mobile menu, were below WCAG AA. All now pass, measured against the colour behind them. On orange the text is near-black rather than white, which keeps the brand colour and reads better than a darker orange would. The worst was the mobile menu's yellow category name at 1.9:1.
 - Left for a decision: white on the header's main green is 3.04:1, and changing it means changing the site's dominant colour.
 
+## 23 September 2026: product page (in progress)
+
+Rebuilding the prototype's product page (`product2.html`). The GravelMasterSoftware repository is on this PC now, so the page is being mapped from the real code as well as the live pages. Details: [product-page.md](product-page.md).
+
+1. Mapped what the live product page does, from `Detail.cshtml`, its script, the product controller and the basket's add-to-basket action, checked on eight live pages, and where each part goes in the prototype.
+
+Raised for a decision: the random "purchases during last 24 hours" pop-up, the rating, badge and selling points the site has no data for, add-ons, and Blue Slate's photos. See [open-questions.md](open-questions.md#product-page).
+
 ## Next
 
 Waiting on the GravelMasterSoftware repository to wire the homepage and category page in ([merging.md](merging.md)). The prototype's other pages (product, basket, checkout, about, trade) are still to come.
