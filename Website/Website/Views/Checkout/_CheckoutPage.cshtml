@@ -1,0 +1,384 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.CheckoutPageModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@{
+    var uk = System.Globalization.CultureInfo.GetCultureInfo("en-GB");
+    var inv = System.Globalization.CultureInfo.InvariantCulture;
+    bool chooseDate = Model.Delivery == CheckoutDelivery.ChooseDate;
+    CheckoutDate firstDate = null;
+    foreach (var d in Model.Dates)
+    {
+        if (d.IsDefault) { firstDate = d; break; }
+    }
+    string preOrderWeek = Model.PreOrderDate.HasValue ? Model.PreOrderDate.Value.ToString("d MMMM", uk) : "";
+}
+@* New checkout from the Optima prototype (checkout.html), shown by Checkout/ProcessOrder.cshtml when the new chrome is on.
+   Styles: css/gm-checkout.css, loaded in ProcessOrder.cshtml's head section. Behaviour: js/gm-checkout.js.
+   One page instead of the old four steps, posting exactly what the old form posted to /checkout/processorder:
+   - Name, Email, Telephone, SmsOptIn ("on" when ticked);
+   - Address.* (the delivery address) and, with "Use a different billing address" ticked, addressCheck=0 and
+     DeliveryAddress.* (the billing address: the old page's own naming);
+   - selectedDelDay ("dd-MM-yy"), selectedTime ("any" or "am") and deliveryExtraData (the date's and time's charges,
+     which the script adds up as the old page's did);
+   - DeliveryInstructions, TradeOrder and AgreeToTerms.
+   The address finders are the old page's (Postcode Anywhere, same keys). They fill the boxes by id, so the address
+   boxes keep the old ids (ContentPlaceHolder1_...). *@
+<div class="gm-checkout" data-checkout data-total="@Model.Total.ToString("0.00", inv)" data-area="@Model.PostalArea" data-area-strict="@(Model.StrictPostalArea ? "true" : "false")">
+    <div class="container">
+        <nav class="chk-crumbs" aria-label="Breadcrumb">
+            <ol class="chk-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><a href="/basket">My Basket</a></li>
+                <li><span class="chk-crumbs__current" aria-current="page">Checkout</span></li>
+            </ol>
+        </nav>
+
+        <div class="chk-wrap">
+
+            <form class="chk-main" id="fieldInfo" method="post" action="/checkout/processorder" data-checkout-form>
+                <div class="chk-head">
+                    <div>
+                        <h1 class="chk-title">Checkout</h1>
+                        <p class="chk-intro">Almost there! Please enter your details to complete your order.</p>
+                    </div>
+                    @if (!Model.IsLoggedIn)
+                    {
+                        <p class="chk-login"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 20.5c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" /></svg> Already have an account? <a href="/account/login?returnUrl=%2Fcheckout%2Fprocessorder">Log in</a></p>
+                    }
+                </div>
+
+                <ol class="chk-progress" aria-label="Checkout progress" data-progress>
+                    <li class="chk-progress__step is-current" aria-current="step" data-progress-step="1"><span class="chk-progress__num" aria-hidden="true">1</span><span class="chk-progress__label">Your details</span></li>
+                    <li class="chk-progress__step" data-progress-step="2"><span class="chk-progress__num" aria-hidden="true">2</span><span class="chk-progress__label">Delivery</span></li>
+                    <li class="chk-progress__step"><span class="chk-progress__num" aria-hidden="true">3</span><span class="chk-progress__label">Payment</span></li>
+                </ol>
+
+                <p class="chk-required-note"><span class="chk-req" aria-hidden="true">*</span> Required</p>
+
+                <section class="chk-panel" aria-labelledby="chk-contact-h" data-step-section="1">
+                    <h2 class="chk-h2" id="chk-contact-h"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 20.5c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" /></svg> Contact details</h2>
+                    <div class="chk-grid2">
+                        <div class="chk-field chk-field--wide">
+                            <label for="Name">Full name <span class="chk-req" aria-hidden="true">*</span></label>
+                            <input class="chk-input" id="Name" name="Name" type="text" autocomplete="name" maxlength="60" required data-msg-required="Please enter your full name." data-msg-length="Please use 60 characters or fewer.">
+                        </div>
+                        <div class="chk-field">
+                            <label for="Email">Email address <span class="chk-req" aria-hidden="true">*</span></label>
+                            <input class="chk-input" id="Email" name="Email" type="email" autocomplete="email" maxlength="255" required data-msg-required="Please enter your email address." data-msg-email="Please enter an email address like name@@example.com." data-msg-length="Please use 255 characters or fewer.">
+                        </div>
+                        <div class="chk-field">
+                            <label for="Telephone">Contact number <span class="chk-req" aria-hidden="true">*</span></label>
+                            <input class="chk-input" id="Telephone" name="Telephone" type="tel" autocomplete="tel" maxlength="15" required data-msg-required="Please enter a contact number." data-msg-length="Please use 15 characters or fewer.">
+                        </div>
+                    </div>
+                    <p class="chk-note">We may call to discuss extra services and confirm your order details.</p>
+                    <label class="chk-check chk-check--top">
+                        <input type="checkbox" name="SmsOptIn" checked>
+                        <span>Send me text updates about my delivery<small class="chk-check__hint">You can stop them at any time by replying STOP.</small></span>
+                    </label>
+                </section>
+
+                <section class="chk-panel" aria-labelledby="chk-address-h" data-step-section="1">
+                    <h2 class="chk-h2" id="chk-address-h"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" /><circle cx="12" cy="10" r="2.3" /></svg> Delivery address</h2>
+                    <div class="chk-field chk-finder">
+                        <p class="chk-label" id="chk-finder-label">Find your address</p>
+                        <div class="chk-finder__box" data-finder="chk-finder-label">
+                            <link rel="stylesheet" type="text/css" href="https://services.postcodeanywhere.co.uk/css/captureplus-1.30.min.css?key=hm12-dh93-hc52-bz76" />
+                            <script type="text/javascript" src="https://services.postcodeanywhere.co.uk/js/captureplus-1.30.min.js?key=hm12-dh93-hc52-bz76&app=3659"></script>
+                            <div id="hm12dh93hc52bz763659"></div>
+                        </div>
+                        <p class="chk-hint">Start typing the postcode or address and pick it from the list, or fill in the boxes below.</p>
+                    </div>
+                    <div class="chk-grid2">
+                        <div class="chk-field">
+                            <label for="ContentPlaceHolder1_txtAddr1">Address line 1 <span class="chk-req" aria-hidden="true">*</span></label>
+                            <input class="chk-input" id="ContentPlaceHolder1_txtAddr1" name="Address.Address1" type="text" autocomplete="shipping address-line1" maxlength="60" required value="@Model.Address.Address1" data-msg-required="Please enter the first line of the address." data-msg-length="Please use 60 characters or fewer.">
+                        </div>
+                        <div class="chk-field">
+                            <label for="ContentPlaceHolder1_txtAddr2">Address line 2</label>
+                            <input class="chk-input" id="ContentPlaceHolder1_txtAddr2" name="Address.Address2" type="text" autocomplete="shipping address-line2" maxlength="60" value="@Model.Address.Address2" data-msg-length="Please use 60 characters or fewer.">
+                        </div>
+                        <div class="chk-field">
+                            <label for="ContentPlaceHolder1_txtCity">Town or city <span class="chk-req" aria-hidden="true">*</span></label>
+                            <input class="chk-input" id="ContentPlaceHolder1_txtCity" name="Address.City" type="text" autocomplete="shipping address-level2" maxlength="60" required value="@Model.Address.City" data-msg-required="Please enter the town or city." data-msg-length="Please use 60 characters or fewer.">
+                        </div>
+                        <div class="chk-field">
+                            <label for="ContentPlaceHolder1_txtCounty">County</label>
+                            <input class="chk-input" id="ContentPlaceHolder1_txtCounty" name="Address.County" type="text" autocomplete="shipping address-level1" maxlength="60" value="@Model.Address.County" data-msg-length="Please use 60 characters or fewer.">
+                        </div>
+                        <div class="chk-field">
+                            <label for="ContentPlaceHolder1_txtPostcode">Postcode <span class="chk-req" aria-hidden="true">*</span></label>
+                            <input class="chk-input chk-input--postcode" id="ContentPlaceHolder1_txtPostcode" name="Address.Postcode" type="text" autocomplete="shipping postal-code" maxlength="9" required value="@Model.Address.Postcode" pattern="([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z])))) {0,1}[0-9][A-Za-z]{2})" data-postcode data-msg-required="Please enter the postcode." data-msg-pattern="Please enter a full UK postcode, like NG1 1AA." data-msg-length="Please enter a full UK postcode, like NG1 1AA." data-msg-area="Your basket was priced for delivery to {area} postcodes, and this postcode isn&rsquo;t one. Please check it.">
+                        </div>
+                    </div>
+
+                    <label class="chk-check">
+                        <input type="checkbox" name="addressCheck" value="0" aria-controls="billingaddress" data-billing-toggle>
+                        <span>Use a different billing address</span>
+                    </label>
+
+                    <div class="chk-billing" id="billingaddress" hidden data-billing>
+                        <h3 class="chk-h3">Billing address</h3>
+                        <div class="chk-field chk-finder">
+                            <p class="chk-label" id="chk-finder2-label">Find the billing address</p>
+                            <div class="chk-finder__box" data-finder="chk-finder2-label">
+                                <link rel="stylesheet" type="text/css" href="https://services.postcodeanywhere.co.uk/css/captureplus-1.30.min.css?key=bg99-nd82-ge98-kr99" />
+                                <script type="text/javascript" src="https://services.postcodeanywhere.co.uk/js/captureplus-1.30.min.js?key=bg99-nd82-ge98-kr99&app=3695"></script>
+                                <div id="bg99nd82ge98kr993695"></div>
+                            </div>
+                        </div>
+                        <div class="chk-grid2">
+                            <div class="chk-field">
+                                <label for="ContentPlaceHolder1_TextBox2">Address line 1 <span class="chk-req" aria-hidden="true">*</span></label>
+                                <input class="chk-input" id="ContentPlaceHolder1_TextBox2" name="DeliveryAddress.Address1" type="text" autocomplete="billing address-line1" maxlength="60" data-required data-msg-required="Please enter the first line of the billing address." data-msg-length="Please use 60 characters or fewer.">
+                            </div>
+                            <div class="chk-field">
+                                <label for="ContentPlaceHolder1_TextBox3">Address line 2</label>
+                                <input class="chk-input" id="ContentPlaceHolder1_TextBox3" name="DeliveryAddress.Address2" type="text" autocomplete="billing address-line2" maxlength="60" data-msg-length="Please use 60 characters or fewer.">
+                            </div>
+                            <div class="chk-field">
+                                <label for="ContentPlaceHolder1_TextBox4">Town or city <span class="chk-req" aria-hidden="true">*</span></label>
+                                <input class="chk-input" id="ContentPlaceHolder1_TextBox4" name="DeliveryAddress.City" type="text" autocomplete="billing address-level2" data-required data-msg-required="Please enter the billing town or city.">
+                            </div>
+                            <div class="chk-field">
+                                <label for="ContentPlaceHolder1_TextBox5">County</label>
+                                <input class="chk-input" id="ContentPlaceHolder1_TextBox5" name="DeliveryAddress.County" type="text" autocomplete="billing address-level1">
+                            </div>
+                            <div class="chk-field">
+                                <label for="ContentPlaceHolder1_TextBox6">Postcode <span class="chk-req" aria-hidden="true">*</span></label>
+                                <input class="chk-input chk-input--postcode" id="ContentPlaceHolder1_TextBox6" name="DeliveryAddress.Postcode" type="text" autocomplete="billing postal-code" maxlength="9" data-required data-msg-required="Please enter the billing postcode." data-msg-length="Please use 9 characters or fewer.">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                @if (chooseDate)
+                {
+                    <section class="chk-panel" aria-labelledby="chk-when-h" data-step-section="2">
+                        <h2 class="chk-h2" id="chk-when-h"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2" /><path d="M3.5 10h17M8 3v4M16 3v4" /></svg> @(Model.ShowTimes ? "Choose your delivery date and time" : "Choose your delivery date")</h2>
+                        @if (Model.IsMixedPreOrder)
+                        {
+                            <p class="chk-notice">Your pre-order will be delivered on or after its pre-order date. Choose a delivery date for the rest of your order.</p>
+                        }
+                        <fieldset class="chk-fieldset" data-dates-field>
+                            <legend class="chk-sub">Delivery date <span class="chk-req" aria-hidden="true">*</span></legend>
+                            <div class="chk-dates">
+                                <button class="chk-dates__arrow" type="button" aria-label="Earlier dates" data-dates-prev hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 6 9 12 15 18" /></svg></button>
+                                <div class="chk-dates__track" data-dates-track data-msg-required="Please choose a delivery date.">
+                                    @foreach (var date in Model.Dates)
+                                    {
+                                        <label class="chk-date"@(date.Available ? "" : " hidden")>
+                                            <input class="chk-date__input" type="radio" name="selectedDelDay" value="@date.Value" required data-price="@date.Cost.ToString("0.00", inv)" data-kind="@(date.IsWeekend ? date.Day.ToString("dddd", uk) + " delivery" : "Weekday delivery")" data-long="@date.Day.ToString("dddd d MMMM", uk)"@(date.IsDefault ? " checked" : "")@(!date.Available ? " disabled data-unavailable" : date.Cost > 0 ? " disabled data-paid" : "")>
+                                            <span class="chk-date__day">@date.Day.ToString("ddd", uk)</span>
+                                            <span class="chk-date__num">@date.Day.ToString("d MMM", uk)</span>
+                                            <span class="chk-date__price@(date.Cost > 0 ? " chk-date__price--paid" : "")">@(date.Cost > 0 ? HomeProduct.FormatPrice(date.Cost, true) : "Free")</span>
+                                            @if (date.IsEco)
+                                            {
+                                                <span class="chk-date__eco">Eco<span class="chk-visually-hidden"> friendly delivery day</span></span>
+                                            }
+                                        </label>
+                                    }
+                                </div>
+                                <button class="chk-dates__arrow" type="button" aria-label="Later dates" data-dates-next hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18" /></svg></button>
+                            </div>
+                            <p class="chk-hint" hidden data-island-note>The first dates aren&rsquo;t available for Isle of Wight postcodes.</p>
+                        </fieldset>
+                        @if (Model.ShowTimes)
+                        {
+                            <fieldset class="chk-fieldset">
+                                <legend class="chk-sub">Delivery time</legend>
+                                <div class="chk-times">
+                                    <label class="chk-time">
+                                        <input class="chk-time__input" type="radio" name="selectedTime" value="any" data-price="0.00" data-label="All day (8am - 6pm)" checked>
+                                        <span class="chk-time__label">All day</span> 8am - 6pm
+                                        <span class="chk-time__price">Free</span>
+                                    </label>
+                                    <label class="chk-time">
+                                        <input class="chk-time__input" type="radio" name="selectedTime" value="am" data-price="@Model.MorningCost.ToString("0.00", inv)" data-label="Morning (7am - 12:30pm)"@(Model.MorningCost > 0 ? " disabled data-paid" : "")>
+                                        <span class="chk-time__label">Morning</span> 7am - 12:30pm
+                                        <span class="chk-time__price@(Model.MorningCost > 0 ? " chk-time__price--paid" : "")">@(Model.MorningCost > 0 ? HomeProduct.FormatPrice(Model.MorningCost, true) : "Free")</span>
+                                    </label>
+                                </div>
+                            </fieldset>
+                        }
+                        else
+                        {
+                            <input type="hidden" name="selectedTime" value="any">
+                        }
+                    </section>
+                }
+                else
+                {
+                    <input type="hidden" name="selectedDelDay" value="@Model.PostedDay">
+                    <input type="hidden" name="selectedTime" value="any">
+                    if (Model.Delivery == CheckoutDelivery.RoyalMail || Model.Delivery == CheckoutDelivery.PreOrder)
+                    {
+                        <section class="chk-panel" aria-labelledby="chk-when-h" data-step-section="2">
+                            <h2 class="chk-h2" id="chk-when-h"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg> Delivery</h2>
+                            @if (Model.Delivery == CheckoutDelivery.RoyalMail)
+                            {
+                                <p class="chk-deliverynote">Delivery by Royal Mail: 10&ndash;12 days.</p>
+                            }
+                            else
+                            {
+                                <p class="chk-deliverynote">Your pre-order will be delivered in the week starting @preOrderWeek.</p>
+                                <p class="chk-hint">This is an estimated date and may change due to unforeseen circumstances.</p>
+                            }
+                        </section>
+                    }
+                }
+                <input type="hidden" name="deliveryExtraData" value="0.00" data-extra>
+
+                <section class="chk-panel" aria-labelledby="chk-info-h" data-step-section="2">
+                    <h2 class="chk-h2" id="chk-info-h"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h10l4 4v13H5z" /><path d="M15 3.5v4h4M8.5 12h7M8.5 16h5" /></svg> Additional information</h2>
+                    <div class="chk-field">
+                        <label for="DeliveryInstructions">Delivery instructions</label>
+                        <p class="chk-hint chk-hint--above" id="chk-notes-hint">Only the driver sees these, at the delivery point.</p>
+                        <textarea class="chk-textarea" id="DeliveryInstructions" name="DeliveryInstructions" rows="4" placeholder="e.g. Please leave the bag on the driveway" aria-describedby="chk-notes-hint"></textarea>
+                    </div>
+                    <label class="chk-check">
+                        <input type="checkbox" name="TradeOrder" value="true">
+                        <span>This is a trade order</span>
+                    </label>
+                    <input type="hidden" name="TradeOrder" value="false">
+                    <div class="chk-field chk-terms">
+                        <label class="chk-check">
+                            <input type="checkbox" id="AgreeToTerms" name="AgreeToTerms" value="true" required data-msg-required="Please agree to the terms and conditions to continue.">
+                            <span>I agree to the <a href="/term-conditions" target="_blank" rel="noopener">terms and conditions<span class="chk-visually-hidden"> (opens in a new tab)</span></a> and the <a href="/delivery" target="_blank" rel="noopener">delivery method<span class="chk-visually-hidden"> (opens in a new tab)</span></a> <span class="chk-req" aria-hidden="true">*</span></span>
+                        </label>
+                        <input type="hidden" name="AgreeToTerms" value="false">
+                    </div>
+                </section>
+
+                <div class="chk-pay">
+                    <p class="chk-pay__total" aria-live="polite"><span class="chk-pay__label">Total to pay</span> <strong class="chk-pay__value" data-total-text>@HomeProduct.FormatPrice(Model.Total, true)</strong> <span class="chk-pay__note">inc. VAT &amp; delivery</span></p>
+                    <p class="chk-errorsum" role="alert" data-error-summary hidden></p>
+                    <div class="chk-actions">
+                        <a class="chk-back" href="/basket"><span aria-hidden="true">&larr;</span> Back to basket</a>
+                        <button class="chk-cta" type="submit" id="final-check" data-submit>
+                            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2" /><path d="M8 10.5V7.4a4 4 0 0 1 8 0v3.1" /></svg>
+                            <span data-submit-text>Continue to payment</span>
+                            <span class="chk-cta__arrow" aria-hidden="true">&rarr;</span>
+                        </button>
+                    </div>
+                    <p class="chk-pay__secure">You&rsquo;ll enter your card details on our payment provider&rsquo;s secure page.</p>
+                </div>
+            </form>
+
+            <div class="chk-side">
+                <aside class="chk-card" aria-labelledby="chk-summary-h">
+                    <div class="chk-card__head">
+                        <h2 class="chk-card__title" id="chk-summary-h">Order summary</h2>
+                        <a class="chk-edit" href="/basket"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z" /><path d="M13.5 6.5l4 4" /></svg> Edit basket</a>
+                    </div>
+
+                    <ul class="chk-items">
+                        @foreach (var line in Model.Lines)
+                        {
+                            <li class="chk-item">
+                                <img class="chk-item__img" src="@line.ImageUrl" alt="" width="330" height="330" loading="lazy" decoding="async">
+                                <div class="chk-item__info">
+                                    <p class="chk-item__name">@Html.Raw(line.NameHtml)</p>
+                                    <p class="chk-item__meta">Size: @Html.Raw(line.SizeHtml)<br>Qty: @line.Quantity</p>
+                                    @if (line.PreOrderDate.HasValue)
+                                    {
+                                        <p class="chk-item__pre">Pre-order for delivery w/c @line.PreOrderDate.Value.ToString("d MMM", uk)</p>
+                                    }
+                                </div>
+                                <span class="chk-item__price">@HomeProduct.FormatPrice(line.LinePrice, true)</span>
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="chk-card__delivery">
+                        <p class="chk-card__section"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg> Delivery</p>
+                        @if (chooseDate)
+                        {
+                            <div class="chk-line">
+                                <div>
+                                    <p class="chk-line__name" data-sum-kind>@(firstDate != null && firstDate.IsWeekend ? firstDate.Day.ToString("dddd", uk) + " delivery" : "Weekday delivery")</p>
+                                    <p class="chk-line__meta" data-sum-day>@(firstDate != null ? "Delivery on " + firstDate.Day.ToString("dddd d MMMM", uk) : "Choose a delivery date")</p>
+                                </div>
+                                <span class="chk-line__price" data-sum-day-price>@HomeProduct.FormatPrice(firstDate != null ? firstDate.Cost : 0m, true)</span>
+                            </div>
+                            if (Model.ShowTimes)
+                            {
+                                <div class="chk-line">
+                                    <p class="chk-line__name" data-sum-time>All day (8am - 6pm)</p>
+                                    <span class="chk-line__price" data-sum-time-price>@HomeProduct.FormatPrice(0m, true)</span>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="chk-line">
+                                <div>
+                                    @if (Model.Delivery == CheckoutDelivery.RoyalMail)
+                                    {
+                                        <p class="chk-line__name">Royal Mail</p>
+                                        <p class="chk-line__meta">Delivered in 10&ndash;12 days</p>
+                                    }
+                                    else if (Model.Delivery == CheckoutDelivery.PreOrder)
+                                    {
+                                        <p class="chk-line__name">Pre-order delivery</p>
+                                        <p class="chk-line__meta">Week starting @preOrderWeek</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="chk-line__name">Delivery</p>
+                                        if (Model.PostedDate.HasValue)
+                                        {
+                                            <p class="chk-line__meta">Delivery on @Model.PostedDate.Value.ToString("dddd d MMMM", uk)</p>
+                                        }
+                                    }
+                                </div>
+                                <span class="chk-line__price">@HomeProduct.FormatPrice(0m, true)</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="chk-total">
+                        <span>
+                            <span class="chk-total__label">Total cost</span>
+                            <span class="chk-total__note">(inc. VAT &amp; delivery)</span>
+                        </span>
+                        <span class="chk-total__value" data-total-text>@HomeProduct.FormatPrice(Model.Total, true)</span>
+                    </div>
+                </aside>
+
+                <div class="chk-help">
+                    <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2" /><rect x="2.5" y="13" width="4.5" height="6.5" rx="1.5" /><rect x="17" y="13" width="4.5" height="6.5" rx="1.5" /><path d="M19 19.5c0 1.4-1.8 2-4 2h-2" /></svg>
+                    <p><strong>Need help with your order?</strong>Call us on <a href="tel:03300585068">0330 058 5068</a> (8am - 5pm) or read our <a href="/faq">FAQs</a>.</p>
+                </div>
+
+                <ul class="chk-assure">
+                    <li><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg><span><strong>Next day delivery</strong>On most products</span></li>
+                    <li><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.4-3 7.9-7 9-4-1.1-7-4.6-7-9V6z" /><path d="M9 12l2 2 4-4" /></svg><span><strong>Price match promise</strong>Great value, every time</span></li>
+                    <li><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V3.5" /><path d="M5 4h12l-2.5 4L17 12H5" /></svg><span><strong>UK nationwide delivery</strong>To home or site</span></li>
+                </ul>
+
+                <div class="chk-secure">
+                    <img class="chk-secure__cards" src="/img/gm-payment-cards.png" alt="We accept PayPal, Visa, Mastercard and American Express" width="645" height="105" loading="lazy">
+                    <p class="chk-secure__note"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2" /><path d="M8 10.5V7.4a4 4 0 0 1 8 0v3.1" /></svg><span><strong>Secure payment</strong>Card details go to our payment provider, not to us</span></p>
+                </div>
+
+                @if (Model.ShowTradeLink)
+                {
+                    <p class="chk-trade">Trade customer? <a href="/trade">Get trade prices</a></p>
+                }
+            </div>
+
+        </div>
+    </div>
+
+    <div class="chk-strip">
+        <div class="container chk-strip__inner">
+            <span class="chk-strip__lead"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" /></svg> Building better outdoor spaces, together.</span>
+            <ul class="chk-strip__list">
+                <li>Quality products</li>
+                <li>Trusted by gardeners</li>
+                <li>Expert support</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="/js/gm-checkout.js?v1"></script>

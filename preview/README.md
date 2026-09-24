@@ -16,6 +16,8 @@ The About us page (`/about-us`) and the Trade Accounts page (`/trade`) are repla
 
 The basket (`/basket`) is the new basket page with a **sample basket** in it: the preview sends no cookies, so the live site's basket is always empty. The sample is real products (Cotswold Chippings, turf and plastic pegs) at their live prices. `/basket?empty=1` shows the empty basket, and `/basket?voucher=1&discount=1` a voucher message and a 10% discount. Changing it (quantities, Remove, vouchers, add-ons) is blocked like every other basket action, and the page says so.
 
+The checkout (`/checkout/processorder`, or Checkout Securely on the basket) is the new checkout for that sample basket, shown in the live basket page's frame, since the live site sends a checkout with no basket back to `/basket`. Its delivery dates and prices are samples in the shape the site makes them, run through the real date rules (`CheckoutDates.Build`). `?samples=1`, `?preorder=1`, `?mixed=1`, `?simple=1` and `?notimes=1` show the other kinds of delivery, and `?area=PO` a basket priced for PO postcodes (no Saturdays; try an Isle of Wight postcode such as PO30 5AA). The address finders aren't loaded (typing would use the site's Postcode Anywhere account): a copy of their search box stands in. "Continue to payment" is blocked like every other form.
+
 - Saving a `gm-*.css` or `gm-*.js` file, a `gm-*` image or any `.cshtml` file reloads the page with the change. (A change to a script in `tools/`, or to a `ViewModels/Common/*.cs` file, needs the preview restarting: the product page runs the real C# model, compiled when the preview starts.)
 - Add `?newchrome=0` to an address to compare with the old header, footer, homepage and category pages (it sticks while you click around). `?newchrome=1` switches back. Page titles start with `[Preview]`.
 - It is read-only. Adding to basket, sign-ups, enquiries, "Send me my estimate", Track Order and logging in are blocked (the forms say they couldn't send). The one form let through is **Sort by** on category pages, and only with one of its four choices, because it only changes the order of the products. No cookies are sent, so the basket is always empty. Analytics, Hotjar, Clarity, Facebook and chat are removed so preview visits aren't counted.
@@ -23,7 +25,7 @@ The basket (`/basket`) is the new basket page with a **sample basket** in it: th
 ### Known limits
 
 - The "page not found" page keeps the old header and footer. That page is built from a different template to the rest of the site, and the branch only changes `_Layout.cshtml`, so the real site would show it the same way.
-- Checkout redirects to the basket while the basket is empty, so the checkout version of the header can't be reached here. `preview/checkout.html` shows it.
+- The live checkout sends an empty basket back to `/basket`, so the preview's checkout is a sample in the basket page's frame (see above).
 - The Trustpilot widgets (homepage, product, About and Trade pages) load but stay empty, probably because Trustpilot only fills them on the real site's address.
 - The old product pages show two console errors (reading `'className'`, and "Unexpected identifier 'Object'"), on the live site too. They come from the old page's own scripts, so the new product page doesn't have them; add `?newchrome=0` to see them.
 
@@ -56,6 +58,7 @@ Menus, product photos and prices come from the live site and are saved in `tools
 | `about-page.ps1` | Fills in `_AboutPage.cshtml`, reading its team and photos from the partial's own C# block. |
 | `trade-page.ps1` | Fills in `_TradePage.cshtml`, reading its perks and sign-up address from the partial's own C# block. |
 | `basket-page.ps1` | Builds the sample basket from live product pages and fills in `_BasketPage.cshtml` with it. |
+| `checkout-page.ps1` | Builds the sample checkout for the sample basket, with sample dates run through the real `CheckoutDates.Build` (compiled from `ViewModels/Common/CheckoutPageModels.cs` with `Add-Type`), and fills in `_CheckoutPage.cshtml` with it. |
 | `site-preview.ps1` | The whole-website preview. |
 | `fetch-data.ps1` | Re-reads menus, products, banners and a sample category page from the live site, then runs `build.ps1`. |
 | `data.json` | The live site's menus, products, prices and homepage banners (fetched 17 September 2026). |

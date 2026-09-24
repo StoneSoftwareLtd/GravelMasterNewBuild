@@ -9,7 +9,9 @@
 # Views/Shared/_ProductPage.cshtml, filled from the live page. Product prices come from the live site's own
 # price lookup, as they do on the real page. /about-us and /trade show the new About us and Trade Accounts pages (Views/Content/_AboutPage.cshtml and
 # _TradePage.cshtml). /basket shows the new basket page (Views/Basket/_BasketPage.cshtml) with a sample basket, since
-# no cookies reach the live site.
+# no cookies reach the live site. /checkout/processorder shows the new checkout (Views/Checkout/_CheckoutPage.cshtml)
+# for that sample basket, in the live basket page's frame (the live site sends a checkout with no basket back to
+# /basket); Continue to payment is blocked like every other form.
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -38,6 +40,7 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'about-page.ps1')
 . (Join-Path $PSScriptRoot 'trade-page.ps1')
 . (Join-Path $PSScriptRoot 'basket-page.ps1')
+. (Join-Path $PSScriptRoot 'checkout-page.ps1')
 # a category page: /garden-chippings/products/, /garden-chippings/slate-chippings/products/, and either with filters after
 $categoryPathPattern = '^/(?!products/)[a-z0-9-]+(?:/[a-z0-9-]+)?/products(?:/|$)'
 
@@ -107,6 +110,7 @@ function Get-ChangeStamp {
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Home') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Content') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Basket') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
+    @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Checkout') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'css') -Filter 'gm-*') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'js') -Filter 'gm-*') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'img') -Filter 'gm-*')
@@ -219,6 +223,20 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $css = '/css/gm-basket.css?v1'; $newPage = 'new basket page'
         $extraHead = '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />'
       }
+      elseif ($path -match '^/checkout/processorder/?$') {
+        # The live basket page's frame (see the main loop) with a sample checkout for the sample basket.
+        # ?samples=1, ?preorder=1, ?mixed=1, ?simple=1 and ?notimes=1 show the other kinds of delivery; ?area=PO a
+        # postcode area without Saturdays (and where the Isle of Wight is)
+        $flags = @('samples', 'preorder', 'mixed', 'simple', 'notimes' | Where-Object { $rawUrl -match "[?&]$_=1(&|$)" })
+        $areaMatch = [regex]::Match($rawUrl, '[?&]area=([A-Za-z]{1,2})(&|$)')
+        $area = if ($areaMatch.Success) { $areaMatch.Groups[1].Value.ToUpperInvariant() } else { 'NG' }
+        $sample = Get-SampleCheckout $flags $area
+        $q = if ($area -ne 'NG') { "area=$area&amp;" } else { '' }
+        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: a sample checkout for the sample basket, with sample delivery dates and prices (the real ones come from the site''s settings) and the basket priced for ' + $area + ' postcodes. Nothing is sent: Continue to payment is blocked. Try ' +
+          '<a href="/checkout/processorder">dates</a>, <a href="/checkout/processorder?' + $q + 'samples=1">samples</a>, <a href="/checkout/processorder?' + $q + 'preorder=1">pre-order</a>, <a href="/checkout/processorder?' + $q + 'mixed=1">mixed pre-order</a>, <a href="/checkout/processorder?' + $q + 'simple=1">no date step</a>, <a href="/checkout/processorder?' + $q + 'notimes=1">no morning slot</a> or <a href="/checkout/processorder?area=PO">PO postcodes</a>.</p>'
+        $content = $notice + (Format-CheckoutPage (Join-Path $package 'Views\Checkout\_CheckoutPage.cshtml') $sample)
+        $css = '/css/gm-checkout.css?v1'; $newPage = 'new checkout'
+      }
     }
     if ($content) {
       # full width, without the old white box and orange side borders
@@ -233,6 +251,13 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
       # The same for the basket: Basket/Index.js calls the old page's own functions (onJqueryLoaded)
       if ($newPage -eq 'new basket page') {
         $html = [regex]::Replace($html, 'require\(\["/scripts/Controllers/Root/Basket/Index\.js[^"]*"\]\)', 'require(["/scripts/Controllers/Root/Content/Display.js"])')
+      }
+      # The checkout is shown in the basket page's frame: give it the checkout's script (as ProcessOrder.cshtml will:
+      # the old ProcessOrder.js works the old form), title, and no cookie bar (_Layout leaves it off checkout pages)
+      if ($newPage -eq 'new checkout') {
+        $html = [regex]::Replace($html, 'require\(\["/scripts/Controllers/Root/Basket/Index\.js[^"]*"\]\)', 'require(["/scripts/Controllers/Root/Content/Display.js"])')
+        $html = [regex]::Replace($html, '<link href="/css/cookiebar\.min\.css" rel="stylesheet"\s*/?>|<script type="text/javascript" src="/scripts/cookiebar\.min\.js"></script>', '')
+        $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', '<title>GravelMaster | Checkout</title>')
       }
     }
   }
@@ -360,7 +385,11 @@ while ($listener.IsListening) {
       $note = 'cached'
     }
     else {
-      $live = Get-Live $rawUrl $req.Headers['Accept']
+      # The live checkout sends a visitor with no basket back to /basket, and the preview has no basket, so the
+      # sample checkout is shown in the live basket page's frame (the same layout, which gets the checkout header
+      # here because the address has "checkout" in it, as _Layout decides)
+      $fetchUrl = if ($path -match '^/checkout/processorder/?$') { '/basket' } else { $rawUrl }
+      $live = Get-Live $fetchUrl $req.Headers['Accept']
       if ($live.Status -ge 300 -and $live.Status -lt 400 -and $live.Location) {
         $res.StatusCode = $live.Status
         $res.RedirectLocation = [regex]::Replace($live.Location, '^https?://(?:www\.)?gravelmaster\.co\.uk(?=/|$)', '', 'IgnoreCase')
