@@ -122,7 +122,22 @@ While the live code is being put on a branch, carried on with the prototype's pa
 
 Raised for a decision: the out-of-date "31-years", the hero photo (looks like stock, and small), Harvey Finlayson (not on the live team page), the live content left out, and the blue. See [open-questions.md](open-questions.md#about-us-page).
 
+## 24 September 2026: Trade Accounts page
+
+Rebuilt the prototype's trade page (`trade.html`) as `Views/Content/_TradePage.cshtml` for `/trade`. Details: [trade-page.md](trade-page.md).
+
+- The prototype's perks, "Why Choose Gravel Master?" and FAQ answers were placeholder text. They're now written only from what the live trade page, the live trade sign-up form and the site's code say, each listed in the page's doc, and raised for the business to read.
+- "Open a trade account" and "Get trade prices" open the trade sign-up form, as the old page's button did.
+- The "Why Choose" greens (3.0 to 3.7:1 with white) and the "Trade Accounts" label (3.9:1) were darkened just enough to pass AA. Every text colour on the page was measured.
+- The hero title now scales with the window: at the prototype's fixed sizes "on." fell onto a line of its own from 861 to about 1070px wide. Measured at 13 widths.
+- The FAQs are `<details>`, so they need no script; opening and closing with the mouse and the keyboard was checked in headless Edge.
+- The preview shows it at `/trade`. Checked at 1440, 1024, 768 and 390px. The partial compiles with MVC 5.2's Razor.
+
+Found on the live site: the trade page has no `<title>` or meta description.
+
+Raised for a decision: the new words, "Speak to our trade team", the "Why" photo, the live "Why us?" pictures, the old phone number on the bulk bag in the hero photo, and the greens. See [open-questions.md](open-questions.md#trade-accounts-page).
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
-- The prototype's other pages: trade, then basket, checkout and confirmation. The basket and checkout take payments, so they're best built against the live code on a test site.
+- The prototype's other pages: basket, checkout and confirmation. They take payments, so they're best built against the live code on a test site.

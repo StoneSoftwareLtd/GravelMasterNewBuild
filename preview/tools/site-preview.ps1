@@ -7,7 +7,8 @@
 # The homepage, every category page (with or without filters) and every product page show the new homepage,
 # category page and product page from Views/Home/_HomePage.cshtml, Views/Shared/_CategoryPage.cshtml and
 # Views/Shared/_ProductPage.cshtml, filled from the live page. Product prices come from the live site's own
-# price lookup, as they do on the real page. /about-us shows the new About us page (Views/Content/_AboutPage.cshtml).
+# price lookup, as they do on the real page. /about-us and /trade show the new About us and Trade Accounts pages (Views/Content/_AboutPage.cshtml and
+# _TradePage.cshtml).
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -34,6 +35,7 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'category-page.ps1')
 . (Join-Path $PSScriptRoot 'product-page.ps1')
 . (Join-Path $PSScriptRoot 'about-page.ps1')
+. (Join-Path $PSScriptRoot 'trade-page.ps1')
 # a category page: /garden-chippings/products/, /garden-chippings/slate-chippings/products/, and either with filters after
 $categoryPathPattern = '^/(?!products/)[a-z0-9-]+(?:/[a-z0-9-]+)?/products(?:/|$)'
 
@@ -197,6 +199,10 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $content = Format-AboutPage (Join-Path $package 'Views\Content\_AboutPage.cshtml')
         $css = '/css/gm-about.css?v1'; $newPage = 'new about page'
         $extraHead = '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />'
+      }
+      elseif ($path -match '^/trade/?$') {
+        $content = Format-TradePage (Join-Path $package 'Views\Content\_TradePage.cshtml')
+        $css = '/css/gm-trade.css?v1'; $newPage = 'new trade page'
       }
     }
     if ($content) {

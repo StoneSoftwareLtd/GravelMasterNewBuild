@@ -12,7 +12,7 @@ Every page comes from www.gravelmaster.co.uk with its old header and footer swap
 
 Every product page (`/products/<category>/p/<product>`) is replaced by the new product page, filled with that product's photos, sizes, description and related products. Its prices come from the live site's own price lookup (`/product/calculateprices`), which only reads prices, so entering a postcode shows the real prices for that area. Add to cart is blocked like every other basket action: the page says it couldn't add, which is what a customer would see if the basket failed.
 
-The About us page (`/about-us`) is replaced by the new one.
+The About us page (`/about-us`) and the Trade Accounts page (`/trade`) are replaced by the new ones.
 
 - Saving a `gm-*.css` or `gm-*.js` file, a `gm-*` image or any `.cshtml` file reloads the page with the change. (A change to a script in `tools/`, or to a `ViewModels/Common/*.cs` file, needs the preview restarting: the product page runs the real C# model, compiled when the preview starts.)
 - Add `?newchrome=0` to an address to compare with the old header, footer, homepage and category pages (it sticks while you click around). `?newchrome=1` switches back. Page titles start with `[Preview]`.
@@ -22,7 +22,7 @@ The About us page (`/about-us`) is replaced by the new one.
 
 - The "page not found" page keeps the old header and footer. That page is built from a different template to the rest of the site, and the branch only changes `_Layout.cshtml`, so the real site would show it the same way.
 - Checkout redirects to the basket while the basket is empty, so the checkout version of the header can't be reached here. `preview/checkout.html` shows it.
-- The Trustpilot widgets (homepage, product and About pages) load but stay empty, probably because Trustpilot only fills them on the real site's address.
+- The Trustpilot widgets (homepage, product, About and Trade pages) load but stay empty, probably because Trustpilot only fills them on the real site's address.
 - The old product pages show two console errors (reading `'className'`, and "Unexpected identifier 'Object'"), on the live site too. They come from the old page's own scripts, so the new product page doesn't have them; add `?newchrome=0` to see them.
 
 ## 2. Single saved pages with VS Code Live Server
@@ -52,6 +52,7 @@ Menus, product photos and prices come from the live site and are saved in `tools
 | `product-page.ps1` | Reads an old product page into what the new one shows, and fills in `_ProductPage.cshtml` the same way. The description is split by the real `ProductDescription.Parse`, compiled from `ViewModels/Common` with `Add-Type`. |
 | `calculator.ps1` | Fills in the shared quantity calculator (`_QuantityCalculator.cshtml`) for the homepage and product pages. |
 | `about-page.ps1` | Fills in `_AboutPage.cshtml`, reading its team and photos from the partial's own C# block. |
+| `trade-page.ps1` | Fills in `_TradePage.cshtml`, reading its perks and sign-up address from the partial's own C# block. |
 | `site-preview.ps1` | The whole-website preview. |
 | `fetch-data.ps1` | Re-reads menus, products, banners and a sample category page from the live site, then runs `build.ps1`. |
 | `data.json` | The live site's menus, products, prices and homepage banners (fetched 17 September 2026). |
