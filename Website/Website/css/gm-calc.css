@@ -254,6 +254,9 @@
 
   .gm-calc .calc__results { flex-wrap: wrap; gap: 14px; }
   .gm-calc .calc__results .result:first-child { flex-basis: 100%; }
+  /* The real labels ("Pre Packed Pallets (56 x 25L)") are too long for both results to share a line, which left
+     "Or" hanging at the end of the first; on its own line the three stack: result, Or, result */
+  .gm-calc .calc__or { flex-basis: 100%; }
   .gm-calc .calc__divider {
     display: flex;
     flex-basis: 100%;
