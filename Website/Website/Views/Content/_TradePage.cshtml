@@ -1,0 +1,143 @@
+@* New Trade Accounts page from the Optima prototype (trade.html), shown by Content/Trade.cshtml when the new chrome
+   is on. The prototype's placeholder text is replaced with the live page's words and what the live trade
+   registration form and the site's code say about trade accounts (see docs/trade-page.md).
+   Styles: css/gm-trade.css, loaded in Trade.cshtml's Head section. No script: the FAQs are <details>. *@
+@{
+    // The trade registration form: the Trade tab of the login page, as the old page's "Request a Trade Account" button opens it.
+    const string applyUrl = "/account/login?isTradeRegister=true";
+
+    var perks = new[]
+    {
+        new { Title = "Exclusive Pricing", Text = "Trade prices across our range. Log in and every product page, and your basket, shows them.",
+              Icon = "<g transform=\"translate(24,0) scale(-1,1)\"><path d=\"M11.5 3H5a2 2 0 0 0-2 2v6.5a2 2 0 0 0 .6 1.4l7.5 7.5a2 2 0 0 0 2.8 0l6.1-6.1a2 2 0 0 0 0-2.8L12.9 3.6A2 2 0 0 0 11.5 3z\" /><circle cx=\"7.5\" cy=\"7.5\" r=\"1.2\" /></g><path d=\"M16.9 6.3c1.3-1.1 2.9-.8 3.3.5\" /><circle cx=\"10\" cy=\"10.6\" r=\"1.15\" /><circle cx=\"14.2\" cy=\"14.2\" r=\"1.15\" /><line x1=\"15\" y1=\"9.7\" x2=\"9.2\" y2=\"15.1\" />" },
+        new { Title = "Priority Support", Text = "An account manager for your business, and our sales team on 0330 058 5068 (option 1) for advice and orders.",
+              Icon = "<path d=\"M4.5 5.5h15A1.5 1.5 0 0 1 21 7v7.5A1.5 1.5 0 0 1 19.5 16h-5.2L12 18.8 9.7 16H4.5A1.5 1.5 0 0 1 3 14.5V7a1.5 1.5 0 0 1 1.5-1.5z\" /><path d=\"M12 6.85 13 9.38 15.71 9.55 13.62 11.28 14.29 13.91 12 12.45 9.71 13.91 10.38 11.28 8.29 9.55 11 9.38Z\" />" },
+        new { Title = "Free Samples", Text = "Free samples, so you can check the colour and size before you order.",
+              Icon = "<g transform=\"translate(0 -1.5)\"><rect x=\"4.5\" y=\"9.4\" width=\"15\" height=\"10.6\" rx=\"0.8\" /><line x1=\"4.5\" y1=\"13.4\" x2=\"19.5\" y2=\"13.4\" /><line x1=\"12\" y1=\"9.4\" x2=\"12\" y2=\"20\" /><path d=\"M12 9.4C12 7.3 10.7 5.8 9.2 5.8 8 5.8 7.6 7.1 8.5 7.9 9.4 8.7 12 9.4 12 9.4z\" /><path d=\"M12 9.4C12 7.3 13.3 5.8 14.8 5.8 16 5.8 16.4 7.1 15.5 7.9 14.6 8.7 12 9.4 12 9.4z\" /></g>" }
+    };
+}
+<div class="gm-trade">
+
+    <div class="container">
+        <nav class="trd-crumbs" aria-label="Breadcrumb">
+            <ol class="trd-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><span class="trd-crumbs__current" aria-current="page">Trade Accounts</span></li>
+            </ol>
+        </nav>
+    </div>
+
+    <section class="trd-hero">
+        <div class="container">
+            <div class="trd-hero__card">
+                <div class="trd-hero__copy">
+                    <p class="trd-hero__eyebrow">Trade Accounts</p>
+                    <h1 class="trd-hero__title">Materials you can rely on. <br>Service built for the trade.</h1>
+                    <p class="trd-hero__text">Access competitive trade pricing, flexible payment options and straightforward ordering&mdash;helping you keep every project moving.</p>
+                    <div class="trd-hero__actions">
+                        <a href="@applyUrl" class="trd-btn">Open a trade account</a>
+                        <a href="/contact-us" class="trd-btn trd-btn--outline">Speak to our trade team</a>
+                    </div>
+                    <ul class="trd-hero__list">
+                        <li><span class="trd-hero__tick" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10" /></svg></span>Exclusive trade pricing</li>
+                        <li><span class="trd-hero__tick" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10" /></svg></span>Flexible payment options</li>
+                        <li><span class="trd-hero__tick" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10" /></svg></span>Reliable nationwide delivery</li>
+                    </ul>
+                </div>
+                <img class="trd-hero__img" src="/img/gm-trade-hero.jpg" alt="Forklift carrying a Gravel Master bulk bag across the yard" width="713" height="480" decoding="async">
+            </div>
+        </div>
+    </section>
+
+    <section class="trd-perks" aria-labelledby="trd-perks-title">
+        <div class="container">
+            <h2 id="trd-perks-title">Perks of a trade account</h2>
+            <p class="trd-perks__sub">Designed to make ordering easier, faster and more rewarding.</p>
+            <div class="trd-perks__grid">
+                @foreach (var perk in perks)
+                {
+                    <div class="trd-perk">
+                        <span class="trd-perk__icon">
+                            <svg viewBox="0 0 24 24" width="79" height="79" fill="none" stroke="#fff" stroke-width="0.64" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">@Html.Raw(perk.Icon)</svg>
+                        </span>
+                        <h3>@perk.Title</h3>
+                        <p>@perk.Text</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <section class="trd-why">
+        <div class="trd-why__copy">
+            <div class="trd-why__inner">
+                <h2>Why Choose Gravel Master?</h2>
+                <p>We supply thousands of trade customers per year at great prices!</p>
+                <p>Gravel Master is the UK&rsquo;s leading supplier of decorative aggregates and horticultural landscaping goods. We offer only the top quality products which are all naturally sourced within the UK and Europe.</p>
+                <ul>
+                    <li>High-quality aggregates</li>
+                    <li>Nationwide delivery</li>
+                    <li>Loose load tipper deliveries</li>
+                    <li>Dedicated bagging</li>
+                    <li>Trusted by landscapers, builders and contractors</li>
+                    <li>Expert advice when you need it</li>
+                </ul>
+            </div>
+        </div>
+        <div class="trd-why__media">
+            <img class="trd-why__img" src="/img/gm-trade-why.jpg" alt="Landscaper planting a gravel border beside stone steps" width="570" height="441" loading="lazy" decoding="async">
+        </div>
+    </section>
+
+    <section class="trd-faq" aria-labelledby="trd-faq-title">
+        <div class="container trd-faq__grid">
+            <div class="trd-faq__intro">
+                <h2 id="trd-faq-title">FAQs</h2>
+                <p>Everything you need to know about your Gravel Master Trade Account.</p>
+                <a href="@applyUrl" class="trd-btn">Get trade prices</a>
+            </div>
+            <div class="trd-faq__list">
+                <details class="trd-faq__item" open>
+                    <summary class="trd-faq__q"><h3>Who can apply for a Trade Account?</h3><svg class="trd-faq__chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg></summary>
+                    <p class="trd-faq__a">Businesses in the trade. When you apply, you choose the one that fits you best: landscaper or contractor, builder, builders&rsquo; merchant, garden designer, roofer, or other.</p>
+                </details>
+                <details class="trd-faq__item">
+                    <summary class="trd-faq__q"><h3>How do I apply?</h3><svg class="trd-faq__chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg></summary>
+                    <p class="trd-faq__a">Fill in our short <a href="@applyUrl">trade account form</a>: your name, email address, phone number and company name, the kind of business you are, and whether you&rsquo;d like to pay on credit or by cash.</p>
+                </details>
+                <details class="trd-faq__item">
+                    <summary class="trd-faq__q"><h3>How long does it take to open an account?</h3><svg class="trd-faq__chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg></summary>
+                    <p class="trd-faq__a">Our team reviews every request, and we&rsquo;ll email you to let you know the outcome. If you have any questions in the meantime, call us on <a href="tel:03300585068">0330 058 5068</a>.</p>
+                </details>
+                <details class="trd-faq__item">
+                    <summary class="trd-faq__q"><h3>What are the benefits of a Trade Account?</h3><svg class="trd-faq__chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg></summary>
+                    <p class="trd-faq__a">Trade prices on our products, an account manager, free samples, loose load tipper deliveries, dedicated bagging and nationwide delivery.</p>
+                </details>
+                <details class="trd-faq__item">
+                    <summary class="trd-faq__q"><h3>Can I order online with my Trade Account?</h3><svg class="trd-faq__chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg></summary>
+                    <p class="trd-faq__a">Yes. Log in, and the product pages and your basket show your trade prices; then check out as normal. You can also order over the phone on <a href="tel:03300585068">0330 058 5068</a>.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <section class="trd-reviews" aria-label="Customer reviews">
+        <div class="container trd-reviews__grid">
+            <div class="trd-reviews__left">
+                @* Trustpilot Mini: live TrustScore, stars and review count, as on the homepage. The TrustBox script loads in _Layout. *@
+                <div class="trustpilot-widget trd-reviews__widget" data-locale="en-GB" data-template-id="53aa8807dec7e10d38f59f36" data-businessunit-id="58ef93f90000ff0005a06bca" data-style-height="150px" data-style-width="100%" data-theme="light">
+                    <a href="https://uk.trustpilot.com/review/gravelmaster.co.uk" target="_blank" rel="noopener">Read our reviews on Trustpilot</a>
+                </div>
+                <p class="trd-reviews__blurb">Join the thousands of customers who trust Gravel Master for premium-quality aggregates, decorative gravel and landscaping materials.</p>
+            </div>
+
+            <div class="trd-reviews__right">
+                @* Trustpilot Carousel: the latest 4 and 5 star reviews, as on the homepage and product pages. *@
+                <div class="trustpilot-widget" data-locale="en-GB" data-template-id="53aa8912dec7e10d38f59f36" data-businessunit-id="58ef93f90000ff0005a06bca" data-style-height="140px" data-style-width="100%" data-stars="4,5" data-review-languages="en">
+                    <a href="https://uk.trustpilot.com/review/gravelmaster.co.uk" target="_blank" rel="noopener">Read our reviews on Trustpilot</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>

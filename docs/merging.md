@@ -101,6 +101,16 @@ Product addresses (`/products/{category}/p/{product}`) are routed to `ProductCon
 - [ ] **`Website.csproj`**: add `Views/Content/_AboutPage.cshtml`, `css/gm-about.css`, `js/gm-about.js` and the `img/gm-about-*` files. It also uses the homepage's `img/gm-home-insp-*` photos.
 - [ ] Test on the real site: the Trustpilot widgets fill in (they load but stay empty in the preview), and "Meet the team" on a phone.
 
+## Trade Accounts page
+
+`/trade` is `ContentController`'s `trade` key, which renders `Views/Content/Trade.cshtml` (after handling a posted reCAPTCHA form, which the live page no longer has). The new page has no model.
+
+- [ ] **`Views/Content/Trade.cshtml`**: when the new chrome is on, render `@Html.Partial("_TradePage")` in place of everything after the `@{ ... }` block (the reCAPTCHA script, the page's `<style>`, its sections and the jQuery scripts at the end). Keep the lines that set `ViewBag.Title` and the meta tags, and the `404-error` status line. Add a `@section Head` with `<link href="/css/gm-trade.css?v1" rel="stylesheet" />`.
+- [ ] Give the page a title and description in the admin site: the live page's `<title>` and meta description are empty ([open-questions.md](open-questions.md#trade-accounts-page)).
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new trade page too.
+- [ ] **`Website.csproj`**: add `Views/Content/_TradePage.cshtml`, `css/gm-trade.css` and the `img/gm-trade-*` files.
+- [ ] Test on the real site: "Open a trade account" and "Get trade prices" open the Trade tab of the sign-up form, and the Trustpilot widgets fill in.
+
 ## After merging
 
 - [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, account, search, content pages and the 404 page.

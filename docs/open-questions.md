@@ -74,3 +74,15 @@ Decided 23 September 2026: the prices and the quantity calculator stay exactly a
 | **Live content left out** | The live page's product photo carousel, the four photos of the site and staff, its four written-in customer reviews, the "Professional service with an unbeatable price" section (Experienced since 1988, Our Promise, Commitment, Queries and Advice) and the delivery photo at the bottom. The prototype has no place for them; its own "What Makes Us Different?" text (placeholder in the prototype) now holds the live page's other paragraphs. | Keep them out, or say which should come back and where |
 | **"What Makes Us Different?" list** | The five points ("Carefully selected products", "Wide range of colours and sizes"...) are the prototype's. | Check they're what the business wants to say |
 | **The blue band's colour** | Darkened from the prototype's `#08a5de` to `#007db5` so its white text passes AA (it was 2.8:1). It's a deeper blue than the design. | Keep, or choose another colour that passes |
+
+## Trade Accounts page
+
+| Found | Detail | Suggestion |
+|---|---|---|
+| **No page title** (live now) | The live `/trade` page has an empty `<title>` and an empty meta description, so search results and browser tabs show no name for it. They come from the page's content settings, not the view. | Set a title and description for the `trade` page in the admin site |
+| **The words written for the new page** | The prototype's perks, "Why Choose" text and FAQ answers were placeholders. They're now written from what the live page, the trade sign-up form and the site's code say (listed in [trade-page.md](trade-page.md#where-the-words-come-from)), but nobody from the business has read them. In particular: "Priority Support" is described as an account manager plus the sales line, and the answer to "How long does it take?" gives no time, because the site doesn't say. | Read the perks and FAQ answers, and add a typical approval time if there is one |
+| **"Speak to our trade team"** | Goes to Contact us. There's no separate trade team contact on the site. | Keep, or give it a trade phone number or email |
+| **The "Why" photo** | A landscaper planting a border, which looks like a stock photo. It's 570px wide for a space about 720px wide on a desktop, so it's a little soft. | Check it's licensed, or use a GravelMaster photo at least 1000px wide |
+| **The live "Why us?" pictures** | Six photos with their words built in (Nationwide Delivery, Loose Load Tipper, Trade Discount, Account Manager, Dedicated Bagging, Free Samples). Not used: their words are in the new perks, list and FAQs. | Keep them out, or say where they should go |
+| **The phone number on the bulk bag** | The hero photo's bag shows 0800 907 85 90; the site's number is 0330 058 5068. The live page has the same photo. | Check the old number still reaches GravelMaster, or choose a photo without it |
+| **The green band's colour** | Darkened from the prototype's bright greens so its white text passes AA (they were 3.0 to 3.7:1). | Keep, or choose other greens that pass |

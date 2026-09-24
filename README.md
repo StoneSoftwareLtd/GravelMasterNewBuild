@@ -13,6 +13,7 @@ Each piece is built to drop into the **GravelMasterSoftware** repository behind 
 | Category page | Built and tested in the preview | Needs wiring into the site |
 | Product page | Built and tested in the preview | Needs wiring into the site |
 | About us page | Built and tested in the preview | Needs wiring into the site |
+| Trade Accounts page | Built and tested in the preview | Needs wiring into the site |
 
 Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
@@ -28,7 +29,7 @@ Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
 ## See it
 
-Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages and About us page swapped in. Keep the black window open while you use it. It's read-only, so nothing is sent to the real site (the only exceptions are Sort by on category pages, which just reorders the products, and the product pages' price lookup, which only reads prices).
+Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in. Keep the black window open while you use it. It's read-only, so nothing is sent to the real site (the only exceptions are Sort by on category pages, which just reorders the products, and the product pages' price lookup, which only reads prices).
 
 Or open this folder in VS Code and use Live Server on `preview/index.html` or `preview/category.html`. See [preview/README.md](preview/README.md) for both.
 
@@ -42,6 +43,7 @@ Or open this folder in VS Code and use Live Server on `preview/index.html` or `p
 | [docs/category-page.md](docs/category-page.md) | The new category page: what it keeps from the old one, choices, what was tested |
 | [docs/product-page.md](docs/product-page.md) | The new product page: how it buys exactly as the old one did, choices, what was tested |
 | [docs/about-page.md](docs/about-page.md) | The new About us page: where the live page's content went, changes from the prototype, what was tested |
+| [docs/trade-page.md](docs/trade-page.md) | The new Trade Accounts page: where its words come from, changes from the prototype, what was tested |
 | [docs/merging.md](docs/merging.md) | Everything to do in GravelMasterSoftware to put this live |
 | [docs/open-questions.md](docs/open-questions.md) | Things found along the way that need a decision |
 
