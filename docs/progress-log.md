@@ -193,6 +193,10 @@ Found in the old code: the delivery charge is taken from the browser, so it coul
 
 Not tested: the real address finders, a real order and the payment page, and the real dates and prices, which need the test website.
 
+## 24 September 2026: the basket's "Add to basket" buttons on phones
+
+Found while building the order confirmation, which uses the same cards: on phones, where the basket's "You might also like" cards are two across, "Add to basket" wrapped onto two lines (measured at 390 and 320px wide). The buttons now keep to one line: slightly tighter below 560px, and without the basket icon below 420px. Measured at eight widths from 1440 to 320px: one line each time, and nothing wider than the screen.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
