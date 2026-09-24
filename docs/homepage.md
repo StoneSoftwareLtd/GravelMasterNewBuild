@@ -8,7 +8,8 @@ The Optima prototype's homepage (`home.html`), rebuilt to take the site's real d
 |---|---|
 | `Views/Home/_HomePage.cshtml` | the new homepage, as a partial |
 | `css/gm-home.css` | its styles, scoped to `.gm-home`, with a shield against the old site's CSS |
-| `js/gm-home.js` | carousels, tabs and calculator |
+| `js/gm-home.js` | carousels and tabs |
+| `Views/Shared/_QuantityCalculator.cshtml`, `ViewModels/Common/QuantityCalculatorModel.cs`, `css/gm-calc.css`, `js/gm-calc.js` | the quantity calculator, shared with the product page since 24 September 2026 |
 | `ViewModels/Common/HomePageModels.cs` | `HomeBanner` and `HomeProduct` |
 | `img/gm-home-*` | section backgrounds and the eight inspiration gallery photos |
 | `Views/Shared/_BulkEnquiryModal.cshtml`, `css/gm-enquiry.css`, `js/gm-enquiry.js` | the bulk delivery pop-up, shared with the category page |

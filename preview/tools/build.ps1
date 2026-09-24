@@ -49,6 +49,7 @@ function Assert-NoRazor([string]$what, [string]$s) {
   if ($m.Success) { throw "$what still contains Razor near: " + $s.Substring([Math]::Max(0, $m.Index - 80), [Math]::Min(160, $s.Length - [Math]::Max(0, $m.Index - 80))) }
 }
 . (Join-Path $PSScriptRoot 'category-page.ps1')
+. (Join-Path $PSScriptRoot 'calculator.ps1')
 
 # The saved pages are one page each, so their links open the same address in the whole-website preview
 # (site-preview.ps1) instead of the live site, which still has the old header and footer.
@@ -355,6 +356,11 @@ function Invoke-Build {
       "<div class=""bs-panel"" id=""bs-panel-$($tab.Id)"" role=""tabpanel"" aria-labelledby=""bs-tab-$($tab.Id)""$(if ($t -ne 0) { ' hidden' })><div class=""bs-grid"">$($cardsHtml -join "`n")</div><div class=""bs-banner""><span class=""bs-banner__text"">Try before you buy with our samples bags</span><a href=""$(Enc $tab.ShopAll)"" class=""bs-banner__link"">$(Enc $tab.ShopAllText)</a></div></div>"
     }
     $h = Replace-Block $h '@for \(int t = 0; t < bestsellers\.Length; t\+\+\)\s*\{\s*var tab = bestsellers\[t\];\s*<div class="bs-panel"' ($panels -join "`n") 'the bestseller panels loop'
+
+    # the shared quantity calculator, with the first type chosen
+    $calcCall = '@Html.Partial("_QuantityCalculator", new QuantityCalculatorModel(null))'
+    if (-not $h.Contains($calcCall)) { throw "Couldn't find $calcCall in _HomePage.cshtml" }
+    $h = $h.Replace($calcCall, (Format-QuantityCalculator (Join-Path $Package 'Views\Shared\_QuantityCalculator.cshtml') $null))
 
     # the shared bulk enquiry pop-up
     $partialCall = '@Html.Partial("_BulkEnquiryModal", categories)'

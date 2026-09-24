@@ -1,0 +1,98 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.QuantityCalculatorModel
+@{
+    // The product types, in order, with the colours of their categories in the header. The formula for each is
+    // in js/gm-calc.js (the live /calculator page's).
+    var types = new[]
+    {
+        new { Value = "gravel", Label = "Gravel & Chippings", Colour = "#8e44ad" },
+        new { Value = "mulch", Label = "Barks & Mulches", Colour = "#37853f" },
+        new { Value = "topsoil", Label = "Topsoil", Colour = "#8a7524" },
+        new { Value = "sand", Label = "Sand", Colour = "#b8940a" }
+    };
+}
+@* Quantity calculator from the Optima prototype, shared by the new homepage and product page. Styles:
+   css/gm-calc.css. Behaviour: js/gm-calc.js. "Enquire Here" opens the shared _BulkEnquiryModal, which the page
+   includes. *@
+<link href="/css/gm-calc.css?v1" rel="stylesheet" />
+<div class="gm-calc">
+    <section class="calc" data-calc>
+        <div class="container">
+            <h2 class="calc__title">
+                <span class="calc__icon">
+                    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="5.5" y="3" width="13" height="18" rx="2" fill="#5ca458" /><rect x="7.6" y="5.2" width="8.8" height="3.6" rx="0.8" fill="#ccde7e" /><rect x="7.6" y="10.5" width="2.4" height="2.4" rx="0.4" fill="#ccde7e" /><rect x="10.8" y="10.5" width="2.4" height="2.4" rx="0.4" fill="#ccde7e" /><rect x="14" y="10.5" width="2.4" height="5.6" rx="0.4" fill="#ccde7e" /><rect x="7.6" y="13.7" width="2.4" height="2.4" rx="0.4" fill="#ccde7e" /><rect x="10.8" y="13.7" width="2.4" height="2.4" rx="0.4" fill="#ccde7e" /></svg>
+                </span>
+                Quantity calculator
+            </h2>
+            <p class="calc__sub">Our helpful calculator will help you get an approximate volume of aggregate required for your area.</p>
+
+            <div class="calc__type">
+                <label class="calc__type-label" for="calc-type">I&rsquo;m looking for...</label>
+                <select class="calc__select" id="calc-type" data-colour-select>
+                    @foreach (var type in types)
+                    {
+                        <option value="@type.Value" data-color="@type.Colour" style="color:@type.Colour" @(type.Value == Model.Type ? "selected" : "")>@type.Label</option>
+                    }
+                </select>
+            </div>
+
+            <form class="calc__form" novalidate>
+                <label class="field">
+                    <span class="field__label">Length</span>
+                    <input class="field__input" type="number" name="calc-length" min="0" step="any" inputmode="decimal" value="4">
+                </label>
+                <label class="field">
+                    <span class="field__label">Width</span>
+                    <input class="field__input" type="number" name="calc-width" min="0" step="any" inputmode="decimal" value="3">
+                </label>
+                <label class="field">
+                    <span class="field__label">Measure</span>
+                    <select class="field__input field__input--select" name="calc-measure">
+                        <option value="m">Metres</option>
+                        <option value="f">Feet</option>
+                        <option value="y">Yards</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span class="field__label">Depth</span>
+                    <input class="field__input" type="number" name="calc-depth" min="0" step="any" inputmode="decimal" value="2">
+                    <select class="field__unit field__unit--select" name="calc-depth-unit" aria-label="Depth unit">
+                        <option value="cm">cm</option>
+                        <option value="in">inches</option>
+                    </select>
+                </label>
+                <button type="submit" class="calc__btn">Calculate</button>
+            </form>
+
+            <div class="calc__results" aria-live="polite">
+                <div class="result">
+                    <span class="result__label" data-calc-total-label>Total weight</span>
+                    <span class="result__value" data-calc-total></span>
+                </div>
+                <span class="calc__divider"></span>
+                <div class="result" data-calc-first>
+                    <span class="result__label"></span>
+                    <span class="result__value"><span class="result__count"></span> <span class="result__icon" aria-hidden="true">&#128230;</span></span>
+                </div>
+                <span class="calc__or">Or</span>
+                <div class="result" data-calc-second>
+                    <span class="result__label"></span>
+                    <span class="result__value"><span class="result__count"></span> <span class="result__icon" aria-hidden="true">&#128230;</span></span>
+                </div>
+                <button type="button" class="calc__estimate">Send me my estimate</button>
+            </div>
+
+            <form class="calc__email" hidden>
+                <input class="calc__email-input" type="email" required placeholder="Your email address" aria-label="Your email address" autocomplete="email">
+                <button type="submit" class="calc__btn">Send</button>
+                <p class="calc__email-status" aria-live="polite"></p>
+            </form>
+
+            <div class="calc__bulk">
+                <strong class="calc__bulk-title">Ordering 10 tonnes or more?</strong>
+                <span class="calc__bulk-text">Call <a href="tel:03300585068">0330 058 5068</a> or enquire online to book a loose load delivery on bulk orders over 10 tonnes</span>
+                <button type="button" class="calc__bulk-btn" data-bulk-open>Enquire Here</button>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="/js/gm-calc.js?v1" defer></script>
