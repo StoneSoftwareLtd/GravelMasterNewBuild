@@ -88,6 +88,19 @@ Product addresses (`/products/{category}/p/{product}`) are routed to `ProductCon
 - [ ] **`Website.csproj`**: add `Views/Shared/_ProductPage.cshtml`, `ViewModels/Common/ProductPageModels.cs`, `css/gm-product.css`, `js/gm-product.js` and the `img/gm-prod-*` files.
 - [ ] Test on the real site with the new chrome on: add each kind of size to the basket (bulk bag, sealed bags, sample, a pre-order size if there is one), check the basket's lines and delivery prices against the old page for the same postcode, the + and - buttons and "ADD" tiles in the pop-up, the header's basket total, turf (10 up), glue or bulbs (no postcode), an out-of-stock product, a trade login (trade prices in the sizes and total), and the three analytics events in Google Tag Assistant.
 
+## About us page
+
+`/about-us` is `ContentController`'s `about-us` key, which renders `Views/Content/AboutUs.cshtml`. The new page has no model: its text is written into the partial, as the old page's is.
+
+- [ ] **`Views/Content/AboutUs.cshtml`**: when the new chrome is on, render `@Html.Partial("_AboutPage")` in place of everything after the `@{ ... }` block (the owl-carousel links and script, the page's own `<style>` and all its sections). Keep the `ViewBag.Title` and meta lines. Add a `@section Head` with the Caveat font and the page's stylesheet:
+  ```html
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />
+  <link href="/css/gm-about.css?v1" rel="stylesheet" />
+  ```
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new About page too, as for the other new pages.
+- [ ] **`Website.csproj`**: add `Views/Content/_AboutPage.cshtml`, `css/gm-about.css`, `js/gm-about.js` and the `img/gm-about-*` files. It also uses the homepage's `img/gm-home-insp-*` photos.
+- [ ] Test on the real site: the Trustpilot widgets fill in (they load but stay empty in the preview), and "Meet the team" on a phone.
+
 ## After merging
 
 - [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, account, search, content pages and the 404 page.

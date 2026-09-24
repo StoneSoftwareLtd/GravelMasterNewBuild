@@ -1,0 +1,201 @@
+@* New About us page from the Optima prototype (about.html), shown by Content/AboutUs.cshtml when the new chrome
+   is on. The words are the live page's own; the prototype's placeholder text is replaced with them.
+   Styles: css/gm-about.css (and the Caveat font), loaded in AboutUs.cshtml's Head section. Behaviour: js/gm-about.js. *@
+@{
+    // "Meet the team": the prototype's six, with the jobs the live Meet the team page gives them.
+    var team = new[]
+    {
+        new { Name = "Mollie Robinson", Role = "Commercial Director", Photo = "mollie" },
+        new { Name = "Jordan Smith", Role = "Senior Sales Executive", Photo = "jordan" },
+        new { Name = "Mary Hughes", Role = "Senior Sales Executive", Photo = "mary" },
+        new { Name = "Jessica Shadlock", Role = "Customer Experience Manager", Photo = "jessica" },
+        new { Name = "Kieran Blagden", Role = "Customer Service Manager", Photo = "kieran" },
+        new { Name = "Harvey Finlayson", Role = "Customer Experience", Photo = "harvey" }
+    };
+
+    // "Find your inspiration": the homepage's gallery photos, in the prototype's order. Sizes match the files.
+    var inspiration = new[]
+    {
+        new { File = "gm-home-insp-1.jpg", Alt = "Customer garden with white pebble border and tree planters", Width = 700, Height = 712 },
+        new { File = "gm-home-insp-2.jpg", Alt = "Modern garden room with pale gravel patio", Width = 700, Height = 525 },
+        new { File = "gm-home-insp-3.jpg", Alt = "Planted garden path finished with gravel", Width = 700, Height = 845 },
+        new { File = "gm-home-insp-4.jpg", Alt = "Terraced garden with stone stepping path", Width = 860, Height = 473 },
+        new { File = "gm-home-insp-5.jpg", Alt = "Lawn with curved stone stepping stones", Width = 447, Height = 447 },
+        new { File = "gm-home-insp-6.jpg", Alt = "Decorative gravel border along a lawn", Width = 447, Height = 447 },
+        new { File = "gm-home-insp-7.jpg", Alt = "Landscaped garden feature with planting", Width = 447, Height = 447 },
+        new { File = "gm-home-insp-8.jpg", Alt = "Finished patio project with decorative gravel", Width = 225, Height = 225 }
+    };
+    var slots = "abcdefgh";
+}
+<div class="gm-about">
+
+    <section class="abt-hero">
+        <div class="abt-hero__media">
+            <div class="abt-hero__blob">
+                <img src="/img/gm-about-intro.jpg" alt="Gravel Master team member checking a pallet of concrete blocks in the yard" width="505" height="401" decoding="async">
+            </div>
+            <span class="abt-hero__tag" aria-hidden="true">Helping you<br>create better<br>outdoors</span>
+            <span class="abt-since">
+                <strong>Quality<br>Landscaping<br>Materials<br>Since 2008</strong>
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z" /><path d="M5 19l7-7" /></svg>
+            </span>
+        </div>
+
+        <div class="container">
+            <nav class="abt-crumbs" aria-label="Breadcrumb">
+                <ol class="abt-crumbs__list">
+                    <li><a href="/">Home</a></li>
+                    <li><span class="abt-crumbs__current" aria-current="page">About Gravelmaster</span></li>
+                </ol>
+            </nav>
+
+            <div class="abt-hero__grid">
+                <div class="abt-hero__copy">
+                    <p class="abt-eyebrow">About Gravelmaster</p>
+                    <h1 class="abt-hero__title">Over 15 years<br>experience</h1>
+                    <h2>Everything you need to create exceptional outdoor spaces.</h2>
+                    <p>As one of the UK&rsquo;s leading suppliers of decorative aggregates and horticultural landscaping goods, we offer top-quality products that are naturally sourced within the UK and Europe at competitive prices.</p>
+                    <p>From our 31-years of experience in the aggregate industry, we pride ourselves for our stock of tried and tested landscaping gravels, sands and horticultural mediums. Join the thousands of satisfied customers who order landscaping products regularly from us at Gravel Master Ltd; whether you&rsquo;re rejuvenating a small driveway or installing a woodland pathway, our range will have the perfect product to suit!</p>
+                    <a href="/garden-chippings/products/" class="abt-cta">Shop our range <span class="abt-cta__arrow" aria-hidden="true">&rarr;</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="container abt-hero__trustwrap">
+            <ul class="abt-trust">
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#2f6b34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5" /><path d="M8 16c0-5 3-8 8-8-1 5-3 8-8 8z" /><path d="M8 16l5-5" /></svg>
+                    Quality products
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#2f6b34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg>
+                    UK nationwide delivery
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#2f6b34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l7.5 4v5.2c0 4.4-3.1 8.2-7.5 9.8-4.4-1.6-7.5-5.4-7.5-9.8V6.5z" /><polyline points="8.8 12 11.2 14.4 15.5 10" /></svg>
+                    Price match promise
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#2f6b34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7.5" r="4" /><path d="M1.8 21c0-4 3.2-6.5 7.2-6.5s7.2 2.5 7.2 6.5" /><path d="M15.5 4a4 4 0 0 1 0 7.2M22.2 21c0-3.2-1.6-5.4-4.3-6.4" /></svg>
+                    Trusted by thousands
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="abt-stats" aria-label="Gravel Master in numbers">
+        <div class="container abt-stats__grid">
+            <div class="abt-stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2f6b34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0z" /><path d="M7 6H4.5a2.5 2.5 0 0 0 2.6 3.5M17 6h2.5a2.5 2.5 0 0 1-2.6 3.5" /><path d="M12 14v3.5M8.5 20.5h7M9.5 17.5h5" /></svg>
+                <div><strong>15+</strong><span>Years of experience</span></div>
+            </div>
+            <div class="abt-stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2f6b34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="3.2" /><path d="M3.5 19.5c0-3 2.5-4.8 5.5-4.8s5.5 1.8 5.5 4.8" /><path d="M16.2 6.7a3 3 0 0 1 0 5.4M18.5 19.5c0-2.2-1-3.7-2.6-4.5" /></svg>
+                <div><strong>Thousands</strong><span>Happy customers</span></div>
+            </div>
+            <div class="abt-stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2f6b34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z" /><path d="M5 19l7-7" /></svg>
+                <div><strong>Premium quality</strong><span>UK &amp; European sourced</span></div>
+            </div>
+            <div class="abt-stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2f6b34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg>
+                <div><strong>Nationwide delivery</strong><span>Fast &amp; reliable</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="abt-team" aria-labelledby="abt-team-title">
+        <span class="abt-leaf abt-team__leaf-a" aria-hidden="true"></span>
+        <span class="abt-leaf abt-team__leaf-b" aria-hidden="true"></span>
+        <span class="abt-leaf abt-team__leaf-c" aria-hidden="true"></span>
+        <span class="abt-leaf abt-team__leaf-d" aria-hidden="true"></span>
+        <div class="container">
+            <div class="abt-team__head">
+                <div>
+                    <h2 id="abt-team-title">Meet the team</h2>
+                    <p>A passionate team committed to quality products and great service.</p>
+                </div>
+                <a href="/meet-the-team" class="abt-team__all">View all team members</a>
+            </div>
+
+            <div class="abt-team__grid" data-team>
+                @foreach (var member in team)
+                {
+                    <article class="abt-member">
+                        <img src="/img/gm-about-team-@(member.Photo).jpg" alt="@member.Name" width="450" height="490" loading="lazy" decoding="async">
+                        <h3>@member.Name</h3>
+                        <p>@member.Role</p>
+                    </article>
+                }
+            </div>
+
+            @* Only shown when the cards don't all fit (phones), by js/gm-about.js *@
+            <div class="abt-team__nav" data-team-nav hidden>
+                <span class="abt-team__progress" aria-hidden="true"><span data-team-progress></span></span>
+                <button type="button" class="abt-team__arrow" data-team-prev aria-label="Previous team members">
+                    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
+                </button>
+                <button type="button" class="abt-team__arrow" data-team-next aria-label="Next team members">
+                    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="abt-diff">
+        <div class="container abt-diff__grid">
+            <div>
+                <h2>What Makes Us Different?</h2>
+                <p>The group of companies was founded in 1988 and to this day is still managed by the founding family. Sited in our own purpose-built business park with large office and extensive warehousing, Gravel Master is the proud winner of several industry awards.</p>
+                <p>Whatever the product, wherever the place, we guarantee a professional and reliable service throughout. Our fantastic nationwide distribution facilities provide a service that you will be proud to recommend.</p>
+            </div>
+            <div>
+                <p>As a family business, everything we do revolves around our devotion to ensuring you receive first class service. We combine our customer focus and specialist product knowledge to supply the best experience all around- from our gravel matching service to our 1-hour timed delivery service!</p>
+                <ul class="abt-diff__list">
+                    <li>Carefully selected products</li>
+                    <li>Wide range of colours and sizes</li>
+                    <li>Delivered straight to your door</li>
+                    <li>Helpful advice before you buy</li>
+                    <li>Quality you can trust</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="abt-insp" aria-labelledby="abt-insp-title">
+        <div class="container">
+            <div class="abt-insp__head">
+                <h2 id="abt-insp-title">Find your inspiration</h2>
+                <a href="/ideas-advice" class="abt-insp__more">See more inspiration</a>
+            </div>
+            <div class="abt-insp__grid">
+                @for (var i = 0; i < inspiration.Length; i++)
+                {
+                    var photo = inspiration[i];
+                    <img src="/img/@photo.File" alt="@photo.Alt" width="@photo.Width" height="@photo.Height" class="abt-ins abt-ins--@slots[i]" loading="lazy" decoding="async">
+                }
+            </div>
+        </div>
+    </section>
+
+    <section class="abt-reviews" aria-label="Customer reviews">
+        <div class="container abt-reviews__grid">
+            <div class="abt-reviews__left">
+                @* Trustpilot Mini: live TrustScore, stars and review count, as on the homepage. The TrustBox script loads in _Layout. *@
+                <div class="trustpilot-widget abt-reviews__widget" data-locale="en-GB" data-template-id="53aa8807dec7e10d38f59f36" data-businessunit-id="58ef93f90000ff0005a06bca" data-style-height="150px" data-style-width="100%" data-theme="light">
+                    <a href="https://uk.trustpilot.com/review/gravelmaster.co.uk" target="_blank" rel="noopener">Read our reviews on Trustpilot</a>
+                </div>
+                <p class="abt-reviews__blurb">Join the thousands of customers who trust Gravel Master for premium-quality aggregates, decorative gravel and landscaping materials.</p>
+            </div>
+
+            <div class="abt-reviews__right">
+                @* Trustpilot Carousel: the latest 4 and 5 star reviews, as on the homepage and product pages. *@
+                <div class="trustpilot-widget" data-locale="en-GB" data-template-id="53aa8912dec7e10d38f59f36" data-businessunit-id="58ef93f90000ff0005a06bca" data-style-height="140px" data-style-width="100%" data-stars="4,5" data-review-languages="en">
+                    <a href="https://uk.trustpilot.com/review/gravelmaster.co.uk" target="_blank" rel="noopener">Read our reviews on Trustpilot</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+<script src="/js/gm-about.js?v1" defer></script>
