@@ -8,6 +8,7 @@ Checked on 24 September 2026 (branches as cloned on 23 September): **no branch i
 
 - `master` still has the old `_Layout.cshtml` (`global.css?v108`, no Tag Manager or Clarity).
 - `stripe` has the live `_Layout` (Tag Manager `GTM-KMX9ZL3`, Clarity, `global.css?v210`, WebFont, the newer footer), a different checkout (`ProcessOrderLive.cshtml`; `ProcessOrderOpayo.cshtml` removed) and a Web Deploy profile. It has 12 commits master doesn't; master has 40 it doesn't.
+- The live checkout's script (`/scripts/Controllers/Root/Checkout/ProcessOrder.js`, read on 24 September 2026) is newer than every branch's copy, and uses a variable (`thefirstone`) that only `master`'s `ProcessOrder.cshtml` sets: so the live checkout page looks like `master`'s, not `stripe`'s `ProcessOrderLive.cshtml`.
 - The live product page has some of master's later changes but not its "spam" commit of 30 July (the hidden `website` field in the calculator's email form), and some lines found only on `stripe`.
 
 So the live site was probably published from a working copy that isn't on GitHub as it stands. **Get the code that is actually deployed pushed to a branch first**, then start the integration from that branch. Until then, the steps below say "master" but mean "the live code".
@@ -136,6 +137,88 @@ Product addresses (`/products/{category}/p/{product}`) are routed to `ProductCon
 - [ ] **`Website.csproj`**: add `Views/Basket/_BasketPage.cshtml`, `ViewModels/Common/BasketPageModels.cs`, `css/gm-basket.css` and `js/gm-basket.js`.
 - [ ] Test on the real site: + and - on each line (with and without turf in the basket), typing a quantity, Remove, Empty basket, a voucher that works, one that doesn't and one under £40, each add-on, a pre-order size, Checkout, a trade login (trade prices), and the basket total in the header after each change.
 
+## Checkout
+
+`/checkout/processorder` is `CheckoutController.ProcessOrder`, which renders `Views/Checkout/ProcessOrder.cshtml` with an `OrderViewModel` (or sends an empty basket back to `/basket`). The new page follows **master's** checkout, which the live page's script points to ([checkout-page.md](checkout-page.md#which-checkout-is-live)): check that against the live code first.
+
+- [ ] **`Views/Checkout/ProcessOrder.cshtml`**: when the new chrome is on, render `_CheckoutPage` in place of the old page: the inline script (`sectorArray`, `runModal`) and `<style>` above the `requirecontroller` section, and below it the hidden tab `<nav>`, the `fieldInfo` form, the `updateUI` script, the SMS box's `<style>`, the `selectedArea` input and the "Sorry" postcode pop-up, up to the `analyticscripts` section. Keep `@section analyticscripts` (the `begin_checkout` event) as it is. Add `<link href="/css/gm-checkout.css?v1" rel="stylesheet" />` to `@section Head`. Build the model from the view's own model like this (with `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top). This code was compiled with MVC 5.2's Razor against stand-ins with the repository's class and property names:
+  ```cshtml
+  @{
+      string area = Session["PA"] != null ? Session["PA"].ToString().ToUpper() : null;
+      var checkout = new CheckoutPageModel
+      {
+          Total = Model.Cart.Total,
+          IsLoggedIn = User.Identity.IsAuthenticated,
+          PostalArea = area,
+          StrictPostalArea = !Model.Cart.IsSimple,
+          ShowTimes = Model.Prices.DeliveryTimeVisible,
+          MorningCost = Model.Prices.DeliveryTimeCost,
+          IsMixedPreOrder = Model.Cart.IsMixedPreOrder,
+          ShowTradeLink = !(User.Identity.IsAuthenticated && Agilis.ECommerce.Data.TradeRegister.IsTrade(User.Identity.Name)),
+          Address = new CheckoutAddress
+          {
+              Address1 = Model.DefaultAddress.Address1,
+              Address2 = Model.DefaultAddress.Address2,
+              City = Model.DefaultAddress.City,
+              County = Model.DefaultAddress.County,
+              Postcode = Model.DefaultAddress.Postcode
+          }
+      };
+      foreach (var item in Model.Cart.Items)
+      {
+          checkout.Lines.Add(new CheckoutLine
+          {
+              NameHtml = item.Product.Name,
+              SizeHtml = item.Product.VariantsNameWithoutImage,
+              ImageUrl = string.Format(System.Configuration.ConfigurationManager.AppSettings["ImagePathFormat"], "330", item.Product.Image1),
+              Quantity = item.Quantity,
+              LinePrice = item.OrderLinePrice,
+              PreOrderDate = item.Product.PreOrderDate
+          });
+          if (checkout.PreOrderDate == null && item.Product.PreOrderDate.HasValue)
+          {
+              checkout.PreOrderDate = item.Product.PreOrderDate;
+          }
+      }
+      checkout.Delivery = Model.Cart.IsSamples || Model.Cart.IsBirdFeeder ? CheckoutDelivery.RoyalMail
+          : Model.Cart.IsOnlyPreOrder ? CheckoutDelivery.PreOrder
+          : Model.Cart.IsSimple ? CheckoutDelivery.NoChoice
+          : CheckoutDelivery.ChooseDate;
+  
+      // The old view's date loop ran for every cart but samples and bird feeders
+      var dates = new List<CheckoutDate>();
+      if (!Model.Cart.IsSamples && !Model.Cart.IsBirdFeeder)
+      {
+          dates = CheckoutDates.Build(
+              Model.DeliveryDays.Select(d => new KeyValuePair<DateTime, decimal>(d.Day, d.Cost)),
+              new CheckoutDateRules
+              {
+                  PostalArea = area,
+                  IsRubber = Model.Cart.IsRubber,
+                  IsBulk = Model.Cart.IsBulk,
+                  IsTurf = Model.Cart.IsTurf,
+                  NextDayCost = Model.Prices.NextDayCost,
+                  EcoDayOfMonth = Model.NumDaysTruck,
+                  WeekendAllowed = !Model.SpecialAreas.Contains(area ?? "") && Model.Prices.SaturdayVisible
+              },
+              DateTime.Now);
+      }
+      if (checkout.Delivery == CheckoutDelivery.ChooseDate)
+      {
+          checkout.Dates = dates;
+      }
+      // What the old page posted when there was no date to pick: the first free weekday, else the first day
+      var firstFree = dates.FirstOrDefault(d => d.IsDefault);
+      checkout.PostedDate = firstFree != null ? firstFree.Day : Model.DeliveryDays[0].Day;
+      checkout.PostedDay = checkout.PostedDate.Value.ToString("dd-MM-yy", System.Globalization.CultureInfo.InvariantCulture);
+  }
+  @Html.Partial("~/Views/Checkout/_CheckoutPage.cshtml", checkout)
+  ```
+  The date rules in `CheckoutDates.Build` are the old view's loop, moved; they were checked against it on 20,000 random cases ([checkout-page.md](checkout-page.md#tested)).
+- [ ] **`@section requirecontroller`**: when the new page shows, require `/scripts/Controllers/Root/Content/Display.js` instead of `Checkout/ProcessOrder.js`, which works the old form's steps, slider and pop-up.
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new checkout too.
+- [ ] **`Website.csproj`**: add `Views/Checkout/_CheckoutPage.cshtml`, `ViewModels/Common/CheckoutPageModels.cs`, `css/gm-checkout.css` and `js/gm-checkout.js`.
+- [ ] Test on the real site, with test payments: a basket of bulk bags (dates, the next-day charge, a Saturday, the morning slot if the setting is on), turf, samples (Royal Mail), a pre-order size alone and with others, a postcode outside the basket's area, an Isle of Wight postcode, a different billing address, both address finders, a logged-in customer with a saved address, a trade login, and that each order's address, date, time, delivery charge, instructions, SMS choice and trade tick arrive as they did from the old page.
 ## After merging
 
 - [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, account, search, content pages and the 404 page.

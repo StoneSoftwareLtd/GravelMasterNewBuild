@@ -167,7 +167,34 @@ Tested in headless Edge with a reply built exactly as the summary file builds it
 
 `gm-chrome.css` styled every element with the class `search`, which was meant for the header's search form. The checkout's address finder (Postcode Anywhere) draws its search box as an `input.search`, so on every checkout page with the new header it picked up the header's rounded, padded style. The rules now name `form.search`. Checked in the preview: the header's search box measured the same before and after at 1440 and 390px wide, and its list of suggestions still gets its colour and layering.
 
+## 24 September 2026: checkout
+
+Rebuilt the prototype's checkout (`checkout.html`) as `Views/Checkout/_CheckoutPage.cshtml`, with `CheckoutPageModel`. Details: [checkout-page.md](checkout-page.md).
+
+1. Worked out which checkout is live. The repository has three, but the live page's script uses a variable only `master`'s view sets, so the new page follows `master` (the SMS tick box, "Is this a trade order?", the pre-order steps).
+2. Mapped the old checkout from its view, the live script and `CheckoutController`: the fields it posts to `/checkout/processorder`, the address finders, the delivery-date rules, the charges, the Isle of Wight and postcode-area checks, and the kinds of basket without a date step.
+3. Built one page from the four old steps, in the prototype's layout, posting exactly the same fields. The address boxes keep the old ids, so the same Postcode Anywhere finders still fill them.
+4. Moved the old view's date rules into `CheckoutDates.Build`, then ran the old loop, copied as it is, beside it on 20,000 random cases: the same dates, charges and first choice every time.
+5. The preview shows it at `/checkout/processorder`, for the sample basket, with samples, pre-orders, a basket without a date step and PO postcodes on request.
+6. Tested:
+   - compiles with MVC 5.2's Razor, and so does the code `ProcessOrder.cshtml` will need;
+   - screenshots at four widths, and the layout at 11;
+   - every text colour and box edge;
+   - in the browser, every check before sending and what the form would send, which matched the old page's fields;
+   - in headless Edge, the keyboard, the progress steps and the Isle of Wight dates;
+   - without the script, the paid dates stay switched off.
+
+Along the way:
+- the header's search style reached the finder's search box, and is now kept to the header (its own commit);
+- the old stylesheet's rules for the finder are overridden;
+- two selectors were fixed after the check showed the page's stylesheet was losing rules.
+
+Found in the old code: the delivery charge is taken from the browser, so it could be changed before sending; the Isle of Wight check also caught every Portsmouth PO3 postcode; logging in never returns to the checkout. See [open-questions.md](open-questions.md#checkout).
+
+Not tested: the real address finders, a real order and the payment page, and the real dates and prices, which need the test website.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
-- The prototype's checkout and order confirmation. They take payments, and the checkout differs between branches (`stripe` has a different one), so they're best built against the live code.
+- The prototype's order confirmation (`confirmation.html`), which the site shows after payment (`CheckoutController.OrderResult`).
+- Test the checkout with real orders and test payments on the test site ([merging.md](merging.md#checkout)).

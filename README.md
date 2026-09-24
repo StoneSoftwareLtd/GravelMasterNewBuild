@@ -15,6 +15,7 @@ Each piece is built to drop into the **GravelMasterSoftware** repository behind 
 | About us page | Built and tested in the preview | Needs wiring into the site |
 | Trade Accounts page | Built and tested in the preview | Needs wiring into the site |
 | Basket page | Built and tested in the preview with a sample basket | Needs wiring into the site, and testing with real baskets |
+| Checkout | Built and tested in the preview with a sample basket | Needs wiring into the site, and testing with real orders and test payments |
 
 Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
@@ -30,7 +31,7 @@ Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
 ## See it
 
-Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in, and the new basket with a sample basket in it. Keep the black window open while you use it. It's read-only, so nothing is sent to the real site (the only exceptions are Sort by on category pages, which just reorders the products, and the product pages' price lookup, which only reads prices).
+Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in, and the new basket and checkout with a sample basket in them. Keep the black window open while you use it. It's read-only, so nothing is sent to the real site (the only exceptions are Sort by on category pages, which just reorders the products, and the product pages' price lookup, which only reads prices).
 
 Or open this folder in VS Code and use Live Server on `preview/index.html` or `preview/category.html`. See [preview/README.md](preview/README.md) for both.
 
@@ -46,6 +47,7 @@ Or open this folder in VS Code and use Live Server on `preview/index.html` or `p
 | [docs/about-page.md](docs/about-page.md) | The new About us page: where the live page's content went, changes from the prototype, what was tested |
 | [docs/trade-page.md](docs/trade-page.md) | The new Trade Accounts page: where its words come from, changes from the prototype, what was tested |
 | [docs/basket-page.md](docs/basket-page.md) | The new basket page: how it changes the basket exactly as the old one did, choices, what was tested |
+| [docs/checkout-page.md](docs/checkout-page.md) | The new checkout: which checkout is live, how it sends exactly what the old one did, the delivery-date rules, what was tested |
 | [docs/merging.md](docs/merging.md) | Everything to do in GravelMasterSoftware to put this live |
 | [docs/open-questions.md](docs/open-questions.md) | Things found along the way that need a decision |
 
