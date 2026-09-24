@@ -1,0 +1,202 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.BasketPageModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@{
+    var uk = System.Globalization.CultureInfo.GetCultureInfo("en-GB");
+    string itemsText = Model.ItemCount == 1 ? "1 item" : Model.ItemCount + " items";
+    bool voucherOpen = !string.IsNullOrWhiteSpace(Model.VoucherMessage);
+}
+@* New basket page from the Optima prototype (basket.html), shown by Basket/Index.cshtml when the new chrome is on.
+   Styles: css/gm-basket.css (and the Caveat font), loaded in Index.cshtml's head section. Behaviour: js/gm-basket.js.
+   It changes the basket exactly as the old page did:
+   - the quantities are one form posted to /basket/updatebasket, with one "item.Quantity" per line in the cart's
+     order (turf lines, which have no + and -, send theirs unchanged in a hidden field, so the count still matches);
+   - Remove posts the line's id to /basket/removefrombasket;
+   - the voucher form posts "couponcode" to /basket/applycouponcode;
+   - "Add to basket" on a suggestion calls /basket/addtobasket with the product and size codes, as the old
+     "weekly special offers" did. *@
+<div class="gm-basket" data-postal-area="@Model.PostalArea">
+    <div class="container">
+        <nav class="bsk-crumbs" aria-label="Breadcrumb">
+            <ol class="bsk-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><span class="bsk-crumbs__current" aria-current="page">My Basket</span></li>
+            </ol>
+        </nav>
+
+        @if (Model.Lines.Count == 0)
+        {
+            <div class="bsk-emptystate">
+                <h1 class="bsk-title">My Basket</h1>
+                <p class="bsk-emptystate__text">Your basket is empty.</p>
+                <a class="bsk-continue" href="/"><span class="bsk-continue__arrow" aria-hidden="true">&larr;</span> Continue shopping</a>
+            </div>
+        }
+        else
+        {
+            <div class="bsk-wrap">
+
+                <div class="bsk-items">
+                    <h1 class="bsk-title">My Basket</h1>
+                    <p class="bsk-count">@itemsText in your basket</p>
+
+                    <form class="bsk-form" action="/basket/updatebasket" method="post" data-basket-form>
+                        @for (var i = 0; i < Model.Lines.Count; i++)
+                        {
+                            var line = Model.Lines[i];
+                            <article class="bsk-item" data-line>
+                                <img class="bsk-item__img" src="@line.ImageUrl" alt="" width="330" height="330" loading="lazy" decoding="async">
+                                <div class="bsk-item__info">
+                                    <h2 class="bsk-item__name" id="bsk-name-@i"><a href="@line.Url">@Html.Raw(line.NameHtml)</a></h2>
+                                    <p class="bsk-item__unit">@HomeProduct.FormatPrice(line.UnitPrice, true) <span class="bsk-item__each">each</span></p>
+                                    <p class="bsk-item__size"><strong>Size:</strong> @Html.Raw(line.SizeHtml)</p>
+                                    @if (line.PreOrderDate.HasValue)
+                                    {
+                                        <p class="bsk-item__stock bsk-item__stock--preorder"><span class="bsk-item__dot" aria-hidden="true"></span> Pre-order for delivery w/c @line.PreOrderDate.Value.ToString("d MMM", uk)</p>
+                                        <p class="bsk-item__note">This is an estimated date and may change due to unforeseen circumstances.</p>
+                                    }
+                                </div>
+                                <div class="bsk-item__controls">
+                                    @if (line.CanChangeQuantity)
+                                    {
+                                        <div class="bsk-step" role="group" aria-labelledby="bsk-qty-@i bsk-name-@i">
+                                            <span class="bsk-visually-hidden" id="bsk-qty-@i">Quantity of</span>
+                                            <button class="bsk-step__btn" type="button" aria-label="Decrease quantity" data-step="-1">&minus;</button>
+                                            <input class="bsk-step__val" type="number" name="item.Quantity" value="@line.Quantity" min="1" max="999" step="1" inputmode="numeric" aria-label="Quantity" data-qty>
+                                            <button class="bsk-step__btn" type="button" aria-label="Increase quantity" data-step="1">+</button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <input type="hidden" name="item.Quantity" value="@line.Quantity">
+                                        <span class="bsk-item__qty">Quantity: @line.Quantity</span>
+                                    }
+                                    <button class="bsk-remove" type="button" data-remove="@line.Id" aria-describedby="bsk-name-@i">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
+                                        Remove
+                                    </button>
+                                </div>
+                                <p class="bsk-item__lineprice">
+                                    @HomeProduct.FormatPrice(line.LinePrice, true)
+                                    @if (line.Discount > 0)
+                                    {
+                                        <span class="bsk-item__saving">@HomeProduct.FormatPrice(line.Discount, true) off</span>
+                                    }
+                                </p>
+                            </article>
+                        }
+                        @* Hidden once the script runs, which sends quantity changes by itself *@
+                        <button class="bsk-update" type="submit" data-update>Update basket</button>
+                    </form>
+
+                    <div class="bsk-actions">
+                        <a class="bsk-continue" href="/"><span class="bsk-continue__arrow" aria-hidden="true">&larr;</span> Continue shopping</a>
+                        <button class="bsk-empty" type="button" data-empty>
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /></svg>
+                            Empty basket
+                        </button>
+                    </div>
+                    <p class="bsk-status" role="status" data-status></p>
+                </div>
+
+                <div class="bsk-side">
+                    <p class="bsk-tagline" aria-hidden="true">Quality garden products,<br>delivered to your door</p>
+                    <aside class="bsk-card" aria-labelledby="bsk-card-title">
+                        <div class="bsk-card__head">
+                            <h2 class="bsk-card__title" id="bsk-card-title">Basket total</h2>
+                            <span class="bsk-card__count">@itemsText</span>
+                        </div>
+                        <div class="bsk-card__row bsk-card__row--rule">
+                            <span class="bsk-card__label">Sub-total</span>
+                            <span class="bsk-card__value">@HomeProduct.FormatPrice(Model.SubTotal, true)</span>
+                        </div>
+                        @if (Model.Discount > 0)
+                        {
+                            <div class="bsk-card__row bsk-card__row--rule">
+                                <span class="bsk-card__label">Voucher discount</span>
+                                <span class="bsk-card__value">&minus;@HomeProduct.FormatPrice(Model.Discount, true)</span>
+                            </div>
+                        }
+                        @if (Model.ShowVoucher)
+                        {
+                            <div class="bsk-voucher@(voucherOpen ? " is-open" : "")" data-voucher>
+                                <button class="bsk-voucher__toggle" type="button" aria-expanded="@(voucherOpen ? "true" : "false")" aria-controls="bsk-voucher-body" data-voucher-toggle>
+                                    <span class="bsk-voucher__label">
+                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z" /><circle cx="7.5" cy="7.5" r="1.5" /></svg>
+                                        Add voucher code
+                                    </span>
+                                    <svg class="bsk-voucher__chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+                                </button>
+                                <form class="bsk-voucher__body" id="bsk-voucher-body" action="/basket/applycouponcode" method="post">
+                                    <input class="bsk-voucher__input" type="text" name="couponcode" placeholder="Voucher code" aria-label="Voucher code" autocomplete="off" required>
+                                    <button class="bsk-voucher__apply" type="submit">Apply</button>
+                                </form>
+                                @if (voucherOpen)
+                                {
+                                    <p class="bsk-voucher__message" role="status">@Model.VoucherMessage</p>
+                                }
+                            </div>
+                        }
+                        <div class="bsk-card__row bsk-total">
+                            <span>
+                                <span class="bsk-card__label">Total Cost</span>
+                                <span class="bsk-card__note">(inc. VAT &amp; delivery)</span>
+                            </span>
+                            <span class="bsk-card__value">@HomeProduct.FormatPrice(Model.Total, true)</span>
+                        </div>
+                        <a class="bsk-checkout" href="/checkout/processorder" data-checkout>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                            Checkout Securely
+                            <span class="bsk-checkout__arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+                        <img class="bsk-paycards" src="/img/gm-payment-cards.png" alt="We accept PayPal, Visa, Mastercard and American Express" width="645" height="105" loading="lazy">
+                        <div class="bsk-delivery">
+                            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#2f6b34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg>
+                            <span>
+                                <strong>Next day delivery available</strong>
+                                <small>On most products, UK nationwide</small>
+                            </span>
+                        </div>
+                    </aside>
+                </div>
+
+            </div>
+        }
+    </div>
+
+    @if (Model.Lines.Count > 0 && Model.Suggestions.Count > 0)
+    {
+        <section class="bsk-recommend" aria-labelledby="bsk-recommend-title">
+            <div class="container">
+                <h2 class="bsk-recommend__title" id="bsk-recommend-title">You might also like</h2>
+                <p class="bsk-recommend__sub">Add these to your order</p>
+                <ul class="bsk-recommend__grid">
+                    @foreach (var product in Model.Suggestions)
+                    {
+                        <li class="bsk-rec">
+                            <img class="bsk-rec__img" src="@product.ImageUrl" alt="" width="330" height="330" loading="lazy" decoding="async">
+                            <h3 class="bsk-rec__name"><a href="@product.Url">@product.Name</a></h3>
+                            <p class="bsk-rec__price">@HomeProduct.FormatPrice(product.Price, true)@(product.PriceUnit != null ? " " + product.PriceUnit : "")</p>
+                            <button class="bsk-rec__btn" type="button" data-add="@product.ProductCode" data-variant="@product.VariantCode">
+                                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                                Add to basket
+                            </button>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </section>
+    }
+
+    <div class="bsk-strip">
+        <div class="container bsk-strip__inner">
+            <ul class="bsk-strip__list">
+                <li><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5" /><path d="M8 16c0-5 3-8 8-8-1 5-3 8-8 8z" /><path d="M8 16l5-5" /></svg> Quality products</li>
+                <li><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg> UK nationwide delivery</li>
+                <li><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l7.5 4v5.2c0 4.4-3.1 8.2-7.5 9.8-4.4-1.6-7.5-5.4-7.5-9.8V6.5z" /><polyline points="8.8 12 11.2 14.4 15.5 10" /></svg> Price match promise</li>
+                <li><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7.5" r="4" /><path d="M1.8 21c0-4 3.2-6.5 7.2-6.5s7.2 2.5 7.2 6.5" /><path d="M15.5 4a4 4 0 0 1 0 7.2M22.2 21c0-3.2-1.6-5.4-4.3-6.4" /></svg> Trusted by gardeners</li>
+            </ul>
+            <p class="bsk-strip__tag" aria-hidden="true">Helping you create<br>better outdoors</p>
+        </div>
+    </div>
+</div>
+<script src="/js/gm-basket.js?v1"></script>

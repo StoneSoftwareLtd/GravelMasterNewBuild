@@ -1,0 +1,464 @@
+/* ===== GravelMaster basket page (Optima design) =====
+   Ported from the Optima prototype's basket.html (its own <style>, plus the shared breadcrumb from styles.css), for
+   Views/Basket/_BasketPage.cshtml. The old stylesheets still load underneath, so every rule is scoped to
+   .gm-basket, the wrapper around the new page, with the same shield as the other new pages:
+   - .container is also Bootstrap's, so it's only styled inside .gm-basket;
+   - the shield resets the old element rules (Bootstrap 4 Reboot, global.css) at element-level
+     specificity, so the design's class rules still win;
+   - the prototype's .recommend and .rec-card are renamed bsk-recommend and bsk-rec.
+   The handwritten lines use the Caveat font, which Basket/Index.cshtml loads next to this file.
+   Behaviour: js/gm-basket.js. */
+
+.gm-basket {
+  --green: #5ca458;
+  --green-ink: #2f6b34;   /* text, and surfaces under white text: #5ca458 with white is 3.0:1 */
+  --price: #1f7a35;       /* the prototype's #2ea549 is 3.2:1 on white and 2.9:1 on the total card */
+  --orange: #f39200;      /* surfaces only: white on it is 2.3:1 */
+  --ink: #212529;
+  --dark: #21331f;
+  --purple: #7a2975;
+}
+
+/* ---- Shield against the old site's element rules ---- */
+div:where(.gm-basket) {
+  font-family: "Quicksand", "Segoe UI", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: normal;          /* the old body is 1.5 */
+  color: var(--ink);
+  background: #f8faf3;
+  text-align: start;
+}
+:where(.gm-basket) :is(*, *::before, *::after) { box-sizing: border-box; }
+:where(.gm-basket) :is(section, aside, nav) { padding: 0; }   /* global.css: section { padding: 60px 0 } */
+:where(.gm-basket) nav {
+  position: static;             /* the old base CSS turns every <nav> into an off-canvas panel below 900px */
+  top: auto;
+  left: auto;
+  width: auto;
+  height: auto;                 /* and fixes it at 50px tall from 900px up */
+  overflow: visible;
+  z-index: auto;
+  background-color: transparent;
+  transition: none;
+}
+:where(.gm-basket) :is(h1, h2, h3, h4, h5, h6) {
+  margin: 0;                    /* Bootstrap Reboot: margin-bottom .5rem */
+  color: inherit;               /* global.css colours headings */
+  font-family: inherit;
+  font-size: inherit;           /* global.css: 18px */
+  font-weight: 700;
+  line-height: inherit;         /* Bootstrap Reboot: 1.2 */
+  text-transform: none;
+}
+:where(.gm-basket) p { margin: 0; }
+:where(.gm-basket) :is(ul, ol) { margin: 0; padding: 0; list-style: none; }
+:where(.gm-basket) a {
+  color: inherit;               /* global.css: #212529, underlined */
+  text-decoration: none;
+  transition: none;
+}
+:where(.gm-basket) a:hover { color: inherit; text-decoration: none; }
+:where(.gm-basket) :is(strong, b) { font-weight: 700; }       /* global.css: 500 */
+:where(.gm-basket) img { vertical-align: baseline; max-width: 100%; }
+:where(.gm-basket) :is(input, button) { font-family: inherit; }
+:where(.gm-basket) button { border-radius: 0; }
+.gm-basket [hidden] { display: none !important; }
+.gm-basket .bsk-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* .container is also Bootstrap's; max-width is one class stronger to beat _Layout's
+   inline .container { max-width: 1140px } */
+:where(.gm-basket) .container {
+  margin: 0 auto;
+  padding: 0 18px;
+  width: auto;
+}
+.gm-basket .container { max-width: 1480px; }
+
+/* Visible keyboard focus (global.css removes some outlines) */
+.gm-basket :is(a, button, input):focus-visible {
+  outline: 2px solid #3f8f43;
+  outline-offset: 2px;
+}
+
+/* While a change is on its way */
+.gm-basket.is-busy .bsk-items,
+.gm-basket.is-busy .bsk-card { opacity: .6; transition: opacity .15s ease; }
+
+/* ---- Breadcrumb ---- */
+.gm-basket .bsk-crumbs { padding-top: 14px; padding-bottom: 10px; font-size: 13px; color: #5f5f5f; }
+.gm-basket .bsk-crumbs__list { display: flex; flex-wrap: wrap; row-gap: 4px; }
+.gm-basket .bsk-crumbs__list li + li::before {
+  content: "\203A";
+  content: "\203A" / "";        /* not read out */
+  margin: 0 8px;
+  color: #8a8a8a;
+}
+.gm-basket .bsk-crumbs a { color: #5f5f5f; }
+.gm-basket .bsk-crumbs a:hover { color: #5f5f5f; text-decoration: underline; }
+.gm-basket .bsk-crumbs__current { color: #333; font-weight: 700; }
+
+/* ---- Layout: line items left, total card right ---- */
+.gm-basket .bsk-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 56px;
+  align-items: start;
+  padding: 8px 0 40px;
+}
+.gm-basket .bsk-title {
+  margin: 0 0 4px;
+  font-size: 50px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--dark);
+  -webkit-text-stroke: 0.5px currentColor;
+}
+.gm-basket .bsk-count { margin: 0 0 14px; font-size: 16px; font-weight: 500; color: #555; }
+
+/* ---- Line items: white cards ---- */
+.gm-basket .bsk-item {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr) auto auto;
+  grid-template-areas: "img info controls price";
+  align-items: center;
+  gap: 0 26px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 14px rgba(33, 51, 31, .08);
+  padding: 16px 24px 16px 16px;
+  margin-bottom: 14px;
+}
+.gm-basket .bsk-item__img {
+  grid-area: img;
+  width: 130px;
+  height: 116px;
+  max-width: none;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  background: #eef4dc;
+}
+.gm-basket .bsk-item__info { grid-area: info; min-width: 0; }
+.gm-basket .bsk-item__name { margin: 0; font-size: 21px; font-weight: 700; color: #1e2822; }
+.gm-basket .bsk-item__name a:hover { color: #1e2822; text-decoration: underline; }
+.gm-basket .bsk-item__unit { margin: 4px 0 8px; font-size: 19px; font-weight: 700; color: var(--price); }
+.gm-basket .bsk-item__each { font-size: 14px; font-weight: 500; color: #555; }
+.gm-basket .bsk-item__size { margin: 0; font-size: 15px; color: #444; }
+.gm-basket .bsk-item__size strong { font-weight: 700; color: var(--ink); }
+.gm-basket .bsk-item__size p { display: inline; margin: 0; }   /* the size's HTML may be a paragraph */
+.gm-basket .bsk-item__stock { display: flex; align-items: center; gap: 7px; margin: 10px 0 0; font-size: 15px; font-weight: 600; color: var(--ink); }
+.gm-basket .bsk-item__dot { width: 10px; height: 10px; border-radius: 50%; background: var(--purple); flex-shrink: 0; }
+.gm-basket .bsk-item__note { margin: 4px 0 0; font-size: 13px; color: #5f5f5f; }
+.gm-basket .bsk-item__controls { grid-area: controls; display: flex; align-items: center; gap: 26px; }
+.gm-basket .bsk-item__qty { font-size: 15px; font-weight: 600; }
+.gm-basket .bsk-item__lineprice {
+  grid-area: price;
+  align-self: start;
+  margin-top: 10px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--price);
+  white-space: nowrap;
+  text-align: right;
+}
+.gm-basket .bsk-item__saving { display: block; margin-top: 4px; font-size: 13px; font-weight: 600; color: #555; }
+
+/* Quantity: one joined pill */
+.gm-basket .bsk-step { display: inline-flex; align-items: center; background: #f0f2ed; border-radius: 10px; padding: 4px; }
+.gm-basket .bsk-step__btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--ink);
+}
+.gm-basket .bsk-step__btn:hover { background: #e2e6dc; }
+.gm-basket .bsk-step__val {
+  width: 44px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #fff;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.gm-basket .bsk-step__val::-webkit-inner-spin-button,
+.gm-basket .bsk-step__val::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+.gm-basket :is(.bsk-remove, .bsk-empty) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 15px;
+  color: var(--ink);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Without the script: a button to send typed quantities */
+.gm-basket .bsk-update {
+  border: 1.5px solid var(--green-ink);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--green-ink);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 10px 18px;
+  cursor: pointer;
+}
+
+/* ---- Continue shopping / Empty basket ---- */
+.gm-basket .bsk-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 22px; }
+.gm-basket .bsk-continue {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: #eef2e3;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 13px 24px;
+  font-size: 15.5px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(33, 51, 31, .14);
+  transition: background .15s ease;
+}
+.gm-basket .bsk-continue:hover { background: #e2e9d1; color: var(--ink); }
+.gm-basket .bsk-continue__arrow { transition: transform .15s ease; }
+.gm-basket .bsk-continue:hover .bsk-continue__arrow { transform: translateX(-3px); }
+.gm-basket .bsk-status { margin: 14px 0 0; font-size: 15px; font-weight: 600; color: var(--ink); }
+.gm-basket .bsk-status:empty { display: none; }
+
+/* ---- Empty basket ---- */
+.gm-basket .bsk-emptystate { padding: 8px 0 60px; }
+.gm-basket .bsk-emptystate__text { margin: 10px 0 28px; font-size: 18px; color: #444; }
+
+/* ---- Total card ---- */
+.gm-basket .bsk-side { display: flex; flex-direction: column; }
+.gm-basket .bsk-tagline {
+  position: relative;
+  align-self: flex-end;
+  margin: 0 8px 18px 0;
+  padding-bottom: 8px;
+  font-family: "Caveat", "Segoe Script", cursive;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.05;
+  color: var(--dark);
+  text-align: right;
+  transform: rotate(-3deg);
+}
+.gm-basket .bsk-tagline::after,
+.gm-basket .bsk-strip__tag::after {
+  /* the prototype's hand-drawn underline */
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 60%;
+  height: 11px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 12'><path d='M2 8 C 40 2, 90 2, 128 6' fill='none' stroke='%232f6b34' stroke-width='4' stroke-linecap='round'/></svg>") no-repeat center / 100% 100%;
+}
+.gm-basket .bsk-card {
+  background: #f1f6ea;
+  border: 1px solid #dbe6cf;
+  border-radius: 14px;
+  padding: 30px 34px 34px;
+  box-shadow: 0 2px 10px rgba(47, 107, 52, .06);
+}
+.gm-basket .bsk-card__head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; }
+.gm-basket .bsk-card__title { margin: 0; font-size: 26px; font-weight: 700; color: var(--dark); }
+.gm-basket .bsk-card__count { font-size: 15px; }
+.gm-basket .bsk-card__row { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0 18px; }
+.gm-basket .bsk-card__row--rule { border-bottom: 1px solid #cfdcc2; }
+.gm-basket .bsk-card__label { font-size: 18px; font-weight: 600; }
+.gm-basket .bsk-card__value { font-size: 20px; font-weight: 700; color: var(--price); }
+.gm-basket .bsk-total { padding-top: 20px; padding-bottom: 6px; }
+.gm-basket .bsk-total .bsk-card__label { font-size: 22px; font-weight: 700; }
+.gm-basket .bsk-total .bsk-card__value { font-size: 24px; }
+.gm-basket .bsk-card__note { display: block; margin: 2px 0 0; font-size: 14px; }
+
+/* Voucher */
+.gm-basket .bsk-voucher { border-bottom: 1px solid #cfdcc2; }
+.gm-basket .bsk-voucher__toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: 0;
+  padding: 16px 0;
+  font-size: 17px;
+  cursor: pointer;
+  color: var(--ink);
+}
+.gm-basket .bsk-voucher__label { display: inline-flex; align-items: center; gap: 10px; }
+.gm-basket .bsk-voucher__chev { transition: transform .2s; }
+.gm-basket .bsk-voucher.is-open .bsk-voucher__chev { transform: rotate(180deg); }
+.gm-basket .bsk-voucher__body { display: none; padding: 0 0 16px; gap: 10px; }
+.gm-basket .bsk-voucher.is-open .bsk-voucher__body { display: flex; }
+.gm-basket .bsk-voucher__input {
+  flex: 1;
+  min-width: 0;
+  background: #fff;
+  border: 1px solid #778569;    /* the prototype's #c3cfb6 is 1.5:1 against the card; a box's edge needs 3:1 */
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 15px;
+  color: var(--ink);
+}
+.gm-basket .bsk-voucher__apply {
+  border: 0;
+  border-radius: 6px;
+  background: var(--green-ink);   /* the prototype's #2ea549 is 3.2:1 with white text */
+  color: #fff;
+  font-weight: 700;
+  padding: 10px 18px;
+  cursor: pointer;
+}
+.gm-basket .bsk-voucher__message { margin: 0 0 16px; font-size: 15px; font-weight: 600; }
+
+/* Checkout, payment cards, delivery */
+.gm-basket .bsk-checkout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  text-align: center;
+  background: var(--orange);
+  color: #1f1400;               /* dark ink, as on the other new pages' orange: white on it is 2.3:1 */
+  font-weight: 700;
+  font-size: 17px;
+  border-radius: 8px;
+  padding: 16px 10px;
+  margin: 16px 0 18px;
+}
+.gm-basket .bsk-checkout:hover { color: #1f1400; filter: brightness(0.96); }
+.gm-basket .bsk-checkout__arrow { transition: transform .15s ease; }
+.gm-basket .bsk-checkout:hover .bsk-checkout__arrow { transform: translateX(3px); }
+.gm-basket .bsk-paycards { display: block; margin: 14px auto 0; max-width: 215px; width: 100%; height: auto; }
+.gm-basket .bsk-delivery { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 14px 16px; border-radius: 10px; background: #e1edd3; }
+.gm-basket .bsk-delivery svg { flex-shrink: 0; }
+.gm-basket .bsk-delivery strong { display: block; font-size: 14.5px; color: #2a2a2a; }
+.gm-basket .bsk-delivery small { display: block; font-size: 13px; color: #566; margin-top: 2px; }
+
+/* ---- You might also like ---- */
+.gm-basket .bsk-recommend { padding: 24px 0 48px; }
+.gm-basket .bsk-recommend__title { margin: 0; text-align: center; color: var(--dark); font-size: 30px; -webkit-text-stroke: 0.3px currentColor; }
+.gm-basket .bsk-recommend__sub { text-align: center; margin: 4px 0 26px; font-size: 16px; font-weight: 500; color: #3c4a3f; }
+.gm-basket .bsk-recommend__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.gm-basket .bsk-rec {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 14px;
+  padding: 12px 12px 14px;
+  box-shadow: 0 3px 12px rgba(47, 107, 52, 0.12);
+}
+.gm-basket .bsk-rec__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #eef4dc;
+}
+.gm-basket .bsk-rec__name { margin: 12px 0 6px; font-size: 16px; font-weight: 700; line-height: 1.3; color: #1e2822; }
+.gm-basket .bsk-rec__name a:hover { color: #1e2822; text-decoration: underline; }
+/* the price drops to the bottom with the button, so prices line up across the row */
+.gm-basket .bsk-rec__price { margin: auto 0 16px; font-size: 16px; font-weight: 700; color: var(--price); }
+.gm-basket .bsk-rec__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  background: #37803a;
+  color: #fff;
+  border-radius: 8px;
+  padding: 11px 10px;
+  font-size: 15.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.gm-basket .bsk-rec__btn:hover { background: var(--green-ink); }
+
+/* ---- Bottom strip ---- */
+.gm-basket .bsk-strip { background: #fff; border-top: 1px solid #e3e8dc; }
+.gm-basket .bsk-strip__inner { display: flex; align-items: center; justify-content: space-between; gap: 14px 30px; flex-wrap: wrap; padding-top: 18px; padding-bottom: 18px; }
+.gm-basket .bsk-strip__list { display: flex; flex-wrap: wrap; gap: 12px 56px; }
+.gm-basket .bsk-strip__list li { display: flex; align-items: center; gap: 10px; font-size: 15px; color: #3c4a3f; }
+.gm-basket .bsk-strip__list svg { color: #3c4a3f; flex-shrink: 0; }
+.gm-basket .bsk-strip__tag {
+  position: relative;
+  margin: 0;
+  padding-bottom: 8px;
+  font-family: "Caveat", "Segoe Script", cursive;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.05;
+  color: var(--dark);
+  text-align: right;
+  transform: rotate(-3deg);
+}
+
+/* ---- Responsive (the prototype's breakpoints) ---- */
+@media (max-width: 1100px) {
+  .gm-basket .bsk-item {
+    grid-template-columns: 110px minmax(0, 1fr) auto;
+    grid-template-areas: "img info price" "img controls controls";
+    gap: 10px 20px;
+  }
+  .gm-basket .bsk-item__img { width: 110px; height: 110px; align-self: start; }
+  .gm-basket .bsk-item__controls { justify-content: flex-start; }
+}
+@media (max-width: 920px) {
+  .gm-basket .bsk-wrap { grid-template-columns: 1fr; gap: 10px; }
+  .gm-basket .bsk-title { font-size: 36px; margin: 0 0 4px; -webkit-text-stroke: 0.3px currentColor; }
+  .gm-basket .bsk-count { margin: 0 0 10px; font-size: 14px; }
+  .gm-basket .bsk-tagline { display: none; }
+  .gm-basket .bsk-item {
+    grid-template-columns: 88px minmax(0, 1fr) auto;
+    grid-template-areas: "img info price" "controls controls controls";
+    gap: 12px 14px;
+    padding: 14px;
+  }
+  .gm-basket .bsk-item__img { width: 88px; height: 88px; }
+  .gm-basket .bsk-item__name { font-size: 17px; }
+  .gm-basket .bsk-item__unit { font-size: 16px; }
+  .gm-basket .bsk-item__lineprice { font-size: 17px; margin-top: 2px; }
+  .gm-basket .bsk-item__controls { justify-content: space-between; border-top: 1px solid #eef0ea; padding-top: 12px; }
+  .gm-basket .bsk-card { padding: 22px 20px 26px; }
+  .gm-basket .bsk-strip__inner { justify-content: center; text-align: center; }
+  .gm-basket .bsk-strip__list { justify-content: center; gap: 12px 26px; }
+}
+@media (max-width: 700px) {
+  /* four across down to here keeps the cards near their photos' 330px */
+  .gm-basket .bsk-recommend__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+}

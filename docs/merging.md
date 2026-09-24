@@ -111,6 +111,31 @@ Product addresses (`/products/{category}/p/{product}`) are routed to `ProductCon
 - [ ] **`Website.csproj`**: add `Views/Content/_TradePage.cshtml`, `css/gm-trade.css` and the `img/gm-trade-*` files.
 - [ ] Test on the real site: "Open a trade account" and "Get trade prices" open the Trade tab of the sign-up form, and the Trustpilot widgets fill in.
 
+## Basket page
+
+`/basket` is `BasketController.Index`, which renders `Views/Basket/Index.cshtml` with a `BasketViewModel` (its `Cart`, `ShowCoupon` and `PostalArea`).
+
+- [ ] **`Views/Basket/Index.cshtml`**: when the new chrome is on, render `_BasketPage` in place of everything between the `requirecontroller` section and the `analyticscripts` section (the page's `<style>`, its two inline scripts, the basket and the empty message). Keep `@section analyticscripts` (the `view_cart` event) as it is. Add the Caveat font and `/css/gm-basket.css?v1` to `@section head`. Build the `BasketPageModel` from the view's own model, exactly as the old view shows it:
+  - `Lines`: one `BasketLine` per `Model.Cart.Items`, **in the cart's order** (the quantities are posted in that order):
+    - `Id` = `item.ItemGuid`;
+    - `NameHtml` = `item.Product.Name`; `Url` = `Html.GetProductUrl(item.Product.Name, item.Product.Url, item.Product.Category.Url)`;
+    - `ImageUrl` = `string.Format(ConfigurationManager.AppSettings["ImagePathFormat"], "330", item.Product.Image1)`;
+    - `SizeHtml` = `item.Product.VariantsNameWithoutImage`;
+    - `UnitPrice` = `item.Product.Price`; `Quantity` = `item.Quantity`;
+    - `CanChangeQuantity` = the code doesn't start with `tt2` or `tt3` (the old view's test);
+    - `Discount` = `item.LineDiscountView`; `LinePrice` = `item.LinePrice`; `PreOrderDate` = `item.Product.PreOrderDate`.
+  - `ItemCount` = `Model.Cart.NumItems`; `SubTotal` = `Model.Cart.SubTotalExclDiscount`; `Total` = `Model.Cart.Total`.
+  - `ShowVoucher` = `Model.ShowCoupon`; `VoucherMessage` = `Model.Cart.CouponMessage`; `PostalArea` = `Model.PostalArea`.
+  - `Suggestions`: the old view's four "weekly special offers", with its names, and each size's own price rather than the typed-in one (they matched on 24 September 2026):
+    - `EMPTYGM` / `EMPTYGMBBG`, "Empty Waste Bag", picture `/img/800.png` (the product has no photos on the image server);
+    - `WM1M` / `WM1M-15`, "1m x 15m Weed Membrane", "per roll", its 330px product photo;
+    - `WM2M` / `WM2M-10`, "2m x 10m Weed Membrane", "per roll", its 330px product photo;
+    - `PLASPEG` / `PLASPEG10`, "10 Plastic Fixing Pegs", "per set", its 330px product photo.
+- [ ] **`@section requirecontroller`**: when the new page shows, require `/scripts/Controllers/Root/Content/Display.js` instead of `Basket/Index.js`, which calls functions only the old view defines (`onJqueryLoaded`, `wcqib_refresh_quantity_increments`) and would throw.
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new basket too.
+- [ ] **`Website.csproj`**: add `Views/Basket/_BasketPage.cshtml`, `ViewModels/Common/BasketPageModels.cs`, `css/gm-basket.css` and `js/gm-basket.js`.
+- [ ] Test on the real site: + and - on each line (with and without turf in the basket), typing a quantity, Remove, Empty basket, a voucher that works, one that doesn't and one under £40, each add-on, a pre-order size, Checkout, a trade login (trade prices), and the basket total in the header after each change.
+
 ## After merging
 
 - [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, account, search, content pages and the 404 page.

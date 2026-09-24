@@ -86,3 +86,13 @@ Decided 23 September 2026: the prices and the quantity calculator stay exactly a
 | **The live "Why us?" pictures** | Six photos with their words built in (Nationwide Delivery, Loose Load Tipper, Trade Discount, Account Manager, Dedicated Bagging, Free Samples). Not used: their words are in the new perks, list and FAQs. | Keep them out, or say where they should go |
 | **The phone number on the bulk bag** | The hero photo's bag shows 0800 907 85 90; the site's number is 0330 058 5068. The live page has the same photo. | Check the old number still reaches GravelMaster, or choose a photo without it |
 | **The green band's colour** | Darkened from the prototype's bright greens so its white text passes AA (they were 3.0 to 3.7:1). | Keep, or choose other greens that pass |
+
+## Basket page
+
+| Found | Detail | Suggestion |
+|---|---|---|
+| **Empty Waste Bags has no photos** (live now) | Its product page shows a broken image: none of its photo files (`EMPTYGM-600.jpg` and the others) exist on the image server. The new basket uses the old basket's own 140px bag picture for it, which looks soft in the larger card. | Upload photos for the product in the admin site |
+| **Which add-ons to offer** | The new basket offers the old one's four "weekly special offers" (Empty Waste Bag, two weed membranes, plastic pegs), under the prototype's "You might also like". They're fixed in the view, and show customer prices to trade customers too, as before. | Keep these four, choose others, or pick them per basket (e.g. membrane and pegs with gravel) |
+| **"In stock" on each line** | The prototype shows "In stock" with a tick on every line. The basket doesn't know stock, and the old page never said it, so it's left out; pre-order lines still say so. | Keep it out, or add a stock check to the basket |
+| **The Trustpilot carousel** | The old basket ends with a Trustpilot carousel; the prototype has none, so it's left out. | Keep it out, or add the reviews band the other new pages have |
+| **The "added to your basket" pop-up** | Still the old styling (see Product page above). Now the basket page is done, it could match it. | Restyle `AddToCartComponent.cshtml` next |
