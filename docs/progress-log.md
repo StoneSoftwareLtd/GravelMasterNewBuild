@@ -163,6 +163,10 @@ The new product page's pop-up showed the basket's own summary (`AddToCartCompone
 
 Tested in headless Edge with a reply built exactly as the summary file builds it, and every request recorded rather than sent: the lines, the pre-order date, turf without + and -, + and - (and a failed change), "Add" on an add-on, the header total, Escape and focus, and an unexpected reply. Every text colour passes AA. Not tested: the real reply, on the test website.
 
+## 24 September 2026: the header's search style kept to the header
+
+`gm-chrome.css` styled every element with the class `search`, which was meant for the header's search form. The checkout's address finder (Postcode Anywhere) draws its search box as an `input.search`, so on every checkout page with the new header it picked up the header's rounded, padded style. The rules now name `form.search`. Checked in the preview: the header's search box measured the same before and after at 1440 and 390px wide, and its list of suggestions still gets its colour and layering.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).

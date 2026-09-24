@@ -155,8 +155,8 @@ footer:where(.footer) :is(p, ul) {
   text-decoration: underline;
 }
 
-/* Search */
-.search {
+/* Search: form.search, not .search - the checkout's address finder (Postcode Anywhere) has an input.search */
+form.search {
   position: relative;          /* anchors the product autocomplete list */
   flex: 1;
   display: flex;
@@ -184,7 +184,7 @@ footer:where(.footer) :is(p, ul) {
 }
 
 /* Product autocomplete: _Layout's autocomplete() appends .autocomplete-items to the form */
-.search .autocomplete-items,
+form.search .autocomplete-items,
 .mobile-menu__search .autocomplete-items {
   color: #333;
   z-index: 200;
@@ -885,7 +885,7 @@ a.mega__heading:hover { color: var(--accent, var(--green)); }
   }
   .actions .action:first-child { display: none; }
   .menu-toggle { order: 3; display: flex; }
-  .search {
+  form.search {
     order: 4;
     flex: 1 1 100%;
     min-width: 0;
