@@ -10,6 +10,10 @@
     string availability = !Model.IsInStock ? "OutOfStock" : preOrder ? "PreOrder" : "InStock";
     int slideCount = Model.Photos.Count + (Model.VideoUrl != null ? 1 : 0) + (Model.ThreeSixtyUrl != null ? 1 : 0);
 
+    // Step 2's heading: "Select your bag size" when every size is a bag (bulk bags, sealed bags), otherwise
+    // "Select your size" (glue bottles, bulbs, membrane rolls, gift vouchers, and products with one size)
+    string sizeWord = Model.Options.Count > 1 && Model.Options.All(o => o.Name.IndexOf("bag", StringComparison.OrdinalIgnoreCase) >= 0) ? "bag size" : "size";
+
     // Size pictures: the first entry whose word is in the size's name gives its picture. The prototype's bags
     // replace the old page's for the four bag sizes; the rest are the old page's, in its order. A size with no
     // match gets /img/<name without spaces>.gif, as on the old page (gm-product.js hides it if it's missing).
@@ -213,7 +217,7 @@
                     }
 
                     <fieldset class="pdp-fieldset">
-                        <legend class="pdp-label pdp-label--step pdp-label--qty"><span class="pdp-step">Step @(step++)</span> Select your @(Model.Options.Count == 1 ? "size" : "bag size")</legend>
+                        <legend class="pdp-label pdp-label--step pdp-label--qty"><span class="pdp-step">Step @(step++)</span> Select your @sizeWord</legend>
                         <div class="pdp-options@(Model.Options.Count == 1 ? " pdp-options--one" : "")">
                             @foreach (var option in Model.Options)
                             {

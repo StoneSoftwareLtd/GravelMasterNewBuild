@@ -137,6 +137,10 @@ Found on the live site: the trade page has no `<title>` or meta description.
 
 Raised for a decision: the new words, "Speak to our trade team", the "Why" photo, the live "Why us?" pictures, the old phone number on the bulk bag in the hero photo, and the greens. See [open-questions.md](open-questions.md#trade-accounts-page).
 
+## 24 September 2026: product page size heading
+
+The product page's size step said "Select your bag size" on every product with more than one size, including 25 that aren't sold in bags: the stone glue (bottles), 21 bulb products (tubers, bulbs and corms), the two weed membranes (rolls) and the gift card (vouchers). It now says "bag size" only when every size is a bag, and "Select your size" otherwise. Checked by rendering all 153 live products: those 25 say "size", the 61 bag products still say "bag size", and products with one size are unchanged. The partial compiles with MVC 5.2's Razor.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
