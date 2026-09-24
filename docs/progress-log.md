@@ -102,6 +102,10 @@ Decided to put the three finished pages into the site before building more. Chec
 - no branch matches the live site: the layout is `stripe`'s, the product page is partly `master`'s. The deployed code needs pushing before the integration starts ([merging.md](merging.md#before-anything-which-code-is-live));
 - the test website will use a copy of the live database; where it runs is still to decide.
 
+## 24 September 2026: product page calculator
+
+1. Fixed the preview homepage, which had had no script since 23 September: the homepage's script tag gained `defer`, and the preview's build only looked for the tag without it, so it silently left the script out (no carousels, tabs or calculator). It now accepts attributes and stops with an error if the script is missing. The site's own partial was never affected.
+
 ## Next
 
 - The product page's quantity calculator: move the homepage calculator into a shared partial and use it on both pages.

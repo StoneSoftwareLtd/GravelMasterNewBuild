@@ -313,7 +313,9 @@ function Invoke-Build {
     $h = Get-Between $homeSrc '<div class="gm-home">' '<script src="/js/gm-home.js' 'the homepage'
     $h = $h.Substring(0, $h.LastIndexOf('<script'))
     $h = Remove-RazorComments $h
-    $homeScript = [regex]::Match($homeSrc, '<script src="/js/gm-home\.js[^"]*"></script>').Value
+    # (the tag may carry attributes such as defer; without the script the homepage has no carousels, tabs or calculator)
+    $homeScript = [regex]::Match($homeSrc, '<script src="/js/gm-home\.js[^"]*"[^>]*></script>').Value
+    if (-not $homeScript) { throw "Couldn't find the gm-home.js script tag in _HomePage.cshtml" }
 
     # hero banners
     $bannerItems = @($data.banners)
