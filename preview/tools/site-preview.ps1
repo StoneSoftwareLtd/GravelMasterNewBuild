@@ -7,7 +7,7 @@
 # The homepage, every category page (with or without filters) and every product page show the new homepage,
 # category page and product page from Views/Home/_HomePage.cshtml, Views/Shared/_CategoryPage.cshtml and
 # Views/Shared/_ProductPage.cshtml, filled from the live page. Product prices come from the live site's own
-# price lookup, as they do on the real page.
+# price lookup, as they do on the real page. /about-us shows the new About us page (Views/Content/_AboutPage.cshtml).
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -33,6 +33,7 @@ $fragments = Join-Path $PSScriptRoot 'fragments'
 $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'category-page.ps1')
 . (Join-Path $PSScriptRoot 'product-page.ps1')
+. (Join-Path $PSScriptRoot 'about-page.ps1')
 # a category page: /garden-chippings/products/, /garden-chippings/slate-chippings/products/, and either with filters after
 $categoryPathPattern = '^/(?!products/)[a-z0-9-]+(?:/[a-z0-9-]+)?/products(?:/|$)'
 
@@ -100,6 +101,7 @@ function Update-Chrome {
 function Get-ChangeStamp {
   $files = @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Shared') -Filter '*.cshtml') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Home') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
+    @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Content') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'css') -Filter 'gm-*') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'js') -Filter 'gm-*') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'img') -Filter 'gm-*')
@@ -172,6 +174,7 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
     $modal = $html.IndexOf('<div class="modal fade show" id="priceModal"')
     $mainEnd = if ($modal -gt 0) { $html.LastIndexOf('</div>', $modal) } else { -1 }
     $content = $null
+    $extraHead = $null
     if ($mainBody.Success -and $mainEnd -gt $mainBody.Index) {
       if ($chrome.Home -and $path -eq '/') {
         $content = $chrome.Home; $css = '/css/gm-home.css?v1'; $newPage = 'new homepage'
@@ -190,12 +193,17 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
           $css = '/css/gm-product.css?v1'; $newPage = 'new product page'
         }
       }
+      elseif ($path -match '^/about-us/?$') {
+        $content = Format-AboutPage (Join-Path $package 'Views\Content\_AboutPage.cshtml')
+        $css = '/css/gm-about.css?v1'; $newPage = 'new about page'
+        $extraHead = '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />'
+      }
     }
     if ($content) {
       # full width, without the old white box and orange side borders
       $html = $html.Substring(0, $mainBody.Index) + '<div itemscope itemtype="http://schema.org/WebSite" id="mainBody"><meta itemprop="url" content="https://www.gravelmaster.co.uk" />' + $content + "`n" + $html.Substring($mainEnd)
       $head = $html.IndexOf('<link href="/css/gm-chrome.css')
-      if ($head -ge 0) { $html = $html.Insert($head, "<link href=""$css"" rel=""stylesheet"" />`n") }
+      if ($head -ge 0) { $html = $html.Insert($head, $(if ($extraHead) { $extraHead + "`n" } else { '' }) + "<link href=""$css"" rel=""stylesheet"" />`n") }
       # The old product page's script works its own markup, which is gone: load the site's default page
       # script instead, as Detail.cshtml will when the new page shows (docs/merging.md)
       if ($newPage -eq 'new product page') {

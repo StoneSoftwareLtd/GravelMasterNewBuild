@@ -109,8 +109,20 @@ Decided to put the three finished pages into the site before building more. Chec
 3. Added the calculator to the product page, between the buy box and the product details, on the products whose live page has one, set to the product's type (`QuantityCalculatorModel.ForProduct`: gravel and slate use the gravel formula, bark the bark and mulch one, soil the topsoil one). Checked on eight products against the calculator their live pages show.
 4. On phones the calculator's "Or" was left at the end of the first result's line: the site's real labels ("Pre Packed Pallets (56 x 25L)") are too long for both results to share a line, unlike the prototype's short ones. Below 560px "Or" now has its own line, so the results stack. Checked: unchanged at 1440 and 860px.
 
+## 24 September 2026: About us page
+
+While the live code is being put on a branch, carried on with the prototype's pages that don't depend on it. Rebuilt the prototype's About page (`about.html`) as `Views/Content/_AboutPage.cshtml` for `/about-us`. Details: [about-page.md](about-page.md).
+
+- The live page is text written into its view, with nothing from the database, so the new page is a partial with no model. The live page's paragraphs replace the prototype's placeholder text, word for word.
+- The hero and team photos went from 2.1 MB to 208 KB at the same sizes; the inspiration photos are the homepage's.
+- White text on the blue band was 2.8:1 and the "Since 2008" badge let the photo show through, so both were darkened just enough to pass AA. Every text colour on the page was measured.
+- Fixed two CSS mistakes carried over from the prototype: on phones the trust row sat above the photo instead of below it, and the "About Gravelmaster" label showed as grey body text.
+- The team arrows show only when the cards scroll (phones), and follow resizing.
+- The preview shows it at `/about-us`. Checked at 1440, 1024, 768 and 390px, and the team arrows clicked through in headless Edge. The partial compiles with MVC 5.2's Razor.
+
+Raised for a decision: the out-of-date "31-years", the hero photo (looks like stock, and small), Harvey Finlayson (not on the live team page), the live content left out, and the blue. See [open-questions.md](open-questions.md#about-us-page).
+
 ## Next
 
-- The product page's quantity calculator: move the homepage calculator into a shared partial and use it on both pages.
-- Wire the homepage, category page and product page into the site. The GravelMasterSoftware repository is on this PC now (`Documents\Projects\GravelMasterSoftware`), so this can start; the first job is redoing the header and footer on its latest master ([merging.md](merging.md)).
-- The prototype's other pages (basket, checkout, about, trade) are still to come.
+- Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
+- The prototype's other pages: trade, then basket, checkout and confirmation. The basket and checkout take payments, so they're best built against the live code on a test site.
