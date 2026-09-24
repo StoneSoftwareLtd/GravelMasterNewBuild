@@ -10,9 +10,11 @@
     string availability = !Model.IsInStock ? "OutOfStock" : preOrder ? "PreOrder" : "InStock";
     int slideCount = Model.Photos.Count + (Model.VideoUrl != null ? 1 : 0) + (Model.ThreeSixtyUrl != null ? 1 : 0);
 
-    // Step 2's heading: "Select your bag size" when every size is a bag (bulk bags, sealed bags), otherwise
-    // "Select your size" (glue bottles, bulbs, membrane rolls, gift vouchers, and products with one size)
-    string sizeWord = Model.Options.Count > 1 && Model.Options.All(o => o.Name.IndexOf("bag", StringComparison.OrdinalIgnoreCase) >= 0) ? "bag size" : "size";
+    // Step 2's heading: "Select your bag size" when every size is a bag (bulk bags, sealed bags), "Select your
+    // amount" when every one is a voucher (the gift card), otherwise "Select your size" (glue bottles, bulbs,
+    // membrane rolls, and products with one size)
+    Func<string, bool> allSizes = word => Model.Options.Count > 1 && Model.Options.All(o => o.Name.IndexOf(word, StringComparison.OrdinalIgnoreCase) >= 0);
+    string sizeWord = allSizes("bag") ? "bag size" : allSizes("voucher") ? "amount" : "size";
 
     // Size pictures: the first entry whose word is in the size's name gives its picture. The prototype's bags
     // replace the old page's for the four bag sizes; the rest are the old page's, in its order. A size with no

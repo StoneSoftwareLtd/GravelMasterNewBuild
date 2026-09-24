@@ -141,6 +141,8 @@ Raised for a decision: the new words, "Speak to our trade team", the "Why" photo
 
 The product page's size step said "Select your bag size" on every product with more than one size, including 25 that aren't sold in bags: the stone glue (bottles), 21 bulb products (tubers, bulbs and corms), the two weed membranes (rolls) and the gift card (vouchers). It now says "bag size" only when every size is a bag, and "Select your size" otherwise. Checked by rendering all 153 live products: those 25 say "size", the 61 bag products still say "bag size", and products with one size are unchanged. The partial compiles with MVC 5.2's Razor.
 
+Then the gift card's step became "Select your amount", since its sizes are vouchers (£20, £50, £100). Checked the same way: only the gift card changed.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).

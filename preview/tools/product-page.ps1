@@ -241,9 +241,10 @@ function Format-ProductPage([string]$templatePath, $model, [string]$enquiryHtml)
     $n = 0
     for ($at = $f.IndexOf('@(step++)'); $at -ge 0; $at = $f.IndexOf('@(step++)')) { $n++; $f = $f.Substring(0, $at) + $n + $f.Substring($at + '@(step++)'.Length) }
     # sizes
-    # sizeWord: "bag size" when there are several sizes and every one is a bag
-    $allBags = $options.Count -gt 1 -and @($options | Where-Object { $_.Name.IndexOf('bag', [StringComparison]::OrdinalIgnoreCase) -lt 0 }).Count -eq 0
-    $f = Sub $f @{ '@sizeWord' = $(if ($allBags) { 'bag size' } else { 'size' }); '@(Model.Options.Count == 1 ? " pdp-options--one" : "")' = $(if ($options.Count -eq 1) { ' pdp-options--one' } else { '' }) }
+    # sizeWord: "bag size" when there are several sizes and every one is a bag, "amount" when every one is a voucher
+    $allSizes = { param($word) $options.Count -gt 1 -and @($options | Where-Object { $_.Name.IndexOf($word, [StringComparison]::OrdinalIgnoreCase) -lt 0 }).Count -eq 0 }
+    $sizeWord = if (& $allSizes 'bag') { 'bag size' } elseif (& $allSizes 'voucher') { 'amount' } else { 'size' }
+    $f = Sub $f @{ '@sizeWord' = $sizeWord; '@(Model.Options.Count == 1 ? " pdp-options--one" : "")' = $(if ($options.Count -eq 1) { ' pdp-options--one' } else { '' }) }
     $f = Set-RazorBlock $f '@foreach \(var option in Model\.Options\)\s*\{' { param($lb)
       $markup = Get-LoopMarkup $lb.Inner
       ($options | ForEach-Object {
