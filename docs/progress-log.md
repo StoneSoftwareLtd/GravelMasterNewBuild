@@ -157,8 +157,13 @@ Not tested: changing a real basket, which needs the test website.
 
 Raised for a decision: Empty Waste Bags' missing photos, which add-ons to offer, "In stock" on each line, the old Trustpilot carousel, and restyling the "added to your basket" pop-up. See [open-questions.md](open-questions.md#basket-page).
 
+## 24 September 2026: the "added to your basket" pop-up
+
+The new product page's pop-up showed the basket's own summary (`AddToCartComponent.cshtml`) in the old site's styling. Every page's pop-up uses that summary, so instead of changing it, `gm-product.js` now reads the lines, total and add-ons out of it and shows them in the new basket page's style, with the line just added first and the add-ons below "Go to basket" and "Continue shopping". + and - and "Add" make the same requests as the summary's own buttons, and if the summary ever looks different it's shown as it comes, as before. Details: [product-page.md](product-page.md#choices).
+
+Tested in headless Edge with a reply built exactly as the summary file builds it, and every request recorded rather than sent: the lines, the pre-order date, turf without + and -, + and - (and a failed change), "Add" on an add-on, the header total, Escape and focus, and an unexpected reply. Every text colour passes AA. Not tested: the real reply, on the test website.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
 - The prototype's checkout and order confirmation. They take payments, and the checkout differs between branches (`stripe` has a different one), so they're best built against the live code.
-- Restyle the "added to your basket" pop-up to match the new basket.

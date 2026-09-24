@@ -383,7 +383,7 @@
           return;
         }
         itemEvent('add_to_cart', source, { postcode: isSimple ? undefined : area });
-        added.open(html, button);
+        added.open(html, button, source.getAttribute('data-code'));
       }).catch(function () {
         buyError.textContent = 'Sorry, we couldn’t add that to your basket. Please try again, or call us on 0330 058 5068.';
       }).then(function () {
@@ -407,15 +407,160 @@
     if (isSimple) updatePrices();
   }
 
-  /* ---------- "Added to your basket" pop-up ---------- */
+  /* ---------- "Added to your basket" pop-up ----------
+     /basket/addtobasket answers with the basket's own summary (Views/Shared/AddToCartComponent*.cshtml, the
+     same HTML every page's pop-up shows). The lines, the total and the add-ons are read out of it and shown in
+     the new style; the + and - and "Add" buttons make the same requests the summary's own buttons did. If the
+     HTML isn't as expected, it's shown as it comes, with its own scripts, as before. */
   var added = (function () {
     var box = root.querySelector('[data-added]');
     var dialog = box.querySelector('[role="dialog"]');
     var summary = box.querySelector('[data-added-summary]');
+    var more = box.querySelector('[data-added-recs]');   // the add-ons, below Go to basket / Continue shopping
     var opener = null;
+    var addedRecs = {};   // add-ons added from this pop-up, shown as "Added"
 
     // The summary's own "ADD" buttons and the old page's scripts put the next summary in #insertBefore
     summary.id = 'insertBefore';
+
+    function text(el) { return el ? el.textContent.replace(/\s+/g, ' ').trim() : ''; }
+    function el(tag, cls, content) {
+      var node = document.createElement(tag);
+      if (cls) node.className = cls;
+      if (content != null) node.textContent = content;
+      return node;
+    }
+
+    // The basket's summary HTML -> { lines, total, recs }, or null when it doesn't look as expected
+    function parse(html) {
+      var doc = new DOMParser().parseFromString('<div>' + html + '</div>', 'text/html');
+      var lines = [];
+      each(doc.querySelectorAll('.modal-item-wrap[id^="bask-"]'), function (wrap) {
+        var link = wrap.querySelector('.modal-item-info h2 a') || wrap.querySelector('a[href]');
+        var img = wrap.querySelector('.modal-item-img img');
+        var qty = wrap.querySelector('input.qty');
+        var pre = wrap.querySelector('.preorder');
+        lines.push({
+          code: wrap.id.slice(5),
+          name: text(link),
+          url: link ? link.getAttribute('href') : null,
+          img: img ? img.getAttribute('src') : null,
+          size: text(wrap.querySelector('.modal-item-info p')),
+          qty: qty ? parseInt(qty.value, 10) || 1 : null,
+          qtyCode: qty ? qty.getAttribute('data-code') : null,   // turf has no quantity box
+          price: text(wrap.querySelector('#popupLine')),
+          // "This item is not in stock. Pre-Order For Delivery W/C: 6 Oct" -> the basket page's wording
+          pre: pre ? text(pre).replace(/^This item is not in stock\.\s*/i, '').replace(/^Pre-Order For Delivery W\/C:\s*/i, 'Pre-order for delivery w/c ') : ''
+        });
+      });
+      var total = text(doc.querySelector('#popupTotal b'));
+      if (!lines.length || !total || lines.some(function (l) { return !l.name || !l.price; })) return null;
+      // The add-ons: listed twice (desktop and phone), so each once
+      var recs = [], seen = {};
+      each(doc.querySelectorAll('.grid-price-shop[data-productcode]'), function (btn) {
+        var code = btn.getAttribute('data-productcode'), variant = btn.getAttribute('data-selectedVariantCode') || btn.getAttribute('data-selectedvariantcode');
+        if (seen[code + '|' + variant]) return;
+        seen[code + '|' + variant] = true;
+        var card = btn.closest('a') || btn.parentNode;
+        var img = card.querySelector('img');
+        recs.push({
+          code: code, variant: variant,
+          name: text(card.querySelector('h2')) || card.getAttribute('title') || '',
+          img: img ? img.getAttribute('src') : null,
+          // the summary shows its customer price to everyone (its trade price is hidden), as before
+          price: text(card.querySelector('.cust-price'))
+        });
+      });
+      return { lines: lines, total: total, recs: recs };
+    }
+
+    function render(data, newCode) {
+      summary.innerHTML = '';
+      summary.classList.add('is-styled');
+      var list = el('ul', 'pdp-added__lines');
+      // the line just added first
+      var lines = data.lines.slice().sort(function (a, b) { return (b.code.toLowerCase() === (newCode || '').toLowerCase()) - (a.code.toLowerCase() === (newCode || '').toLowerCase()); });
+      lines.forEach(function (line) {
+        var isNew = newCode && line.code.toLowerCase() === newCode.toLowerCase();
+        var li = el('li', 'pdp-added__line' + (isNew ? ' is-new' : ''));
+        li.setAttribute('data-line', line.code);
+        var img = el('img', 'pdp-added__img');
+        img.alt = '';
+        img.width = 330; img.height = 330;
+        if (line.img) img.src = line.img;
+        img.addEventListener('error', function () { img.style.visibility = 'hidden'; });
+        li.appendChild(img);
+        var info = el('div', 'pdp-added__info');
+        if (isNew && data.lines.length > 1) info.appendChild(el('span', 'pdp-added__tag', 'Just added'));
+        var name = el(line.url ? 'a' : 'span', 'pdp-added__name', line.name);
+        if (line.url) name.href = line.url;
+        info.appendChild(name);
+        if (line.size) info.appendChild(el('p', 'pdp-added__size', line.size));
+        if (line.pre) info.appendChild(el('p', 'pdp-added__pre', line.pre));
+        if (line.qtyCode) {
+          var step = el('div', 'pdp-added__step');
+          step.setAttribute('role', 'group');
+          step.setAttribute('aria-label', 'Quantity of ' + line.name);
+          var minus = el('button', 'pdp-added__stepbtn', '−');
+          minus.type = 'button'; minus.setAttribute('data-added-step', '-1'); minus.setAttribute('aria-label', 'Decrease quantity');
+          var value = el('span', 'pdp-added__qty', String(line.qty));
+          value.setAttribute('aria-live', 'polite');
+          var plus = el('button', 'pdp-added__stepbtn', '+');
+          plus.type = 'button'; plus.setAttribute('data-added-step', '1'); plus.setAttribute('aria-label', 'Increase quantity');
+          step.appendChild(minus); step.appendChild(value); step.appendChild(plus);
+          step.setAttribute('data-code', line.qtyCode);
+          info.appendChild(step);
+        }
+        li.appendChild(info);
+        li.appendChild(el('p', 'pdp-added__price', line.price));
+        list.appendChild(li);
+      });
+      summary.appendChild(list);
+
+      var total = el('p', 'pdp-added__total');
+      total.appendChild(el('span', null, 'Basket total'));
+      total.appendChild(el('strong', null, data.total));
+      summary.appendChild(total);
+      summary.appendChild(el('p', 'pdp-added__status', ''));
+      summary.lastChild.setAttribute('role', 'status');
+
+      more.innerHTML = '';
+      if (data.recs.length) {
+        more.appendChild(el('h3', 'pdp-added__recs-title', 'Add to your order'));
+        var recs = el('ul', 'pdp-added__recs');
+        data.recs.forEach(function (rec) {
+          var li = el('li', 'pdp-added__rec');
+          var img = el('img', 'pdp-added__rec-img');
+          img.alt = '';
+          if (rec.img) img.src = rec.img;
+          img.addEventListener('error', function () { img.style.visibility = 'hidden'; });
+          li.appendChild(img);
+          li.appendChild(el('span', 'pdp-added__rec-name', rec.name));
+          li.appendChild(el('span', 'pdp-added__rec-price', rec.price));
+          var done = addedRecs[rec.code + '|' + rec.variant];
+          var add = el('button', 'pdp-added__add', done ? 'Added' : 'Add');
+          add.type = 'button';
+          add.disabled = !!done;
+          add.setAttribute('data-added-add', rec.code);
+          add.setAttribute('data-variant', rec.variant);
+          add.setAttribute('aria-label', (done ? 'Added: ' : 'Add ') + rec.name);
+          li.appendChild(add);
+          recs.appendChild(li);
+        });
+        more.appendChild(recs);
+      }
+    }
+
+    function show(html, newCode) {
+      var data = parse(html);
+      if (data) render(data, newCode);
+      else { summary.classList.remove('is-styled'); more.innerHTML = ''; setHtml(html); }
+    }
+
+    function status(message) {
+      var s = summary.querySelector('.pdp-added__status');
+      if (s) s.textContent = message;
+    }
 
     // Inserts the basket's HTML and runs its scripts, as the old page's jQuery did
     function setHtml(html) {
@@ -454,7 +599,63 @@
       else trapTab(dialog, e);
     });
 
-    // The + and - buttons in the summary change a basket line, as the old page's Detail.js did
+    // The new style's + and -: /basket/updatequantity, as the summary's own buttons did
+    summary.addEventListener('click', function (e) {
+      var button = e.target.closest('[data-added-step]');
+      if (!button) return;
+      var step = button.parentNode;
+      var value = step.querySelector('.pdp-added__qty');
+      var before = parseInt(value.textContent, 10) || 1;
+      var q = Math.max(1, before + parseInt(button.getAttribute('data-added-step'), 10));
+      if (q === before) return;
+      var buttons = step.querySelectorAll('button');
+      each(buttons, function (b) { b.disabled = true; });
+      value.textContent = q;
+      status('');
+      fetch('/basket/updatequantity?code=' + encodeURIComponent(step.getAttribute('data-code')) + '&quantity=' + q, { credentials: 'same-origin', cache: 'no-store' })
+        .then(function (res) { return res.ok ? res.text() : Promise.reject(); })
+        .then(function (answer) {
+          var parts = answer.split(':');   // "basket total:line total"
+          if (parts.length < 2) throw new Error('unexpected answer');
+          step.closest('.pdp-added__line').querySelector('.pdp-added__price').textContent = parts[1].trim();
+          summary.querySelector('.pdp-added__total strong').textContent = parts[0].trim();
+          refreshHeader();
+        })
+        .catch(function () {
+          value.textContent = before;
+          status('Sorry, that couldn’t be changed. Please try again, or change it in your basket.');
+        })
+        .then(function () { each(buttons, function (b) { b.disabled = false; }); });
+    });
+
+    // "Add" on an add-on: /basket/addtobasket with its codes, as the summary's own "ADD" did; the basket answers
+    // with the new summary
+    more.addEventListener('click', function (e) {
+      var button = e.target.closest('[data-added-add]');
+      if (!button) return;
+      var code = button.getAttribute('data-added-add'), variant = button.getAttribute('data-variant');
+      button.disabled = true;
+      button.textContent = 'Adding…';
+      fetch('/basket/addtobasket?id=' + encodeURIComponent(code) + '&qty=1&selectedVariantCode=' + encodeURIComponent(variant), {
+        credentials: 'same-origin', cache: 'no-store', headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+        .then(function (res) { return res.ok ? res.text() : Promise.reject(); })
+        .then(function (html) {
+          addedRecs[code + '|' + variant] = true;
+          show(html, variant);
+          refreshHeader();
+          // its button is now "Added" and disabled, so focus goes back to the pop-up
+          dialog.focus();
+        })
+        .catch(function () {
+          button.disabled = false;
+          button.textContent = 'Add';
+          status('Sorry, that couldn’t be added. Please try again.');
+        });
+    });
+
+    // The summary's own + and - buttons (when it's shown as it comes) change a basket line, as the old page's
+    // Detail.js did
     summary.addEventListener('click', function (e) {
       var button = e.target.closest('.plus, .minus');
       if (!button) return;
@@ -482,9 +683,10 @@
     });
 
     return {
-      open: function (html, from) {
+      // newCode: the size just added (its code), shown first
+      open: function (html, from, newCode) {
         opener = from;
-        setHtml(html);
+        show(html, newCode);
         box.hidden = false;
         document.body.style.overflow = 'hidden';
         dialog.focus();
