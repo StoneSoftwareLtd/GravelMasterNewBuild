@@ -80,6 +80,7 @@ Product addresses (`/products/{category}/p/{product}`) are routed to `ProductCon
   - `SampleOption`: `Model.SampleWithHalf` when `Model.HasHalf`, otherwise the item whose name contains "sample", or null;
   - `NextDeliveryDate`: `Model.FastestAvailableDate` when `Model.Calc` is set (the old view only shows it then);
   - `Description`: `ProductDescription.Parse(Model.Description)`;
+  - `CalculatorType`: `QuantityCalculatorModel.ForProduct(Model.Calc)` (null, so no calculator, for products the old page showed none on);
   - `Related`: the FeatherSnap Bird Feeder (unless this is it), then `Model.Related`, leaving out this product and repeats, up to four, as `HomeProduct`s (the old view's photo is `FullGraphicUrl`; the image format is that URL with the width as `{0}`);
   - `EnquiryCategories`: the top-level category names in menu order.
 - [ ] **`@section requirecontroller`** in `Detail.cshtml`: when the new page shows, require `/scripts/Controllers/Root/Content/Display.js` instead of `Product/Detail.js`. `Detail.js` calls functions that only the old view defines (`calculatePrices`, `onJqueryLoaded`) and would throw. The new page does its jobs (the quantity buttons in the basket pop-up, the postcode).

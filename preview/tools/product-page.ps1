@@ -16,6 +16,7 @@ if (-not ('Agilis.ECommerce.Mvc.Web.ViewModels.Common.ProductDescription' -as [t
   $models = Join-Path $PSScriptRoot '..\..\Website\Website\ViewModels\Common'
   Add-Type -Path (Join-Path $models 'HomePageModels.cs'), (Join-Path $models 'CategoryPageModels.cs'), (Join-Path $models 'ProductPageModels.cs') -ReferencedAssemblies System.Core
 }
+. (Join-Path $PSScriptRoot 'calculator.ps1')   # the shared quantity calculator
 $script:ukCulture = [Globalization.CultureInfo]::GetCultureInfo('en-GB')
 # a product page: /products/slate-chippings/p/blue-slate-20mm
 $script:productPathPattern = '^/products/[a-z0-9-]+/p/[a-z0-9-]+/?$'
@@ -50,7 +51,7 @@ function ConvertFrom-OldProductPage([string]$html, [string]$path) {
     MinQuantity = 1
     IsInStock = $formHtml.Contains('id="addbask"')
     Options = @(); SelectedOptionId = [int][regex]::Match($html, 'var selectedVarItem = (\d+)').Groups[1].Value; SampleOption = $null
-    NextDeliveryDate = $null; Description = $null; Related = @()
+    NextDeliveryDate = $null; Description = $null; CalculatorType = $null; Related = @()
   }
 
   # breadcrumb: <ul class="crumbs"> <li><a href="/garden-chippings/products">Gravels &amp; Chippings</a></li> ... <li>Blue Slate Chippings 20mm</li>
@@ -108,6 +109,11 @@ function ConvertFrom-OldProductPage([string]$html, [string]$path) {
   } else {
     $model.SampleOption = @($options | Where-Object { $_.Name -match 'sample' }) | Select-Object -First 1
   }
+
+  # calculator: the old page shows one of four, by its Calc setting (calculateAmount for gravel and slate, 2 bark,
+  # 3 sand, 4 soil); on the site QuantityCalculatorModel.ForProduct makes the same choice from Calc
+  $calc = [regex]::Match($html, 'onclick="calculateAmount(\d?)\(\)"')
+  if ($calc.Success) { $model.CalculatorType = @{ '' = 'gravel'; '2' = 'mulch'; '3' = 'sand'; '4' = 'topsoil' }[$calc.Groups[1].Value] }
 
   $delivery = [regex]::Match($html, 'id="delInfoDate">Next available delivery day: <span id="time2"[^>]*>([^<]+)</span>')
   if ($delivery.Success) { $model.NextDeliveryDate = ConvertFrom-ShortDate $delivery.Groups[1].Value }
@@ -286,6 +292,14 @@ function Format-ProductPage([string]$templatePath, $model, [string]$enquiryHtml)
   }
   $h = Set-RazorBlock $h '@foreach \(var part in description\.Sections\)\s*\{' { param($b)
     (@($d.Sections) | ForEach-Object { Sub $b.Inner @{ '@part.Heading' = (Enc $_.Heading); '@Html.Raw(part.Html)' = (Put $_.Html) } }) -join ''
+  }
+
+  # the shared quantity calculator
+  $h = Set-RazorBlock $h '@if \(Model\.CalculatorType != null\)\s*\{' { param($b)
+    if (-not $model.CalculatorType) { return '' }
+    $call = '@Html.Partial("_QuantityCalculator", new QuantityCalculatorModel(Model.CalculatorType))'
+    if (-not $b.Inner.Contains($call)) { throw "Couldn't find $call in _ProductPage.cshtml" }
+    $b.Inner.Replace($call, (Put (Format-QuantityCalculator (Join-Path (Split-Path $templatePath) '_QuantityCalculator.cshtml') $model.CalculatorType)))
   }
 
   # You might also like

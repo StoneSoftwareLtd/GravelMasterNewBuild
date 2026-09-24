@@ -1,6 +1,6 @@
 # Product page
 
-The Optima prototype's product page (`product2.html` in GravelMasterDesigns), rebuilt to show the site's real products. Built on 23 September 2026 and tested in the preview. **Not on the site yet**: wiring it in is listed in [merging.md](merging.md#product-page). The quantity calculator section is still to come (see [Still to do](#still-to-do)).
+The Optima prototype's product page (`product2.html` in GravelMasterDesigns), rebuilt to show the site's real products. Built on 23 September 2026 and tested in the preview. **Not on the site yet**: wiring it in is listed in [merging.md](merging.md#product-page). The quantity calculator was added on 24 September 2026.
 
 ## Files
 
@@ -12,6 +12,7 @@ The Optima prototype's product page (`product2.html` in GravelMasterDesigns), re
 | `js/gm-product.js` | photos and zoom, postcode and prices, the buy form, the "added to your basket" pop-up, and "You might also like" |
 | `img/gm-prod-*` | the prototype's four bag pictures and four delivery icons |
 | `Views/Shared/_BulkEnquiryModal.cshtml`, `css/gm-enquiry.css`, `js/gm-enquiry.js` | the shared bulk delivery pop-up |
+| `Views/Shared/_QuantityCalculator.cshtml`, `ViewModels/Common/QuantityCalculatorModel.cs`, `css/gm-calc.css`, `js/gm-calc.js` | the quantity calculator, shared with the homepage |
 
 Like the category page, the partial takes a small model of its own, so it could be built and previewed without the repository. `Detail.cshtml` fills it from its `ProductViewModel` (see [merging.md](merging.md#product-page)).
 
@@ -34,7 +35,7 @@ Read from `Views/Product/Detail.cshtml`, `Scripts/Controllers/Root/Product/Detai
 | Adding without an area opens a pop-up asking for one | Step 1 opens, says a postcode is needed, and takes the cursor |
 | After adding: a pop-up with the basket's own summary, "Go to basket" and "Continue shopping"; the header's basket total updates | The same summary in a pop-up in the new style. Its + and - buttons and "ADD" tiles still work |
 | "Next available delivery day: Thu 24 Sep" (only on products with a calculator) | The prototype's delivery notice: "Next available delivery: Thursday 24 September". The prototype's "Order in the next 2h 50m" countdown is a placeholder, as on the category page |
-| Quantity calculator, by the product's type | **Not done yet**: see below |
+| Quantity calculator, by the product's type (gravel, bark, sand, soil or slate), on products that have one | The homepage's calculator (now the shared `_QuantityCalculator`), between the buy box and the product details, set to the product's type: gravel and slate use the gravel formula, bark the bark and mulch one, soil the topsoil one. The formulas are the same as the old page's. Products without one (glue, bulbs, turf) still have none |
 | Description (HTML from the database) | Split into the prototype's panels (see below): Product Specification, Product Use, then the description's own sections such as "Colour and Shape" and "Availability" |
 | "Related Products": the FeatherSnap Bird Feeder, then three random products from the same category | "You might also like", with the same products, but never the product itself or the same product twice (the old page showed the bird feeder twice on Accessories) |
 | Trustpilot carousel | The homepage's reviews band, with the same real Trustpilot widgets |
@@ -92,8 +93,6 @@ Left out until there's something real to show. See [open-questions.md](open-ques
 - Add to cart sends `postcodeData=NG&selectedVariantItem=435943&qty=1` to `/basket/addtobasket?id=20blsl` as an AJAX request, as the old form did, and the three analytics events carry the old fields. The preview blocks the real post, so the pop-up was tested with a stand-in reply built like `AddToCartComponent.cshtml`: its script ran, + updated the line and total through `/basket/updatequantity`, and the header's basket total updated.
 - Eight kinds of product by hand (bags with a half bag, video and 360; glue and bulbs without a postcode; turf from 10; bark; rubber chippings; ballast), and all 153 live products converted and rendered. The 13 out of stock show "Out of stock".
 
+- The calculator (24 September 2026): each of the eight products gets the calculator its live page shows (gravel for Ballast, Blue Slate and Cotswold; topsoil for Landscaping Bark, whose live page has the "Soil Calculator"; bark and mulch for rubber chippings; none for glue, bulbs and turf); it opens with results for the example size, sends the same estimate email fields as the homepage's, and nothing scrolls sideways at 375px. Its formulas and layout are the homepage's, checked before and after sharing it.
+
 **Not tested yet**: really adding to the basket, the real basket reply, and a trade login (the preview never sends posts or logs in); and the page inside the real site. These need a test environment ([merging.md](merging.md#product-page)).
-
-## Still to do
-
-- **Quantity calculator.** The live page has one for products with a calculator type (gravel, bark, sand, soil, slate). The prototype puts it between the buy box and the panels. The plan is to move the homepage's calculator into a shared partial, as was done for the enquiry pop-up, and use it on both pages.

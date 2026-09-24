@@ -91,6 +91,10 @@ namespace Agilis.ECommerce.Mvc.Web.ViewModels.Common
 
         public ProductDescription Description { get; set; }
 
+        // The quantity calculator's type ("gravel", "mulch", "topsoil" or "sand"), or null for no calculator, as on
+        // the old page: QuantityCalculatorModel.ForProduct(ProductViewModel.Calc).
+        public string CalculatorType { get; set; }
+
         // "You might also like"
         public List<HomeProduct> Related { get; set; }
 

@@ -11,7 +11,7 @@ Each piece is built to drop into the **GravelMasterSoftware** repository behind 
 | Header, footer and mobile menu | Done and tested | Needs redoing on the latest GravelMasterSoftware master before merging |
 | Homepage | Built and tested in the preview | Needs wiring into the site |
 | Category page | Built and tested in the preview | Needs wiring into the site |
-| Product page | Built and tested in the preview; the quantity calculator is still to add | Needs wiring into the site |
+| Product page | Built and tested in the preview | Needs wiring into the site |
 
 Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 

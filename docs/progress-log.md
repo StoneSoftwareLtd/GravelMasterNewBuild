@@ -106,6 +106,7 @@ Decided to put the three finished pages into the site before building more. Chec
 
 1. Fixed the preview homepage, which had had no script since 23 September: the homepage's script tag gained `defer`, and the preview's build only looked for the tag without it, so it silently left the script out (no carousels, tabs or calculator). It now accepts attributes and stops with an error if the script is missing. The site's own partial was never affected.
 2. Moved the homepage's quantity calculator into a shared partial (`_QuantityCalculator.cshtml`, with `QuantityCalculatorModel`, `gm-calc.css` and `gm-calc.js`), unchanged, so the product page can use it too. The homepage was measured before and after: the same results for 24 calculations (every type and unit), and the calculator's 53 elements in exactly the same place, size and colour at 1440, 860 and 375px.
+3. Added the calculator to the product page, between the buy box and the product details, on the products whose live page has one, set to the product's type (`QuantityCalculatorModel.ForProduct`: gravel and slate use the gravel formula, bark the bark and mulch one, soil the topsoil one). Checked on eight products against the calculator their live pages show.
 
 ## Next
 

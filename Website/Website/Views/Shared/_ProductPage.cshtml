@@ -52,7 +52,8 @@
 @* New product page from the Optima prototype (product2.html). Styles: css/gm-product.css. Behaviour:
    js/gm-product.js. The buy box is a form that adds to the basket exactly as the old page's did: it posts
    postcodeData (the postcode area), selectedVariantItem (the size) and qty to the same address. Prices come
-   from /product/calculateprices, as on the old page. The bulk enquiry pop-up is the shared _BulkEnquiryModal. *@
+   from /product/calculateprices, as on the old page. The quantity calculator is the shared _QuantityCalculator,
+   and the bulk enquiry pop-up the shared _BulkEnquiryModal. *@
 <div class="gm-product" itemscope itemtype="http://schema.org/Product">
     <meta itemprop="sku" content="@Model.Code">
 
@@ -304,6 +305,12 @@
             }
         </div>
     </div>
+
+    @* The shared quantity calculator, set to the product's type, on products that had one on the old page *@
+    @if (Model.CalculatorType != null)
+    {
+        @Html.Partial("_QuantityCalculator", new QuantityCalculatorModel(Model.CalculatorType))
+    }
 
     @* Specification, uses, the description's own sections, and delivery. <details>, so they work without JavaScript. *@
     <section class="pdp-spec" aria-label="Product details">
