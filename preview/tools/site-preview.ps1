@@ -8,7 +8,8 @@
 # category page and product page from Views/Home/_HomePage.cshtml, Views/Shared/_CategoryPage.cshtml and
 # Views/Shared/_ProductPage.cshtml, filled from the live page. Product prices come from the live site's own
 # price lookup, as they do on the real page. /about-us and /trade show the new About us and Trade Accounts pages (Views/Content/_AboutPage.cshtml and
-# _TradePage.cshtml).
+# _TradePage.cshtml). /basket shows the new basket page (Views/Basket/_BasketPage.cshtml) with a sample basket, since
+# no cookies reach the live site.
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -36,11 +37,12 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'product-page.ps1')
 . (Join-Path $PSScriptRoot 'about-page.ps1')
 . (Join-Path $PSScriptRoot 'trade-page.ps1')
+. (Join-Path $PSScriptRoot 'basket-page.ps1')
 # a category page: /garden-chippings/products/, /garden-chippings/slate-chippings/products/, and either with filters after
 $categoryPathPattern = '^/(?!products/)[a-z0-9-]+(?:/[a-z0-9-]+)?/products(?:/|$)'
 
 # Requests with real effects on the live site (found in the live pages' scripts and forms)
-$blockedPattern = 'addtobasket|removefrombasket|updatequantity|newsletterregister|sendlooseenquiry|sendcalculatorcalculation|quicksignup|logoff|logout'
+$blockedPattern = 'addtobasket|removefrombasket|updatequantity|updatebasket|applycouponcode|newsletterregister|sendlooseenquiry|sendcalculatorcalculation|quicksignup|logoff|logout'
 # Scripts removed from preview pages so visits aren't counted or recorded
 $trackerPattern = 'googletagmanager\.com|cookie-script\.com|static\.hotjar\.com|fbevents\.js|facebook\.com/tr\?|clarity\.ms|bat\.bing\.com|embed\.tawk\.to'
 # Stand-ins for the removed scripts, so page code that calls them doesn't throw
@@ -104,6 +106,7 @@ function Get-ChangeStamp {
   $files = @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Shared') -Filter '*.cshtml') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Home') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Content') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
+    @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Basket') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'css') -Filter 'gm-*') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'js') -Filter 'gm-*') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'img') -Filter 'gm-*')
@@ -204,6 +207,18 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $content = Format-TradePage (Join-Path $package 'Views\Content\_TradePage.cshtml')
         $css = '/css/gm-trade.css?v1'; $newPage = 'new trade page'
       }
+      elseif ($path -match '^/basket(/index)?/?$') {
+        # No cookies reach the live site, so its basket is always empty: show a sample one instead.
+        # ?empty=1, ?voucher=1 and ?discount=1 show the empty basket, a voucher message and the discount rows.
+        $flags = @('empty', 'voucher', 'discount' | Where-Object { $rawUrl -match "[?&]$_=1(&|$)" })
+        $sample = Get-SampleBasket $flags
+        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.4 Quicksand,Arial,sans-serif;text-align:center">Preview: ' +
+          $(if ($flags -contains 'empty') { 'an empty basket' } else { 'a sample basket of real products at their live prices. The preview can''t use a real basket, so changes to it are blocked' }) +
+          '. Try <a href="/basket">sample</a>, <a href="/basket?empty=1">empty</a> or <a href="/basket?voucher=1&amp;discount=1">with a voucher</a>.</p>'
+        $content = $notice + (Format-BasketPage (Join-Path $package 'Views\Basket\_BasketPage.cshtml') $sample)
+        $css = '/css/gm-basket.css?v1'; $newPage = 'new basket page'
+        $extraHead = '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />'
+      }
     }
     if ($content) {
       # full width, without the old white box and orange side borders
@@ -214,6 +229,10 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
       # script instead, as Detail.cshtml will when the new page shows (docs/merging.md)
       if ($newPage -eq 'new product page') {
         $html = [regex]::Replace($html, 'require\(\["/scripts/Controllers/Root/Product/Detail\.js[^"]*"\]\)', 'require(["/scripts/Controllers/Root/Content/Display.js"])')
+      }
+      # The same for the basket: Basket/Index.js calls the old page's own functions (onJqueryLoaded)
+      if ($newPage -eq 'new basket page') {
+        $html = [regex]::Replace($html, 'require\(\["/scripts/Controllers/Root/Basket/Index\.js[^"]*"\]\)', 'require(["/scripts/Controllers/Root/Content/Display.js"])')
       }
     }
   }

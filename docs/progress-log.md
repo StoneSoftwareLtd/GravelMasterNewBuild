@@ -143,7 +143,22 @@ The product page's size step said "Select your bag size" on every product with m
 
 Then the gift card's step became "Select your amount", since its sizes are vouchers (£20, £50, £100). Checked the same way: only the gift card changed.
 
+## 24 September 2026: basket page
+
+Rebuilt the prototype's basket (`basket.html`) as `Views/Basket/_BasketPage.cshtml`, with `BasketPageModel`. Details: [basket-page.md](basket-page.md).
+
+1. Mapped the old basket from its view, its script and `BasketController`: the quantities are one form posted to `/basket/updatebasket` with a quantity per line in the cart's order, Remove posts to `/basket/removefrombasket`, vouchers to `/basket/applycouponcode`, and the four add-ons use `/basket/addtobasket`.
+2. Built the page to post exactly those, with the prototype's line cards, total card, voucher box, Checkout Securely, "You might also like" (the old page's four add-ons) and the bottom strip. Quick + and - clicks are gathered into one post.
+3. Found in the old code: turf lines have no quantity box, so in a basket with turf and anything else, the other lines' + and - post one quantity too few and nothing changes. The new page sends the turf's quantity in a hidden field.
+4. The preview shows it at `/basket` with a sample basket of real products at live prices (the preview can't hold a real basket), and empty or with a voucher on request.
+5. Tested: compiles with MVC 5.2's Razor; screenshots at four widths and the layout at 11; every text colour; and every action in headless Edge with the requests recorded, which matched the old page's. Along the way, the add-ons now stay four across down to 700px (at two across their photos were blown up to twice their size), and a photo that fails leaves a plain box: Empty Waste Bags has no photos at all on the image server.
+
+Not tested: changing a real basket, which needs the test website.
+
+Raised for a decision: Empty Waste Bags' missing photos, which add-ons to offer, "In stock" on each line, the old Trustpilot carousel, and restyling the "added to your basket" pop-up. See [open-questions.md](open-questions.md#basket-page).
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
-- The prototype's other pages: basket, checkout and confirmation. They take payments, so they're best built against the live code on a test site.
+- The prototype's checkout and order confirmation. They take payments, and the checkout differs between branches (`stripe` has a different one), so they're best built against the live code.
+- Restyle the "added to your basket" pop-up to match the new basket.

@@ -14,6 +14,8 @@ Every product page (`/products/<category>/p/<product>`) is replaced by the new p
 
 The About us page (`/about-us`) and the Trade Accounts page (`/trade`) are replaced by the new ones.
 
+The basket (`/basket`) is the new basket page with a **sample basket** in it: the preview sends no cookies, so the live site's basket is always empty. The sample is real products (Cotswold Chippings, turf and plastic pegs) at their live prices. `/basket?empty=1` shows the empty basket, and `/basket?voucher=1&discount=1` a voucher message and a 10% discount. Changing it (quantities, Remove, vouchers, add-ons) is blocked like every other basket action, and the page says so.
+
 - Saving a `gm-*.css` or `gm-*.js` file, a `gm-*` image or any `.cshtml` file reloads the page with the change. (A change to a script in `tools/`, or to a `ViewModels/Common/*.cs` file, needs the preview restarting: the product page runs the real C# model, compiled when the preview starts.)
 - Add `?newchrome=0` to an address to compare with the old header, footer, homepage and category pages (it sticks while you click around). `?newchrome=1` switches back. Page titles start with `[Preview]`.
 - It is read-only. Adding to basket, sign-ups, enquiries, "Send me my estimate", Track Order and logging in are blocked (the forms say they couldn't send). The one form let through is **Sort by** on category pages, and only with one of its four choices, because it only changes the order of the products. No cookies are sent, so the basket is always empty. Analytics, Hotjar, Clarity, Facebook and chat are removed so preview visits aren't counted.
@@ -53,6 +55,7 @@ Menus, product photos and prices come from the live site and are saved in `tools
 | `calculator.ps1` | Fills in the shared quantity calculator (`_QuantityCalculator.cshtml`) for the homepage and product pages. |
 | `about-page.ps1` | Fills in `_AboutPage.cshtml`, reading its team and photos from the partial's own C# block. |
 | `trade-page.ps1` | Fills in `_TradePage.cshtml`, reading its perks and sign-up address from the partial's own C# block. |
+| `basket-page.ps1` | Builds the sample basket from live product pages and fills in `_BasketPage.cshtml` with it. |
 | `site-preview.ps1` | The whole-website preview. |
 | `fetch-data.ps1` | Re-reads menus, products, banners and a sample category page from the live site, then runs `build.ps1`. |
 | `data.json` | The live site's menus, products, prices and homepage banners (fetched 17 September 2026). |
