@@ -2,6 +2,16 @@
 
 Everything here is done in the GravelMasterSoftware repository, cloned to `Documents\Projects\GravelMasterSoftware` on this PC on 23 September 2026. The files in `Website/Website` are at the same paths as in that repository.
 
+## Before anything: which code is live?
+
+Checked on 24 September 2026 (branches as cloned on 23 September): **no branch in the repository matches the live site.**
+
+- `master` still has the old `_Layout.cshtml` (`global.css?v108`, no Tag Manager or Clarity).
+- `stripe` has the live `_Layout` (Tag Manager `GTM-KMX9ZL3`, Clarity, `global.css?v210`, WebFont, the newer footer), a different checkout (`ProcessOrderLive.cshtml`; `ProcessOrderOpayo.cshtml` removed) and a Web Deploy profile. It has 12 commits master doesn't; master has 40 it doesn't.
+- The live product page has some of master's later changes but not its "spam" commit of 30 July (the hidden `website` field in the calculator's email form), and some lines found only on `stripe`.
+
+So the live site was probably published from a working copy that isn't on GitHub as it stands. **Get the code that is actually deployed pushed to a branch first**, then start the integration from that branch. Until then, the steps below say "master" but mean "the live code".
+
 ## First: start from the latest master
 
 Checked against www.gravelmaster.co.uk on 17 September 2026: the live pages are built from a **newer `_Layout.cshtml`** than the one the new-chrome branch changed. The live one has things this copy doesn't:

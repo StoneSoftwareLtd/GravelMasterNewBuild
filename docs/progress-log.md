@@ -94,6 +94,14 @@ Found on the live site: seven slate descriptions have a phone link that dials a 
 
 Raised for a decision: the random "purchases during last 24 hours" pop-up, the rating, badge and selling points the site has no data for, add-ons, use icons, the delivery panel's wording, the basket pop-up's old styling, the two live content problems, and Blue Slate's photos. See [open-questions.md](open-questions.md#product-page).
 
+## 24 September 2026: getting ready to integrate
+
+Decided to put the three finished pages into the site before building more. Checking the GravelMasterSoftware repository first found:
+
+- this PC can't build or run the site (no Visual Studio, MSBuild, IIS or SQL Server), so the integration can be written and compile-checked here, but tested only on a test website;
+- no branch matches the live site: the layout is `stripe`'s, the product page is partly `master`'s. The deployed code needs pushing before the integration starts ([merging.md](merging.md#before-anything-which-code-is-live));
+- the test website will use a copy of the live database; where it runs is still to decide.
+
 ## Next
 
 - The product page's quantity calculator: move the homepage calculator into a shared partial and use it on both pages.

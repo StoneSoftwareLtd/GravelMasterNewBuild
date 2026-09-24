@@ -2,6 +2,15 @@
 
 Things found along the way that need someone to decide. Nothing here has been changed on the live site.
 
+## Putting it live
+
+| Found | Detail | Suggestion |
+|---|---|---|
+| **Which code is live?** | No branch in GravelMasterSoftware matches the live site: the layout matches `stripe`, the product page is partly `master`, and neither has everything (details in [merging.md](merging.md#before-anything-which-code-is-live)). | Whoever publishes the site pushes the exact deployed code to a branch; the integration starts from that |
+| **Where the test website runs** | Undecided. This PC can't build or run the site (no Visual Studio, MSBuild, IIS or SQL Server). | A staging copy on the server, or Visual Studio Community on this PC |
+| **Test database** | Decided 24 September 2026: a copy of the live database, so baskets, trade logins and test orders are safe. | Whoever manages the database makes the copy |
+| **`Web.config` is in the repository** | It holds the live database password and is tracked in GravelMasterSoftware. The new pages need `UseNewChrome` in it; without the setting the site shows the old pages, so it only has to be added on the test server. | Keep it out of commits for this work; consider moving the password out of the repository |
+
 ## Data and pricing
 
 Decided 23 September 2026: the prices and the quantity calculator stay exactly as the live site has them. The notes below are for the business to check, not code changes.
