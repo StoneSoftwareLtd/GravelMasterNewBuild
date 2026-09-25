@@ -25,7 +25,7 @@ The prototype's perks, "Why Choose Gravel Master?" and FAQ answers were placehol
 
 | Prototype | New page |
 |---|---|
-| Hero, with "Open a trade account" and "Speak to our trade team" | The prototype's words. "Open a trade account" goes to the trade sign-up form, as the old page's button did; "Speak to our trade team" to Contact us |
+| Hero, with "Open a trade account" and "Speak to our trade team" | The prototype's words, except "Speak to our team" (changed on 25 September 2026: there's no separate trade team). "Open a trade account" goes to the trade sign-up form, as the old page's button did; "Speak to our team" to Contact us |
 | Perks: Exclusive Pricing, Priority Support, Free Samples, with placeholder text | The same three, matching the live page's Trade Discount, Account Manager and Free Samples, with a line each from the facts above |
 | "Why Choose Gravel Master?": placeholder paragraph and five points | The live page's two paragraphs. The points: the prototype's "High-quality aggregates", "Nationwide delivery", "Trusted by landscapers, builders and contractors" and "Expert advice when you need it", plus the live page's "Loose load tipper deliveries" and "Dedicated bagging". The prototype's "Reliable stock availability" is left out: the site's FAQ says some products can be out of stock for weeks |
 | FAQs: five questions, placeholder answers | The same five questions, answered from the facts above |

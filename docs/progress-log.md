@@ -277,6 +277,10 @@ Found: the customer price isn't hidden for trade customers on any page (`_Layout
 
 Not tested: the page on the test website, and a trade login.
 
+## 25 September 2026: "Speak to our team" on the Trade Accounts page
+
+Decided: the trade page's second button says "Speak to our team", not "Speak to our trade team", as there's no separate trade team. It still goes to Contact us. The partial compiles with MVC 5.2's Razor; in headless Edge the button is on one line at 1440 and 390px, with nothing wider than the screen.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
