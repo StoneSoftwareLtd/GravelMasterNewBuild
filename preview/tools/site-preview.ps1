@@ -11,7 +11,9 @@
 # _TradePage.cshtml). /basket shows the new basket page (Views/Basket/_BasketPage.cshtml) with a sample basket, since
 # no cookies reach the live site. /checkout/processorder shows the new checkout (Views/Checkout/_CheckoutPage.cshtml)
 # for that sample basket, in the live basket page's frame (the live site sends a checkout with no basket back to
-# /basket); Continue to payment is blocked like every other form.
+# /basket); Continue to payment is blocked like every other form. /checkout/orderresult shows the new order
+# confirmation (Views/Checkout/_ConfirmationPage.cshtml) for a sample order, in the same frame: the live page is never
+# asked for, since loading it marks an order as paid.
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -41,6 +43,7 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'trade-page.ps1')
 . (Join-Path $PSScriptRoot 'basket-page.ps1')
 . (Join-Path $PSScriptRoot 'checkout-page.ps1')
+. (Join-Path $PSScriptRoot 'confirmation-page.ps1')
 # a category page: /garden-chippings/products/, /garden-chippings/slate-chippings/products/, and either with filters after
 $categoryPathPattern = '^/(?!products/)[a-z0-9-]+(?:/[a-z0-9-]+)?/products(?:/|$)'
 
@@ -119,6 +122,8 @@ function Get-ChangeStamp {
 
 # $formBody: a form post's body (only a category page's Sort by is ever passed on)
 function Get-Live([string]$rawUrl, [string]$accept, [string]$formBody) {
+  # Loading the live order confirmation isn't only a page view (it marks the order as paid): never ask for it
+  if ($rawUrl -match '/checkout/orderresult(?!error)') { throw 'The preview never loads the live order confirmation' }
   $req = [Net.HttpWebRequest]::Create($site + $rawUrl)
   $req.Method = 'GET'
   $req.AllowAutoRedirect = $false
@@ -237,6 +242,13 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $content = $notice + (Format-CheckoutPage (Join-Path $package 'Views\Checkout\_CheckoutPage.cshtml') $sample)
         $css = '/css/gm-checkout.css?v1'; $newPage = 'new checkout'
       }
+      elseif ($path -match '^/checkout/orderresult/?$') {
+        # The live basket page's frame (see the main loop) with a sample order: the live page is never asked for
+        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: a sample order confirmation, as shown after payment (sample order number, amount, email and address). The suggestions are real products at their live prices; adding them is blocked like every other basket action.</p>'
+        $content = $notice + (Format-ConfirmationPage (Join-Path $package 'Views\Checkout\_ConfirmationPage.cshtml') (Get-SampleConfirmation))
+        $css = '/css/gm-confirmation.css?v1'; $newPage = 'new order confirmation'
+        $extraHead = '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />'
+      }
     }
     if ($content) {
       # full width, without the old white box and orange side borders
@@ -254,10 +266,11 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
       }
       # The checkout is shown in the basket page's frame: give it the checkout's script (as ProcessOrder.cshtml will:
       # the old ProcessOrder.js works the old form), title, and no cookie bar (_Layout leaves it off checkout pages)
-      if ($newPage -eq 'new checkout') {
+      if ($newPage -eq 'new checkout' -or $newPage -eq 'new order confirmation') {
         $html = [regex]::Replace($html, 'require\(\["/scripts/Controllers/Root/Basket/Index\.js[^"]*"\]\)', 'require(["/scripts/Controllers/Root/Content/Display.js"])')
         $html = [regex]::Replace($html, '<link href="/css/cookiebar\.min\.css" rel="stylesheet"\s*/?>|<script type="text/javascript" src="/scripts/cookiebar\.min\.js"></script>', '')
-        $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', '<title>GravelMaster | Checkout</title>')
+        $title = if ($newPage -eq 'new checkout') { 'GravelMaster | Checkout' } else { 'Order Information' }   # the views' ViewBag.Title
+        $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', "<title>$title</title>")
       }
     }
   }
@@ -388,7 +401,7 @@ while ($listener.IsListening) {
       # The live checkout sends a visitor with no basket back to /basket, and the preview has no basket, so the
       # sample checkout is shown in the live basket page's frame (the same layout, which gets the checkout header
       # here because the address has "checkout" in it, as _Layout decides)
-      $fetchUrl = if ($path -match '^/checkout/processorder/?$') { '/basket' } else { $rawUrl }
+      $fetchUrl = if ($path -match '^/checkout/(processorder|orderresult)/?$') { '/basket' } else { $rawUrl }
       $live = Get-Live $fetchUrl $req.Headers['Accept']
       if ($live.Status -ge 300 -and $live.Status -lt 400 -and $live.Location) {
         $res.StatusCode = $live.Status
