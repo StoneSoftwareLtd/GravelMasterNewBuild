@@ -25,7 +25,9 @@ function Get-LiveProductModel([string]$path) {
   $model | Add-Member -NotePropertyName PagePath -NotePropertyValue $path -PassThru
 }
 
-# $flags: 'empty' (no lines), 'voucher' (a voucher message), 'discount' (10% off, to show the discount rows)
+# $flags: 'empty' (no lines), 'voucher' (a voucher message), 'discount' (10% off, to show the discount rows), 'stock'
+# (a line of each stock state: the planter, a real pre-order size, and the pegs marked sold out as a sample, since the
+# preview can't see a size's stock)
 function Get-SampleBasket([string[]]$flags) {
   if (-not $script:sampleBasketProducts) {
     $script:sampleBasketProducts = @{
@@ -38,14 +40,16 @@ function Get-SampleBasket([string[]]$flags) {
     }
   }
   $p = $script:sampleBasketProducts
-  function Line($model, [string]$sizeName, [int]$qty, [bool]$canChange) {
-    $option = @($model.Options | Where-Object { $_.Name -eq $sizeName })[0]
-    if (-not $option) { throw "No size '$sizeName' on $($model.Name)" }
+  if ($flags -contains 'stock' -and -not $p.Planter) { $p.Planter = Get-LiveProductModel '/products/accessories/p/large-galvanised' }
+  # $size is the size's name or code
+  function Line($model, [string]$size, [int]$qty, [bool]$canChange) {
+    $option = @($model.Options | Where-Object { $_.Name -eq $size -or $_.Code -eq $size })[0]
+    if (-not $option) { throw "No size '$size' on $($model.Name)" }
     [pscustomobject]@{
       Id = [guid]::NewGuid().ToString(); NameHtml = [Net.WebUtility]::HtmlEncode($model.Name); Url = $model.PagePath
       ImageUrl = $model.Photos[0].ThumbUrl; SizeHtml = [Net.WebUtility]::HtmlEncode($option.Name)
       UnitPrice = [decimal]$option.Price; Quantity = $qty; CanChangeQuantity = $canChange
-      Discount = [decimal]0; LinePrice = [decimal]$option.Price * $qty; PreOrderDate = $null
+      Discount = [decimal]0; LinePrice = [decimal]$option.Price * $qty; PreOrderDate = $option.PreOrderDate; IsOutOfStock = $false
     }
   }
   function Suggestion($model, [string]$sizeName, [string]$name, [string]$unit) {
@@ -60,6 +64,10 @@ function Get-SampleBasket([string[]]$flags) {
       (Line $p.Turf 'm2 Rolls' 10 $false),
       (Line $p.Pegs '10 Plastic Pegs' 1 $true)
     )
+    if ($flags -contains 'stock') {
+      $lines[2].IsOutOfStock = $true
+      $lines = @($lines[0], (Line $p.Planter 'RSDBED' 1 $true)) + @($lines[1], $lines[2])
+    }
   }
   if ($flags -contains 'discount') {
     foreach ($l in $lines) { $l.Discount = [Math]::Round($l.LinePrice * 0.1, 2); $l.LinePrice -= $l.Discount }
@@ -114,9 +122,15 @@ function Format-BasketPage([string]$templatePath, $model) {
       $markup = Get-LoopMarkup $lb.Inner
       $out = for ($i = 0; $i -lt $lines.Count; $i++) {
         $line = $lines[$i]
-        $o = Set-RazorBlock $markup '@if \(line\.PreOrderDate\.HasValue\)\s*\{' { param($ib)
-          if ($line.PreOrderDate) { Sub $ib.Inner @(, @('@line.PreOrderDate.Value.ToString("d MMM", uk)', ([datetime]$line.PreOrderDate).ToString('d MMM', $uk))) } else { '' }
-        }
+        # the stock: "@if (line.IsOutOfStock) { } else if (line.PreOrderDate.HasValue) { } else { }"
+        $out1 = Find-RazorBlock $markup '@if \(line\.IsOutOfStock\)\s*\{'
+        $rest = $markup.Substring($out1.End)
+        $pre = Find-RazorBlock $rest '^\s*else if \(line\.PreOrderDate\.HasValue\)\s*\{'
+        if ($null -eq $pre.ElseInner) { throw "Couldn't find the in-stock else block in _BasketPage.cshtml" }
+        $stock = if ($line.IsOutOfStock) { $out1.Inner }
+          elseif ($line.PreOrderDate) { Sub $pre.Inner @(, @('@line.PreOrderDate.Value.ToString("d MMM", uk)', ([datetime]$line.PreOrderDate).ToString('d MMM', $uk))) }
+          else { $pre.ElseInner }
+        $o = $markup.Substring(0, $out1.Start) + $stock + $rest.Substring($pre.End)
         $o = Set-RazorBlock $o '@if \(line\.CanChangeQuantity\)\s*\{' { param($ib) & $ifShown $line.CanChangeQuantity $ib }
         $o = Set-RazorBlock $o '@if \(line\.Discount > 0\)\s*\{' { param($ib)
           if ($line.Discount -gt 0) { Sub $ib.Inner @(, @('@HomeProduct.FormatPrice(line.Discount, true)', (Money $line.Discount))) } else { '' }

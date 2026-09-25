@@ -127,7 +127,13 @@ Product addresses (`/products/{category}/p/{product}`) are routed to `ProductCon
     - `SizeHtml` = `item.Product.VariantsNameWithoutImage`;
     - `UnitPrice` = `item.Product.Price`; `Quantity` = `item.Quantity`;
     - `CanChangeQuantity` = the code doesn't start with `tt2` or `tt3` (the old view's test);
-    - `Discount` = `item.LineDiscountView`; `LinePrice` = `item.LinePrice`; `PreOrderDate` = `item.Product.PreOrderDate`.
+    - `Discount` = `item.LineDiscountView`; `LinePrice` = `item.LinePrice`;
+    - the stock, from the size's own record (what `BasketController.AddToBasket` checks, and what an order counts stock down on; see [basket-page.md](basket-page.md#stock-on-each-line)). These lines were compiled with MVC 5.2's Razor against stand-ins with the repository's `Product` and `OrderItem` names and types, and run on eight kinds of line:
+      ```cshtml
+      var size = Agilis.ECommerce.Data.Product.GetProduct(item.ProductCode);
+      ```
+      `PreOrderDate` = `item.Product.PreOrderDate ?? (size != null ? size.PreOrderDate : null)`;
+      `IsOutOfStock` = `size != null && size.StockLevel != null && size.StockLevel <= 0`.
   - `ItemCount` = `Model.Cart.NumItems`; `SubTotal` = `Model.Cart.SubTotalExclDiscount`; `Total` = `Model.Cart.Total`.
   - `ShowVoucher` = `Model.ShowCoupon`; `VoucherMessage` = `Model.Cart.CouponMessage`; `PostalArea` = `Model.PostalArea`.
   - `Suggestions`: the old view's four "weekly special offers", with its names, and each size's own price rather than the typed-in one (they matched on 24 September 2026):
@@ -138,7 +144,7 @@ Product addresses (`/products/{category}/p/{product}`) are routed to `ProductCon
 - [ ] **`@section requirecontroller`**: when the new page shows, require `/scripts/Controllers/Root/Content/Display.js` instead of `Basket/Index.js`, which calls functions only the old view defines (`onJqueryLoaded`, `wcqib_refresh_quantity_increments`) and would throw.
 - [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new basket too.
 - [ ] **`Website.csproj`**: add `Views/Basket/_BasketPage.cshtml`, `ViewModels/Common/BasketPageModels.cs`, `css/gm-basket.css` and `js/gm-basket.js`.
-- [ ] Test on the real site: + and - on each line (with and without turf in the basket), typing a quantity, Remove, Empty basket, a voucher that works, one that doesn't and one under £40, each add-on, a pre-order size, Checkout, a trade login (trade prices), and the basket total in the header after each change.
+- [ ] Test on the real site: + and - on each line (with and without turf in the basket), typing a quantity, Remove, Empty basket, a voucher that works, one that doesn't and one under £40, each add-on, a pre-order size, Checkout, a trade login (trade prices), and the basket total in the header after each change. The stock: a size whose stock isn't counted ("In stock"), one with stock left ("In stock"), one set to 0 in the admin site after adding it ("Out of stock"), a pre-order size added from its product page and one added by its code (the confirmation page's planter): both "Pre-order".
 
 ## Checkout
 

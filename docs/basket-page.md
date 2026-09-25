@@ -20,7 +20,7 @@ Read from `Views/Basket/Index.cshtml`, `Scripts/Controllers/Root/Basket/Index.js
 | Old page | New page |
 |---|---|
 | A row per line: photo (330px), name (linked), size, price each, discount, line total | The prototype's line cards: photo, name (linked), price each, size, line total, and the voucher saving under it when there is one |
-| Pre-order sizes: "Pre-Order For Delivery W/C: 6 Oct", and that the date is an estimate | The same, on the prototype's pre-order line with its purple dot |
+| Pre-order sizes: "Pre-Order For Delivery W/C: 6 Oct", and that the date is an estimate | The same, on the prototype's pre-order line with its purple dot. Every other line now says whether it's in stock too ([below](#stock-on-each-line)) |
 | + and - buttons and a number box; each click posts the whole basket form to `/basket/updatebasket` with one `item.Quantity` per line, in the cart's order, and the page reloads | The prototype's joined + / number / - pill, posting the same form. Quick clicks are gathered into one post (it waits 0.7 seconds after the last). - stops at 1, as before; Remove takes a line out |
 | Turf (codes starting TT2 or TT3) has no + and -: its quantity is chosen on its product page | The same: "Quantity: 10" instead of the pill. The new page also sends the turf's quantity in a hidden field (see below) |
 | Remove posts the line's id to `/basket/removefrombasket` | The same, then the page reloads with the new totals |
@@ -39,10 +39,30 @@ Not on the old page, from the prototype: the handwritten "Quality garden product
 ## Changed from the prototype
 
 - **Colours**, measured against what's behind them. The prototype's price green (`#2ea549`) is 3.2:1 on white and 2.9:1 on the total card, so prices use a darker green (`#1f7a35`, 5.4:1 and 4.9:1). "Checkout Securely" keeps the brand orange with dark text, as on the other new pages (white on it is 2.3:1). The Apply button's green was 3.2:1 with white text and uses the dark green. The voucher box's edge was 1.5:1 against the card and is now 3.6:1. Every text colour on the page passes WCAG AA.
-- **"In stock"** isn't shown on each line. The basket doesn't know a product's stock, and the old page never said it. Pre-order lines still say so.
+- **Stock on each line**, with a coloured dot (see [below](#stock-on-each-line)). The prototype had a green tick for "In stock" and, from its 17 September amendment, a purple dot for pre-orders; decided on 25 September 2026: a dot for every state.
 - **The add-ons** stay four across down to 700px wide, then two. At the prototype's two across from 1100px, each card was about twice the size of its photo.
 - **A photo that doesn't load** leaves the card's pale box rather than a broken-image icon. The Empty Waste Bags product has no photos at all on the image server, so its add-on card uses the old basket's own picture (`/img/800.png`).
 - **Without JavaScript**, an "Update basket" button sends typed quantities. The script hides it.
+
+## Stock on each line
+
+Added on 25 September 2026. Each line says one of:
+
+| Dot | Words | When |
+|---|---|---|
+| Red (`#c62828`) | "Out of stock", then "Sorry, this size has sold out. Call us on 0330 058 5068 to check when it'll be back, or remove it from your basket." | The size's stock level is 0 or less |
+| Purple (the prototype's) | "Pre-order for delivery w/c 25 May", then that the date is an estimate | The size is a pre-order |
+| Green (the prices' `#1f7a35`) | "In stock" | Anything else |
+
+Where it comes from, read from the repository's code:
+
+- **Stock is kept per size.** Each size is a product of its own (`VariantItem.ProductIdLink`), and its `StockLevel` goes down by the quantity ordered when an order is paid (`OrderWorkflow`), which also hides the size at 0. `BasketController.AddToBasket` refuses a size whose `StockLevel` is 0 or less ("this product has just gone out of stock"). A size with no `StockLevel` isn't counted, and the site sells it as available, so the basket says "In stock".
+- **A basket line holds a copy of the main product, not the size**, taken when it was added and kept in the visitor's session. So the stock is read fresh from the size's own record, by the line's size code (`OrderItem.ProductCode`), each time the basket is shown: the same record and test `AddToBasket` uses. That's one small database read per line.
+- **A size can sell out while it's in a basket** (someone else buys the last one), and the checkout doesn't check stock, so the line says so. Whether the checkout should stop it is an [open question](open-questions.md#basket-page).
+- **The pre-order date** is the line's own, as before, or else the size's: a size added by its code (the add-on buttons, the order confirmation's suggestions) arrives in the basket without its date, which is a bug in `BasketController.AddProduct` ([open question](open-questions.md#basket-page)). Without this, a pre-order size added that way would have said "In stock".
+- Sold out wins over pre-order: a pre-order size whose stock has run out says "Out of stock", as `AddToBasket` would refuse it.
+
+The dot sits beside the first line of words when they wrap (the pre-order date wraps on phones). Before, it sat halfway down them.
 
 ## Found in the old code
 
@@ -66,3 +86,12 @@ In the whole-website preview (`/basket`), on 24 September 2026, with a sample ba
 - For real in the read-only preview: Remove is refused, and the page says "Sorry, that couldn't be done..." and gives the buttons back.
 
 Not tested: anything that changes a real basket (updating, removing, vouchers, add-ons, checkout), which needs the test website. The header's basket total in the preview stays at £0.00, since the sample basket isn't the live site's.
+
+The stock on each line, on 25 September 2026 (`/basket?stock=1` adds the planter, a real pre-order size, and marks the pegs as sold out: the preview can't see a size's stock, so that line is a sample):
+
+- The partial and the new lines of merge code compile with MVC 5.2's Razor, the merge lines against stand-ins with the names and types of the repository's `Product` and `OrderItem`.
+- The merge lines run on eight lines: not counted, 12 left, 0 left and -3 left gave in, in, out, out; a date on the line, and a date only on the size, gave pre-order; a pre-order size with 0 left gave out; a size code with no record gave in.
+- The partial run for real with one line of each state.
+- In headless Edge at 1440, 390 and 320px: the three states, the planter's live date (25 May), nothing wider than the screen, no script errors. The dots against the white card: green 5.4:1, purple 8.7:1, red 5.6:1 (a graphic needs 3:1); the words 15.4:1, the notes 6.4:1. The dot within 0.6px of the middle of the first line, including the pre-order date wrapped over five lines at 320px.
+
+Not tested: real stock levels, which need the test website and a size whose stock is counted.

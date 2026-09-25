@@ -49,10 +49,20 @@
                                     <h2 class="bsk-item__name" id="bsk-name-@i"><a href="@line.Url">@Html.Raw(line.NameHtml)</a></h2>
                                     <p class="bsk-item__unit">@HomeProduct.FormatPrice(line.UnitPrice, true) <span class="bsk-item__each">each</span></p>
                                     <p class="bsk-item__size"><strong>Size:</strong> @Html.Raw(line.SizeHtml)</p>
-                                    @if (line.PreOrderDate.HasValue)
+                                    @* Stock, with a coloured dot: sold out (red), pre-order (purple) or in stock (green) *@
+                                    @if (line.IsOutOfStock)
+                                    {
+                                        <p class="bsk-item__stock bsk-item__stock--out"><span class="bsk-item__dot" aria-hidden="true"></span> Out of stock</p>
+                                        <p class="bsk-item__note">Sorry, this size has sold out. Call us on <a href="tel:03300585068">0330 058 5068</a> to check when it&rsquo;ll be back, or remove it from your basket.</p>
+                                    }
+                                    else if (line.PreOrderDate.HasValue)
                                     {
                                         <p class="bsk-item__stock bsk-item__stock--preorder"><span class="bsk-item__dot" aria-hidden="true"></span> Pre-order for delivery w/c @line.PreOrderDate.Value.ToString("d MMM", uk)</p>
                                         <p class="bsk-item__note">This is an estimated date and may change due to unforeseen circumstances.</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="bsk-item__stock bsk-item__stock--in"><span class="bsk-item__dot" aria-hidden="true"></span> In stock</p>
                                     }
                                 </div>
                                 <div class="bsk-item__controls">

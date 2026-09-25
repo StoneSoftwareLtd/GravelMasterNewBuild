@@ -156,9 +156,14 @@ div:where(.gm-basket) {
 .gm-basket .bsk-item__size { margin: 0; font-size: 15px; color: #444; }
 .gm-basket .bsk-item__size strong { font-weight: 700; color: var(--ink); }
 .gm-basket .bsk-item__size p { display: inline; margin: 0; }   /* the size's HTML may be a paragraph */
-.gm-basket .bsk-item__stock { display: flex; align-items: center; gap: 7px; margin: 10px 0 0; font-size: 15px; font-weight: 600; color: var(--ink); }
-.gm-basket .bsk-item__dot { width: 10px; height: 10px; border-radius: 50%; background: var(--purple); flex-shrink: 0; }
+.gm-basket .bsk-item__stock { display: flex; align-items: flex-start; gap: 7px; margin: 10px 0 0; font-size: 15px; font-weight: 600; line-height: 1.35; color: var(--ink); }
+/* beside the first line when the words wrap (the pre-order date on phones) */
+.gm-basket .bsk-item__dot { width: 10px; height: 10px; margin-top: calc((1.35em - 10px) / 2); border-radius: 50%; background: var(--purple); flex-shrink: 0; }
+/* the dot's colour says the stock: green in stock, purple pre-order (the prototype's), red sold out */
+.gm-basket .bsk-item__stock--in .bsk-item__dot { background: var(--price); }
+.gm-basket .bsk-item__stock--out .bsk-item__dot { background: #c62828; }
 .gm-basket .bsk-item__note { margin: 4px 0 0; font-size: 13px; color: #5f5f5f; }
+.gm-basket .bsk-item__note a { color: inherit; font-weight: 700; text-decoration: underline; white-space: nowrap; }
 .gm-basket .bsk-item__controls { grid-area: controls; display: flex; align-items: center; gap: 26px; }
 .gm-basket .bsk-item__qty { font-size: 15px; font-weight: 600; }
 .gm-basket .bsk-item__lineprice {

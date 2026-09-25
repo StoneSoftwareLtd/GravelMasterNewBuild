@@ -78,6 +78,10 @@ namespace Agilis.ECommerce.Mvc.Web.ViewModels.Common
 
         // Product.PreOrderDate: the week a pre-order size is expected, or null.
         public DateTime? PreOrderDate { get; set; }
+
+        // The size has sold out: its own product's StockLevel is set and 0 or less, the test BasketController.AddToBasket
+        // makes before adding it. A size whose StockLevel is empty isn't counted, and is in stock.
+        public bool IsOutOfStock { get; set; }
     }
 
     // A product offered below the basket, added with one click.

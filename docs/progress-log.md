@@ -281,6 +281,20 @@ Not tested: the page on the test website, and a trade login.
 
 Decided: the trade page's second button says "Speak to our team", not "Speak to our trade team", as there's no separate trade team. It still goes to Contact us. The partial compiles with MVC 5.2's Razor; in headless Edge the button is on one line at 1440 and 390px, with nothing wider than the screen.
 
+## 25 September 2026: stock on each basket line
+
+Decided: every basket line shows its stock with a coloured dot: green "In stock", purple "Pre-order for delivery w/c …" (as before), red "Out of stock" with the phone number. Details: [basket-page.md](basket-page.md#stock-on-each-line).
+
+1. Read how the site keeps stock: per size, as each size's own `StockLevel`, counted down when an order is paid; `AddToBasket` refuses a size at 0. A basket line holds a copy of the main product, so the stock is read fresh from the size's record by the line's size code, with the same test.
+2. `BasketLine.IsOutOfStock`, the three states in `_BasketPage.cshtml`, the dot colours in `gm-basket.css`, and the merge lines for `Basket/Index.cshtml` ([merging.md](merging.md#basket-page)).
+3. The dot now sits beside the first line of words when they wrap; before, the pre-order dot sat halfway down its three lines on phones.
+4. The preview's `/basket?stock=1` shows one of each: the planter (a real pre-order) and the pegs marked sold out as a sample.
+5. Tested: the partial and merge lines compile with MVC 5.2's Razor; the merge lines ran on eight kinds of line; in headless Edge at 1440, 390 and 320px, the states, contrast (dots 5.4 to 8.7:1, words 15.4:1), the dot's place, nothing wider than the screen.
+
+Found: a sold-out size can still be ordered (the checkout doesn't check), and a pre-order size added by its code loses its date, which affects the order confirmation's planter. See [open-questions.md](open-questions.md#basket-page).
+
+Not tested: real stock levels, on the test website.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).

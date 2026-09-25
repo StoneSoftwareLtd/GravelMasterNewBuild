@@ -235,12 +235,13 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
       }
       elseif ($path -match '^/basket(/index)?/?$') {
         # No cookies reach the live site, so its basket is always empty: show a sample one instead.
-        # ?empty=1, ?voucher=1 and ?discount=1 show the empty basket, a voucher message and the discount rows.
-        $flags = @('empty', 'voucher', 'discount' | Where-Object { $rawUrl -match "[?&]$_=1(&|$)" })
+        # ?empty=1, ?voucher=1 and ?discount=1 show the empty basket, a voucher message and the discount rows; ?stock=1 a
+        # line of each stock state (in stock, pre-order, and a sample sold-out line)
+        $flags = @('empty', 'voucher', 'discount', 'stock' | Where-Object { $rawUrl -match "[?&]$_=1(&|$)" })
         $sample = Get-SampleBasket $flags
         $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.4 Quicksand,Arial,sans-serif;text-align:center">Preview: ' +
           $(if ($flags -contains 'empty') { 'an empty basket' } else { 'a sample basket of real products at their live prices. The preview can''t use a real basket, so changes to it are blocked' }) +
-          '. Try <a href="/basket">sample</a>, <a href="/basket?empty=1">empty</a> or <a href="/basket?voucher=1&amp;discount=1">with a voucher</a>.</p>'
+          '. Try <a href="/basket">sample</a>, <a href="/basket?empty=1">empty</a>, <a href="/basket?voucher=1&amp;discount=1">with a voucher</a> or <a href="/basket?stock=1">in stock, pre-order and sold out</a> (the sold-out line is a sample: the preview can''t see stock).</p>'
         $content = $notice + (Format-BasketPage (Join-Path $package 'Views\Basket\_BasketPage.cshtml') $sample)
         $css = '/css/gm-basket.css?v1'; $newPage = 'new basket page'
         $extraHead = '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />'
