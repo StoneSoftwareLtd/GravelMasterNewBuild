@@ -1,7 +1,7 @@
 /* ===== GravelMaster quantity calculator (Optima design) =====
-   Views/Shared/_QuantityCalculator.cshtml, shared by the new homepage and product page. Moved unchanged from
-   gm-home.css; every rule is scoped to .gm-calc, the calculator's wrapper. It sits inside a page's own wrapper
-   (.gm-home, .gm-product), whose shield against the old site's CSS and .container rules it relies on.
+   Views/Shared/_QuantityCalculator.cshtml, shared by the new homepage, product page and calculator page. Moved
+   unchanged from gm-home.css; every rule is scoped to .gm-calc, the calculator's wrapper. It sits inside a page's own
+   wrapper (.gm-home, .gm-product, .gm-info), whose shield against the old site's CSS and .container rules it relies on.
    Behaviour: js/gm-calc.js. */
 
 /* ===== Quantity calculator ===== */

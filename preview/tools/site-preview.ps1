@@ -18,7 +18,8 @@
 # /register and /traderegister the new messages those pages lead to (some are only reached by posting a form).
 # /myaccount/orders, /returns, /requestreturn, /returnconfirmation, /pricematch and /editaddress show the new My Account
 # pages (Views/MyAccount) for a sample customer, in the same frame: the preview is never signed in. /search shows the
-# new search results page (Views/Category/_SearchPage.cshtml), filled from the live search's results.
+# new search results page (Views/Category/_SearchPage.cshtml), filled from the live search's results. /delivery and
+# /calculator show the new delivery and calculator pages (Views/Content/_DeliveryPage.cshtml and _CalculatorPage.cshtml).
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -52,6 +53,7 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'account-pages.ps1')
 . (Join-Path $PSScriptRoot 'myaccount-pages.ps1')
 . (Join-Path $PSScriptRoot 'search-page.ps1')
+. (Join-Path $PSScriptRoot 'info-pages.ps1')
 # the account pages shown in the live forgotten-password page's frame (the messages have no page of their own to fetch)
 $script:accountFramePattern = '^/account/(forgotpassword|resetpassword|forgotpasswordconfirmation|resetpasswordconfirmation|confirmemail|register|traderegister)/?$'
 # the My Account pages, shown in the same frame (the live ones send the preview, never signed in, to sign in)
@@ -228,6 +230,14 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $content = Format-AboutPage (Join-Path $package 'Views\Content\_AboutPage.cshtml')
         $css = '/css/gm-about.css?v1'; $newPage = 'new about page'
         $extraHead = '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />'
+      }
+      elseif ($path -match '^/delivery/?$') {
+        $content = Format-DeliveryPage (Join-Path $package 'Views\Content\_DeliveryPage.cshtml')
+        $css = '/css/gm-info.css?v1'; $newPage = 'new delivery page'
+      }
+      elseif ($path -match '^/calculator/?$') {
+        $content = Format-CalculatorPage (Join-Path $package 'Views\Content\_CalculatorPage.cshtml') (Get-SampleCalculatorPage) $chrome.Enquiry
+        $css = '/css/gm-info.css?v1'; $newPage = 'new calculator page'
       }
       elseif ($path -match '^/trade/?$') {
         $content = Format-TradePage (Join-Path $package 'Views\Content\_TradePage.cshtml')

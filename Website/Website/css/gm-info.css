@@ -1,0 +1,416 @@
+/* ===== GravelMaster information pages (Optima design) =====
+   For the pages without an Optima prototype that are mostly words: the delivery page
+   (Views/Content/_DeliveryPage.cshtml) and the calculator page (Views/Content/_CalculatorPage.cshtml). They use the
+   Trade Accounts page's look (css/gm-trade.css): its hero card, colours, buttons, breadcrumb and FAQs. The old
+   stylesheets still load underneath, so every rule is scoped to .gm-info, the wrapper around each page, with the
+   same shield as the other new pages:
+   - .container is also Bootstrap's, so it's only styled inside .gm-info;
+   - the shield resets the old element rules (Bootstrap 4 Reboot, global.css) at element-level specificity, so the
+     class rules below still win.
+   The pages need no script of their own: the FAQs are <details>, and "Track your order" is the header's pop-up. */
+
+.gm-info {
+  --green: #5ca458;
+  --green-ink: #2f6b34;   /* text, and surfaces under white text: #5ca458 with white is 3.0:1 */
+  --ink: #2f2f33;
+  --tint: #f4f8f0;
+}
+
+/* ---- Shield against the old site's element rules ---- */
+div:where(.gm-info) {
+  font-family: "Quicksand", "Segoe UI", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: normal;          /* the old body is 1.5 */
+  color: #1a1a1a;
+  background: #fff;
+  text-align: start;
+}
+:where(.gm-info) :is(*, *::before, *::after) { box-sizing: border-box; }
+:where(.gm-info) :is(section, aside, nav, article) { padding: 0; }   /* global.css: section { padding: 60px 0 } */
+:where(.gm-info) nav {
+  position: static;             /* the old base CSS turns every <nav> into an off-canvas panel below 900px */
+  top: auto;
+  left: auto;
+  width: auto;
+  height: auto;                 /* and fixes it at 50px tall from 900px up */
+  overflow: visible;
+  z-index: auto;
+  background-color: transparent;
+  transition: none;
+}
+:where(.gm-info) :is(h1, h2, h3, h4, h5, h6) {
+  margin: 0;                    /* Bootstrap Reboot: margin-bottom .5rem */
+  color: inherit;               /* global.css colours headings */
+  font-family: inherit;
+  font-size: inherit;           /* global.css: 18px */
+  font-weight: 700;
+  line-height: inherit;         /* Bootstrap Reboot: 1.2 */
+  text-transform: none;
+}
+:where(.gm-info) p { margin: 0; }
+:where(.gm-info) :is(ul, ol) { margin: 0; padding: 0; list-style: none; }
+:where(.gm-info) a {
+  color: inherit;               /* global.css: #212529, underlined */
+  text-decoration: none;
+  transition: none;
+}
+:where(.gm-info) a:hover { color: inherit; text-decoration: none; }
+:where(.gm-info) :is(strong, b) { font-weight: 700; }       /* global.css: 500 */
+:where(.gm-info) img { vertical-align: baseline; max-width: 100%; }
+:where(.gm-info) label { margin: 0; }                      /* Bootstrap Reboot: margin-bottom .5rem */
+:where(.gm-info) :is(input, select, textarea, button) { font-family: inherit; }
+:where(.gm-info) button { border-radius: 0; }
+:where(.gm-info) summary { list-style: none; }
+:where(.gm-info) summary::-webkit-details-marker { display: none; }
+
+/* .container is also Bootstrap's; max-width is one class stronger to beat _Layout's
+   inline .container { max-width: 1140px }. These pages are 1180px wide inside it, the trade page's hero card, so
+   the breadcrumb, the card and every section line up (the shared calculator on the calculator page too). */
+:where(.gm-info) .container {
+  margin: 0 auto;
+  padding: 0 18px;
+  width: auto;
+}
+.gm-info .container { max-width: 1216px; }
+
+/* Visible keyboard focus (global.css removes some outlines) */
+.gm-info :is(a, button, summary):focus-visible {
+  outline: 2px solid #3f8f43;
+  outline-offset: 2px;
+}
+
+/* Text for screen readers only */
+.gm-info .inf-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- Buttons (the trade page's) ---- */
+.gm-info .inf-btn {
+  display: inline-block;
+  border: 1.5px solid var(--green-ink);
+  background: var(--green-ink);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.3;
+  text-align: center;
+  border-radius: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+}
+.gm-info .inf-btn:hover { color: #fff; filter: brightness(0.95); }
+.gm-info .inf-btn--outline {
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--green);
+}
+.gm-info .inf-btn--outline:hover { color: var(--ink); background: #f4f9f2; filter: none; }
+
+/* ---- Breadcrumb ---- */
+.gm-info .inf-crumbs { padding-top: 14px; padding-bottom: 10px; font-size: 13px; color: #5f5f5f; }
+.gm-info .inf-crumbs__list { display: flex; flex-wrap: wrap; row-gap: 4px; }
+.gm-info .inf-crumbs__list li + li::before {
+  content: "\203A";
+  content: "\203A" / "";        /* not read out */
+  margin: 0 8px;
+  color: #8a8a8a;
+}
+.gm-info .inf-crumbs a { color: #5f5f5f; }
+.gm-info .inf-crumbs a:hover { color: #5f5f5f; text-decoration: underline; }
+.gm-info .inf-crumbs__current { color: #333; font-weight: 700; }
+
+/* ---- Small heading over a title ---- */
+.gm-info .inf-eyebrow {
+  margin: 0 0 14px;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #2a7a2a;               /* 4.6:1 on the hero card */
+}
+
+/* ---- Hero card: words + photo (the trade page's) ---- */
+.gm-info .inf-hero { padding: 0; }   /* the next section's own padding spaces it */
+.gm-info .inf-hero__card {
+  display: grid;
+  grid-template-columns: 45fr 55fr;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #eef5ea;
+}
+.gm-info .inf-hero__copy { padding: 34px 40px 40px 26px; }
+.gm-info .inf-hero__title {
+  margin: 0 0 18px;
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.15;
+  color: var(--ink);
+}
+.gm-info .inf-hero__lead {
+  margin: 0 0 14px;
+  font-size: 18px;
+  line-height: 1.45;
+  font-weight: 700;
+  color: var(--ink);
+  max-width: 460px;
+}
+.gm-info .inf-hero__text {
+  margin: 0 0 28px;
+  font-size: 15.5px;
+  line-height: 1.6;
+  font-weight: 500;
+  color: #333;
+  max-width: 460px;
+}
+.gm-info .inf-hero__actions { display: flex; flex-wrap: wrap; gap: 16px; }
+.gm-info .inf-hero__img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  min-height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- Intro band (a page whose first part is a tool, not a photo) ---- */
+.gm-info .inf-intro { background: #eef5ea; padding-bottom: 40px; }
+.gm-info .inf-intro__title {
+  margin: 0 0 12px;
+  font-size: clamp(30px, 3.4vw, 44px);
+  line-height: 1.15;
+  color: var(--ink);
+}
+.gm-info .inf-intro__lead { margin: 0 0 12px; font-size: 19px; font-weight: 700; color: var(--ink); }
+.gm-info .inf-intro__text { max-width: 760px; font-size: 16px; line-height: 1.65; font-weight: 500; color: #333; }
+
+/* ---- Sections ---- */
+.gm-info .inf-section { padding: 64px 0; }
+.gm-info .inf-section--tint { background: var(--tint); }
+.gm-info .inf-h2 {
+  margin: 0 0 26px;
+  font-size: clamp(26px, 2.6vw, 34px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+.gm-info .inf-h2--center { text-align: center; }
+.gm-info .inf-head { max-width: 820px; margin: 0 auto 36px; text-align: center; }
+.gm-info .inf-head .inf-h2 { margin-bottom: 14px; }
+.gm-info .inf-head p { font-size: 16px; line-height: 1.65; color: #333; }
+.gm-info .inf-text p { margin: 0 0 14px; font-size: 15.5px; line-height: 1.7; color: #333; }
+.gm-info .inf-text p:last-child { margin-bottom: 0; }
+.gm-info :is(.inf-text, .inf-block, .inf-faq__intro, .inf-faq__a) a:not(.inf-btn) { color: var(--green-ink); font-weight: 700; text-decoration: underline; }
+.gm-info :is(.inf-text, .inf-block, .inf-faq__intro, .inf-faq__a) a:not(.inf-btn):hover { color: var(--green-ink); }
+
+/* ---- Ticked list (the trade page's ticks) ---- */
+.gm-info .inf-check {
+  border: 2px solid #cfe2c4;
+  border-radius: 14px;
+  padding: 36px 40px 38px;
+}
+.gm-info .inf-check .inf-h2 { margin-bottom: 24px; }
+.gm-info .inf-ticks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 40px;
+}
+.gm-info .inf-ticks li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #333;
+}
+.gm-info .inf-tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 0;
+  border-radius: 50%;
+  background: #3c8a3c;          /* the trade page's tick, darkened to 3.9:1 on white for a graphic */
+  flex-shrink: 0;
+}
+
+/* ---- Cards with an icon ---- */
+.gm-info .inf-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.gm-info .inf-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 24px 30px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 18px rgba(47, 107, 52, 0.08);
+}
+.gm-info .inf-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: var(--green-ink);
+}
+.gm-info .inf-card h3 { margin: 0 0 12px; font-size: 19px; line-height: 1.3; color: var(--ink); }
+.gm-info .inf-card p { font-size: 14.5px; line-height: 1.7; color: #333; }
+
+/* ---- Two columns of headed text ---- */
+.gm-info .inf-grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px 64px;
+}
+.gm-info .inf-block h3 { margin: 0 0 10px; font-size: 20px; color: var(--ink); }
+.gm-info .inf-block p { margin: 0 0 14px; font-size: 15.5px; line-height: 1.7; color: #333; }
+.gm-info .inf-block p:last-child { margin-bottom: 0; }
+.gm-info .inf-block--card { background: #fff; border-radius: 14px; padding: 32px 34px 34px; }
+.gm-info .inf-block--card .inf-h2 { margin-bottom: 18px; font-size: 26px; }
+.gm-info .inf-block--card p { font-size: 14.5px; }
+.gm-info .inf-block a { overflow-wrap: anywhere; }   /* the long email address, on the narrowest phones */
+
+/* ---- FAQs (the trade page's) ---- */
+.gm-info .inf-faq {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 90px;
+  align-items: start;
+}
+.gm-info .inf-faq__intro p { font-size: 16px; line-height: 1.65; color: #333; max-width: 380px; }
+.gm-info .inf-faq__item { border-bottom: 1px solid #d9d9d9; padding: 22px 0; }
+.gm-info .inf-faq__item:first-child { padding-top: 0; }
+.gm-info .inf-faq__q {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  cursor: pointer;
+}
+.gm-info .inf-faq__q h3 { margin: 0; font-size: 18.5px; font-weight: 600; color: var(--ink); }
+.gm-info .inf-faq__chev { flex-shrink: 0; color: var(--ink); transition: transform .15s ease; }
+.gm-info .inf-faq__item[open] .inf-faq__chev { transform: rotate(180deg); }
+.gm-info .inf-faq__a { margin: 16px 0 4px; max-width: 760px; font-size: 15px; line-height: 1.75; color: #333; }
+
+/* ---- Product cards (the homepage's bestseller cards) ---- */
+.gm-info .inf-products {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+.gm-info .inf-product {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 18px rgba(47, 107, 52, 0.08);
+  color: #1a1a1a;
+}
+.gm-info .inf-product:hover { color: #1a1a1a; }
+.gm-info .inf-product__img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 6 / 5;
+  object-fit: cover;
+  display: block;
+  background: #e8e4e0;
+}
+.gm-info .inf-product__body { display: flex; flex-direction: column; flex-grow: 1; padding: 18px 20px 22px; }
+.gm-info .inf-product__name { margin: 0 0 10px; font-size: 20px; line-height: 1.3; color: #488446; }   /* 4.5:1 on white */
+.gm-info .inf-product:hover .inf-product__name { text-decoration: underline; }
+.gm-info .inf-product__label { margin: auto 0 3px; font-size: 13px; color: #2f2f2f; }
+.gm-info .inf-product__price { margin: 0 0 14px; font-size: 20px; font-weight: 700; color: #3d7f4d; }
+.gm-info .inf-product__btn {
+  display: block;
+  border-radius: 8px;
+  padding: 12px 10px;
+  background: #cede7b;
+  color: #2b3308;
+  font-size: 16px;
+  font-weight: 800;
+  text-align: center;
+}
+.gm-info .inf-product:hover .inf-product__btn { filter: brightness(0.97); }
+
+/* ---- Link cards ---- */
+.gm-info .inf-links {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.gm-info .inf-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 100%;
+  background: #fff;
+  border: 1.5px solid #cfe2c4;
+  border-radius: 12px;
+  padding: 20px 20px;
+  color: var(--ink);
+}
+.gm-info .inf-link:hover { color: var(--ink); border-color: var(--green-ink); }
+.gm-info .inf-link__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--green-ink);
+  flex-shrink: 0;
+}
+.gm-info .inf-link__words { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.gm-info .inf-link__title { font-size: 16.5px; font-weight: 700; }
+.gm-info .inf-link__text { font-size: 14px; line-height: 1.45; color: #4a4a4a; }
+.gm-info .inf-link:hover .inf-link__title { text-decoration: underline; }
+
+/* ---- The calculator page's diagram ---- */
+.gm-info .inf-measure {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px 64px;
+  align-items: center;
+}
+.gm-info .inf-diagram { width: 100%; max-width: 500px; height: auto; justify-self: center; }
+.gm-info .inf-diagram text { font-family: inherit; font-size: 15px; font-weight: 700; fill: var(--ink); }
+
+/* ---- Responsive ---- */
+@media (max-width: 1100px) {
+  .gm-info .inf-hero__copy { padding: 28px 28px 32px 24px; }
+  .gm-info .inf-cards { grid-template-columns: repeat(2, 1fr); }
+  .gm-info .inf-links { grid-template-columns: repeat(2, 1fr); }
+  .gm-info .inf-faq { gap: 44px; }
+}
+@media (max-width: 860px) {
+  /* stack the hero card: photo on top, words below */
+  .gm-info .inf-hero__card { grid-template-columns: 1fr; }
+  .gm-info .inf-hero__img { order: -1; min-height: 0; height: auto; aspect-ratio: 3 / 2; }
+  .gm-info .inf-section { padding: 48px 0; }
+  .gm-info .inf-ticks { grid-template-columns: 1fr; }
+  .gm-info .inf-grid2 { grid-template-columns: 1fr; }
+  .gm-info .inf-faq { grid-template-columns: 1fr; gap: 24px; }
+  .gm-info .inf-measure { grid-template-columns: 1fr; }
+  .gm-info .inf-products { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+}
+@media (max-width: 560px) {
+  .gm-info .inf-hero__copy { padding: 22px 18px 26px; }
+  .gm-info .inf-hero__lead { font-size: 17px; }
+  .gm-info .inf-hero__actions .inf-btn { width: 100%; }
+  .gm-info .inf-check { padding: 26px 20px 28px; }
+  .gm-info .inf-cards { grid-template-columns: 1fr; }
+  .gm-info .inf-links { grid-template-columns: 1fr; }
+  .gm-info .inf-products { grid-template-columns: 1fr; }
+  .gm-info .inf-block--card { padding: 24px 20px 26px; }
+}
