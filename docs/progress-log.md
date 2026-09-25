@@ -222,6 +222,10 @@ Not tested: the real page after a real test payment.
 
 Every merge step says "when the new chrome is on", but a page's view runs before `_Layout`, so it can't see the layout's own switch. The switch is now `NewChrome.IsOn(Request)` (`ViewModels/Common/NewChrome.cs`), used by `_Layout` and by any view that shows a new page, so they always agree. Checked against the old code copied from `_Layout`: the same answer in all 48 mixes of `?newchrome=` (1, 0, something else, none), the cookie (the same four) and the `UseNewChrome` setting (true, false, missing). The new `_Layout` lines compile with MVC 5.2's Razor. [merging.md](merging.md#first-start-from-the-latest-master) says how the page views use it.
 
+## 25 September 2026: nothing hidden under the header on phones
+
+Found while testing the new sign-in page on a phone: up to 860px wide the new header stays at the top of the screen, so when a page moved to something (the sign-in page's errors, the checkout's first box with a mistake) it ended up underneath the header. `gm-chrome.js` now tells the browser how tall the header is (`scroll-padding-top`), whatever its height: 158px for the normal header on a phone, 92px for the checkout's. Measured in headless Edge at 390, 768, 900 and 1440px: the registration error, the checkout's Full name box and the register form's first box each land just below the header, and from 900px up (where the header doesn't stay) nothing changes. `gm-chrome.js` and `gm-chrome.css` are now `?v3`, the stylesheet's for the search-box change of 24 September.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).

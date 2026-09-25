@@ -154,3 +154,18 @@
     for (var i = 0; i < targets.length; i++) targets[i].textContent = match[1];
   }).observe(source, { childList: true, characterData: true, subtree: true });
 })();
+
+/* The header stays at the top of the screen up to 860px wide (gm-chrome.css). Tell the browser how tall it is, so
+   whatever a page moves to - a box with a mistake, a message, a #link - isn't left underneath it. */
+(function () {
+  var header = document.querySelector('.site-header');
+  var root = document.documentElement;
+  if (!header || !window.getComputedStyle) return;
+  function update() {
+    var sticky = getComputedStyle(header).position === 'sticky';
+    root.style.scrollPaddingTop = sticky ? (header.offsetHeight + 12) + 'px' : '';
+  }
+  update();
+  if (window.ResizeObserver) new ResizeObserver(update).observe(header);
+  window.addEventListener('resize', update);
+})();

@@ -1,4 +1,4 @@
-﻿@model  Agilis.ECommerce.Mvc.Web.ViewModels.Common.BaseViewModel
+@model  Agilis.ECommerce.Mvc.Web.ViewModels.Common.BaseViewModel
 @using RequireJsNet
 @using Agilis.Mvc.Common;
 @using RequireJsNet.Configuration
@@ -90,7 +90,7 @@ else
     @RenderSection("Head", false)
     @if (useNewChrome)
     {
-    <link href="~/css/gm-chrome.css?v2" rel="stylesheet" />
+    <link href="~/css/gm-chrome.css?v3" rel="stylesheet" />
     }
     <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -571,7 +571,7 @@ else
         {
             @Html.Partial("_SiteMobileMenu")
         }
-        <script src="/js/gm-chrome.js?v2"></script>
+        <script src="/js/gm-chrome.js?v3"></script>
     }
     else
     {
