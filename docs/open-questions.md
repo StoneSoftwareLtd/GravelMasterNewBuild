@@ -144,6 +144,25 @@ Decided 23 September 2026: the prices and the quantity calculator stay exactly a
 | **"Billing" or delivery address** | The old page said "Edit Billing Address", but the checkout fills this address in as the delivery address. The new page says "Your address: we fill this address in for you at the checkout." | Keep it |
 | **The refund note** | The old return form showed "if you're wanting a refund, please check our Returns Policy" after any reason was chosen. The new one shows it when "Full refund" is chosen. | Keep it |
 
+## Calculator page
+
+| Found | Detail | Suggestion |
+|---|---|---|
+| **"Your post-code helps us calculate a cost estimate"** (live now) | The page's "How do you calculate" text says the calculator uses a postcode to estimate the cost, but it doesn't ask for one or give a price. The new page keeps the live words. | Take out the postcode sentences, or add a price to the calculator |
+| **The old pictures' claims** | The four picture links had "Fast FREE nationwide delivery" and "The UK's No.1 Aggregates Supplier" drawn on them. The new link cards say "Delivery information: Tail-lift delivery to the kerbside, on wooden pallets" and so on, without those claims. | Add them back if they're claims the business stands behind |
+| **Every menu opens the gravel calculator** | "Use our calculator" in the Topsoil and Mulches, Play Area and other menus opens the page on Gravel & Chippings. The page could open on the matching type (e.g. `/calculator?type=topsoil`), which needs the header's links changing too. | Leave it, or open the matching type |
+| **The new words** | "Popular gravels", "Before you order" and its four cards' lines, and "Can't find your answer? Call us 8am - 5pm on 0330 058 5068". | Read them |
+
+## Delivery page
+
+| Found | Detail | Suggestion |
+|---|---|---|
+| **The words now live in the view** | The live page's words are HTML typed into the admin site (its `delivery` content), so they can be changed there. The new page has them written in, as the About and Trade pages do, so a change needs a developer. The title and description still come from the admin site. | Keep it, or keep the words in the admin site and only restyle them (less control over the design) |
+| **"The aforementioned address"** (live now) | The Returns section says customers may return goods "to the aforementioned address", but no address is given on the page. | Give the returns address, or point to where it is (the Terms and Conditions?) |
+| **Which vehicles** (live now) | The page says "an 18 or 26 tonne vehicle" at the top and "7.5, 18 or 26 tonne vehicle" under Delivery vehicle (the same as the product page's [delivery panel question](#product-page)). | Say which is right |
+| **The old phone number on the bulk bags** | The hero photo is the live page's own, and its bags show 0800 907 85 90, as on the trade page's photo ([Trade Accounts page](#trade-accounts-page)). | Check the old number still reaches GravelMaster, or choose another photo |
+| **Pictures left out** | The live page's photo of a lorry with "Delivery Truck Size" drawn over it, and the lorry with the logo at the bottom (which looks like a mock-up). | Keep them out, or supply a clean photo of the delivery lorry |
+
 ## Search results page
 
 | Found | Detail | Suggestion |

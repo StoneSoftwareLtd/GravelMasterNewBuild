@@ -538,6 +538,68 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
 - [ ] **`Website.csproj`**: add `Views/Category/_SearchPage.cshtml`, `ViewModels/Common/SearchPageModels.cs`, `css/gm-search.css` and `js/gm-search.js`. It uses the category page's `css/gm-category.css` and `CategoryPageModels.cs` (in [Category page](#category-page)).
 - [ ] Test on the real site: a search with results, one with none, one word that matches more than 100 products (e.g. "e"), nothing typed, `/search/slate`, "cement" (Post Mix Concrete), a trade login (trade prices and the "Trade price" badge), the header's search box filled in on the results page (desktop and phone), and the page title in the browser tab.
 
+## Calculator page
+
+`/calculator` is `ContentController.Display` with the `calculator` key, which renders `Views/Content/Calculator.cshtml` with a `ContentViewModel`. See [calculator-page.md](calculator-page.md). It needs the homepage's `MasterLayoutViewModel.GetHomeProduct` (in [Homepage](#homepage)).
+
+- [ ] **`Views/Content/Calculator.cshtml`**: add `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top, and after its `@{ }` block add the code below. The view has no `Head` section yet, so this adds one. The old page's inline scripts, styles and `scripts`/`RightContent` sections are after the `return`, so they aren't drawn. This code was compiled with MVC 5.2's Razor against stand-ins copied from the repository's own classes, and run with sample data ([calculator-page.md](calculator-page.md#tested)):
+  ```cshtml
+  @section Head
+  {
+      @if (NewChrome.IsOn(Request))
+      {
+          <link href="/css/gm-info.css?v1" rel="stylesheet" />
+      }
+  }
+  @if (NewChrome.IsOn(Request))
+  {
+      var calculator = new CalculatorPageModel();
+      // the three gravels the old page shows under its calculator; one that's no longer on sale is left out
+      foreach (var productUrl in new[] { "cotswold-chippings-20mm", "panda-20mm", "black-basalt-20mm" })
+      {
+          var product = Model.MasterLayoutViewModel.GetHomeProduct(productUrl);
+          if (product != null)
+          {
+              calculator.Products.Add(product);
+          }
+      }
+      calculator.EnquiryCategories = Model.MasterLayoutViewModel.TopLevelCategories.OrderByDescending(c => c.PriorityOnSubMenu).Select(c => c.Name).ToList();
+      @Html.Partial("~/Views/Content/_CalculatorPage.cshtml", calculator)
+      return;
+  }
+  ```
+- [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js`, as it does now. The calculator and the bulk enquiry pop-up are plain JavaScript and don't need it.
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new calculator page too.
+- [ ] **`Website.csproj`**: add `Views/Content/_CalculatorPage.cshtml`, `ViewModels/Common/CalculatorPageModels.cs` and `css/gm-info.css`. It uses the shared calculator and bulk enquiry pop-up (in [Homepage](#homepage)).
+- [ ] Test on the real site: each of the four types against the old page's results for the same area, "Send me my estimate" (and that the email arrives), "Enquire Here" (and that the enquiry arrives), the three gravels' prices with and without a trade login, and the four links.
+
+## Delivery page
+
+`/delivery` is `ContentController.Display` with the `delivery` key. Having no view of its own, it renders `Views/Content/Display.cshtml`, which shows the content's HTML from the admin site, and which every other content page without a view of its own shares. See [delivery-page.md](delivery-page.md).
+
+- [ ] **`Views/Content/Display.cshtml`**: add `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top, add the `newDelivery` line to the end of its `@{ }` block, and add the rest straight after the block. Only the delivery page changes; every other page this view shows keeps its admin content, with the new design on or off. This code was compiled with MVC 5.2's Razor against stand-ins copied from the repository's `ContentViewModel`, and run with sample data ([delivery-page.md](delivery-page.md#tested)):
+  ```cshtml
+      // the delivery page has a new design; every other page this view shows keeps the admin site's content
+      bool newDelivery = string.Equals(Model.Key, "delivery", StringComparison.OrdinalIgnoreCase) && NewChrome.IsOn(Request);
+  }
+  @section Head
+  {
+      @if (newDelivery)
+      {
+          <link href="/css/gm-info.css?v1" rel="stylesheet" />
+      }
+  }
+  @if (newDelivery)
+  {
+      @Html.Partial("~/Views/Content/_DeliveryPage.cshtml")
+      return;
+  }
+  ```
+- [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js`, which brings the Bootstrap that opens the Track Order pop-up (as the header's link needs).
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new delivery page too.
+- [ ] **`Website.csproj`**: add `Views/Content/_DeliveryPage.cshtml`, `css/gm-info.css` and `img/gm-delivery-hero.jpg`.
+- [ ] Test on the real site: the page with the new design on and off, "Track your order" with a real order number, the phone and email links on a phone, and that another content page (e.g. `/privacy`) still shows its own content.
+
 ## After merging
 
 - [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, order confirmation, account, search, content pages and the 404 page.

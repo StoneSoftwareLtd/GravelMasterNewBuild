@@ -20,6 +20,8 @@ Each piece is built to drop into the **GravelMasterSoftware** repository behind 
 | Account pages: signing in | Built and tested in the preview (no prototype: in the new pages' style) | Needs wiring into the site |
 | Account pages: My Account (orders, returns, price match, address) | Built and tested in the preview with a sample customer | Needs wiring into the site, and testing with real accounts |
 | Search results | Built and tested in the preview (no prototype: in the category page's style) | Needs wiring into the site |
+| Delivery page | Built and tested in the preview (no prototype: in the trade page's style) | Needs wiring into the site |
+| Calculator page | Built and tested in the preview (no prototype: in the trade page's style, with the shared calculator) | Needs wiring into the site |
 
 Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
@@ -35,7 +37,7 @@ Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
 ## See it
 
-Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in, the new basket and checkout with a sample basket in them, the new order confirmation for a sample order, the new sign-in and password pages, My Account for a sample customer, and the new search results for any search. Keep the black window open while you use it. It's read-only, so nothing is sent to the real site (the only exceptions are Sort by on category pages, which just reorders the products, and the product pages' price lookup, which only reads prices).
+Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in, the new basket and checkout with a sample basket in them, the new order confirmation for a sample order, the new sign-in and password pages, My Account for a sample customer, the new search results for any search, and the new delivery and calculator pages. Keep the black window open while you use it. It's read-only, so nothing is sent to the real site (the only exceptions are Sort by on category pages, which just reorders the products, and the product pages' price lookup, which only reads prices).
 
 Or open this folder in VS Code and use Live Server on `preview/index.html` or `preview/category.html`. See [preview/README.md](preview/README.md) for both.
 
@@ -55,6 +57,8 @@ Or open this folder in VS Code and use Live Server on `preview/index.html` or `p
 | [docs/confirmation-page.md](docs/confirmation-page.md) | The new order confirmation: why the page isn't a plain page view, where the old page's details went, what was tested |
 | [docs/account-pages.md](docs/account-pages.md) | The new account pages: sign in, registering, trade applications, passwords, My Account, and what the old pages did |
 | [docs/search-page.md](docs/search-page.md) | The new search results page: how the search works, where the old page's parts went, what was tested |
+| [docs/delivery-page.md](docs/delivery-page.md) | The new delivery page: where its words come from, where the old page's parts went, what was tested |
+| [docs/calculator-page.md](docs/calculator-page.md) | The new calculator page: the shared calculator, where the old page's parts went, what was tested |
 | [docs/merging.md](docs/merging.md) | Everything to do in GravelMasterSoftware to put this live |
 | [docs/open-questions.md](docs/open-questions.md) | Things found along the way that need a decision |
 

@@ -299,8 +299,27 @@ Not tested: real stock levels, on the test website.
 
 Found while building the calculator page, which uses the shared calculator: below about 370px wide, "I'm looking for..." and the product type list didn't fit side by side, so at 320px the list ran 29px off the screen, on the homepage and product pages too. The two boxes a row also cut "Metres" to "Met" and squeezed the depth against its unit. From 370px down, the label now sits above the list in the same white box, and the boxes are one a row. Measured in headless Edge on the homepage at 320, 340, 370, 371, 375 and 390px, and on a product page and the calculator page at 320px: nothing wider than the screen, "Metres" shown whole. From 371px up nothing changes: the new rules only apply below it.
 
+## 25 September 2026: delivery and calculator pages
+
+The delivery page (`/delivery`) and the calculator page (`/calculator`) in the new design. Neither has an Optima prototype, so both are in the Trade Accounts page's style, with the live pages' own words, and share a new stylesheet, `gm-info.css`, meant for the other content pages too. Details: [delivery-page.md](delivery-page.md) and [calculator-page.md](calculator-page.md).
+
+1. Read where they come from: the calculator page is `Content/Calculator.cshtml`; the delivery page has no view of its own, its words being the admin site's `delivery` content shown by `Content/Display.cshtml`, which other content pages share.
+2. The calculator page uses the shared quantity calculator as it is: the live page's four formulas and its Email Results post were checked to be the ones the shared calculator already has. Around it: the live intro, a new length-width-depth drawing, the three gravels the old page links to as priced cards, the FAQs, and the four picture links as cards with text.
+3. The delivery page: a hero card with the kerbside photo (283 KB to 131 KB), "Track your order" and the phone number; the checklist; the four key questions with new icons; how we deliver; delivery terms and returns.
+4. Merge code for `Calculator.cshtml` and `Display.cshtml` (only the `delivery` key changes), compiled against stand-ins copied from the repository's classes and run with sample data, this time with a stand-in `_Layout` so the head and body could be checked too.
+5. The preview shows both.
+6. Tested:
+   - every block of the live pages' text is on the new pages word for word, except "as shown below" (checked by script against the live pages);
+   - in headless Edge: nothing wider than the screen at 12 widths from 1440 to 320px, every text colour passes AA, the calculator's results, Enquire Here, Track your order, the FAQs, no script errors.
+
+Along the way: the shared calculator's type list ran off the screen at 320px (its own commit, above); the calculator's title turned pale green outside a page's shield, so it sits inside this page's.
+
+Raised: the delivery words moving from the admin site into the view, "the aforementioned address" with no address, the calculator's text about postcodes, the old pictures' claims, and which calculator the menus open. See [open-questions.md](open-questions.md#calculator-page).
+
+Not tested: the pages on the test website, sending an estimate or enquiry for real, and trade prices.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
 - Test the checkout and the order confirmation with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
-- Still on the old design after that: content pages other than About and Trade, the "page not found" page and the payment error page.
+- Still on the old design after that: the other content pages (FAQs, contact, privacy, terms and the rest), the "page not found" page and the payment error page.
