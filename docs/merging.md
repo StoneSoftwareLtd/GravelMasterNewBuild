@@ -290,7 +290,7 @@ The views are in `Views/Account` and `Views/Shared/_AccountMaster.cshtml`; each 
       return;
   }
   ```
-  (The pages behind the sign-in, part 2, will add the new account menu here.)
+  (The My Account pages draw their own greeting and tabs in place of the side column, so nothing more is needed here: see [My Account pages](#my-account-pages).)
 - [ ] **`Views/Account/Login.cshtml`**: after its `@{ }` block, add:
   ```cshtml
   @if (NewChrome.IsOn(Request))
@@ -345,6 +345,140 @@ The views are in `Views/Account` and `Views/Shared/_AccountMaster.cshtml`; each 
   `ForgotPasswordConfirmation.cshtml`: `AccountMessage.PasswordResetEmailSent`; `ResetPasswordConfirmation.cshtml`: `AccountMessage.PasswordReset`; `SuccessRegister.cshtml`: `AccountMessage.Registered`; `TradeRegisterDone.cshtml`: `AccountMessage.TradeApplicationSent`.
 - [ ] **`Website.csproj`**: add `Views/Account/_SignInPage.cshtml`, `_ForgotPasswordPage.cshtml`, `_ResetPasswordPage.cshtml`, `_AccountMessagePage.cshtml`, `ViewModels/Common/AccountPageModels.cs`, `css/gm-account.css` and `js/gm-account.js`.
 - [ ] Test on the real site: signing in (right, wrong password, unconfirmed email), registering (new, and an email already used), the confirmation email's link, a trade application (and that it arrives in the trade enquiries), an approved trade customer's link, forgotten password and its email, resetting (and a second try after a mistake), and each message page.
+
+## My Account pages
+
+The views are in `Views/MyAccount`, each using `_AccountMaster.cshtml`, whose new-chrome branch (above) already draws just the page. Each new page draws its own greeting and tabs (`_AccountAreaHead.cshtml`) ([account-pages.md](account-pages.md#part-2-my-account)). Every step below adds `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top of the view and goes straight after its `@{ }` block. The code was compiled with MVC 5.2's Razor against stand-ins copied from the repository's own `Agilis.ECommerce.Data` classes (their names and types).
+
+The returns pages are on `master` only. On a branch without them, add `ShowReturns = false` to each page's `Area`, which hides the Returns tab and "Request a return".
+
+- [ ] **`Views/MyAccount/Orders.cshtml`**:
+  ```cshtml
+  @if (NewChrome.IsOn(Request))
+  {
+      var page = new AccountOrdersModel();
+      page.Area.FirstName = Model.Customer != null ? Model.Customer.FirstName : null;
+      page.Area.LastName = Model.Customer != null ? Model.Customer.LastName : null;
+      page.Area.Email = Model.Email;
+      page.Area.IsTrade = Agilis.ECommerce.Data.TradeRegister.IsTrade(User.Identity.Name);
+      // OrderItem.GetOrderItemsByEmail gives the items newest first: one card per order, in that order
+      foreach (var items in Model.OrderItems.GroupBy(i => i.OrderID))
+      {
+          var first = items.First();
+          var delivery = first.Order.DeliveryAddress;   // loaded by MyAccountController.Orders
+          var order = new AccountOrder
+          {
+              Number = first.OrderID.ToString(),
+              Date = first.Order.DateCreated,
+              // its lines without the blank ones (an empty second line is saved as a space)
+              DeliveryAddress = delivery == null ? null : string.Join(", ", new[] { delivery.Address1, delivery.Address2, delivery.City, delivery.County, delivery.Postcode }
+                  .Where(line => !string.IsNullOrWhiteSpace(line)).Select(line => line.Trim())),
+              DeliveryPostcode = delivery == null ? null : delivery.Postcode
+          };
+          foreach (var item in items)
+          {
+              // the product as the old view finds it: on the site, or hidden
+              var product = Model.ProductRepository.GetProduct(item.ProductID) ?? Model.ProductRepository.GetHiddenProduct(item.ProductCode);
+              order.Lines.Add(new AccountOrderLine
+              {
+                  ItemId = item.OrderItemID,
+                  ProductName = product != null ? product.Name : null,
+                  Url = product != null ? Html.GetProductUrl(product.Name, product.Url, product.Category.Url) : null,
+                  ImageUrl = product != null ? string.Format(System.Configuration.ConfigurationManager.AppSettings["ImagePathFormat"], "330", product.Image1) : null,
+                  Description = AccountOrderLine.Describe(item.ProductName, product != null ? product.Name : null),
+                  Quantity = item.Quantity.ToString()
+              });
+          }
+          page.Orders.Add(order);
+      }
+      @Html.Partial("~/Views/MyAccount/_OrdersPage.cshtml", page)
+      return;
+  }
+  ```
+  The photo is the 330px size: the old view's 300px size is missing for most products.
+- [ ] **`Views/MyAccount/RequestReturn.cshtml`** (it uses the old view's own `item`, `prod` and `prodUrl`):
+  ```cshtml
+  @if (NewChrome.IsOn(Request))
+  {
+      var page = new AccountReturnModel { OrderItemId = Model.OrderItemId };
+      page.Area.FirstName = Model.Customer != null ? Model.Customer.FirstName : null;
+      page.Area.LastName = Model.Customer != null ? Model.Customer.LastName : null;
+      page.Area.Email = Model.Email;
+      page.Area.IsTrade = Agilis.ECommerce.Data.TradeRegister.IsTrade(User.Identity.Name);
+      if (item != null)
+      {
+          // item and prod are the old view's own, found above
+          page.Order = new AccountOrder { Number = item.OrderID.ToString(), Date = item.Order.DateCreated };
+          page.Order.Lines.Add(new AccountOrderLine
+          {
+              ItemId = item.OrderItemID,
+              ProductName = prod != null ? prod.Name : null,
+              Url = prod != null ? prodUrl : null,
+              ImageUrl = prod != null ? string.Format(System.Configuration.ConfigurationManager.AppSettings["ImagePathFormat"], "330", prod.Image1) : null,
+              Description = AccountOrderLine.Describe(item.ProductName, prod != null ? prod.Name : null),
+              Quantity = item.Quantity.ToString()
+          });
+      }
+      @Html.Partial("~/Views/MyAccount/_RequestReturnPage.cshtml", page)
+      return;
+  }
+  ```
+  Its inline script at the bottom (the old refund note) is after the `return`, so it isn't drawn; `gm-account.js` does that job.
+- [ ] **`Views/MyAccount/ReturnConfirmation.cshtml`** (it uses the old view's `orderId`, read from `TempData`):
+  ```cshtml
+  @if (NewChrome.IsOn(Request))
+  {
+      var page = new AccountReturnDoneModel { OrderNumber = orderId };
+      page.Area.FirstName = Model.Customer != null ? Model.Customer.FirstName : null;
+      page.Area.LastName = Model.Customer != null ? Model.Customer.LastName : null;
+      page.Area.Email = Model.Email;
+      page.Area.IsTrade = Agilis.ECommerce.Data.TradeRegister.IsTrade(User.Identity.Name);
+      @Html.Partial("~/Views/MyAccount/_ReturnDonePage.cshtml", page)
+      return;
+  }
+  ```
+- [ ] **`Views/MyAccount/Returns.cshtml`**:
+  ```cshtml
+  @if (NewChrome.IsOn(Request))
+  {
+      @Html.Partial("~/Views/MyAccount/_ReturnsPage.cshtml", new AccountAreaModel
+      {
+          FirstName = Model.Customer != null ? Model.Customer.FirstName : null,
+          LastName = Model.Customer != null ? Model.Customer.LastName : null,
+          Email = Model.Email,
+          IsTrade = Agilis.ECommerce.Data.TradeRegister.IsTrade(User.Identity.Name),
+          Section = AccountSection.Returns
+      })
+      return;
+  }
+  ```
+- [ ] **`Views/MyAccount/PriceMatch.cshtml`**: the same as `Returns.cshtml`, with `_PriceMatchPage.cshtml` and `Section = AccountSection.PriceMatch`. The old page's `priceMatch()` script is after the `return`, so it isn't drawn.
+- [ ] **`Views/MyAccount/EditAddress.cshtml`**:
+  ```cshtml
+  @if (NewChrome.IsOn(Request))
+  {
+      ViewBag.Title = "Your Address";   // the page's own name, in place of "EditAddress"
+      var address = Model.Address;   // null until the customer has one
+      var page = new AccountAddressModel
+      {
+          AddressId = address != null ? address.AddressID : 0,
+          Address1 = address != null ? address.Address1 : null,
+          Address2 = address != null ? address.Address2 : null,
+          City = address != null ? address.City : null,
+          County = address != null ? address.County : null,
+          Postcode = address != null ? address.Postcode : null
+      };
+      page.Area.FirstName = Model.Customer != null ? Model.Customer.FirstName : null;
+      page.Area.LastName = Model.Customer != null ? Model.Customer.LastName : null;
+      page.Area.Email = Model.Email;
+      page.Area.IsTrade = Agilis.ECommerce.Data.TradeRegister.IsTrade(User.Identity.Name);
+      @Html.Partial("~/Views/MyAccount/_AddressPage.cshtml", page)
+      return;
+  }
+  ```
+- [ ] **`Website.csproj`**: add the seven `Views/MyAccount/_*.cshtml` files and `ViewModels/Common/MyAccountPageModels.cs`.
+- [ ] Test on the real site, signed in as a customer with orders (one with several items, one with a product that's since been hidden or removed, one with a size that has options), a customer with no orders, a customer with no saved address, and a trade customer: each tab, Track order, Request a return (and that the request arrives), price match (a message with "&amp;" in it, and that it arrives), and saving an address (then that the checkout fills it in).
+
 ## After merging
 
 - [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, order confirmation, account, search, content pages and the 404 page.

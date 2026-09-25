@@ -243,9 +243,25 @@ Along the way: the shared `NewChrome.IsOn` switch, and room for the sticky heade
 
 Not tested: signing in, registering and resetting for real, and the emails.
 
+## 25 September 2026: account pages, part 2 (My Account)
+
+The pages behind the sign-in in the new design: orders, returns, a return request and its confirmation, price match, and the saved address. They share a new top (greeting and tabs) in place of the old purple side column. Details: [account-pages.md](account-pages.md#part-2-my-account).
+
+1. Read the old views, `_AccountMaster`, `MyAccountController` and the `Agilis.ECommerce.Data` source they use (order lines, orders, addresses).
+2. Built seven partials. Orders are grouped into one card per order, with Track order filling in the site's Track Order pop-up. The return and address forms post exactly the old fields. The price match message is now encoded, so "&amp;" and "#" no longer cut it short. Order lines show the size, from the saved "name&lt;br/&gt;size" (`AccountOrderLine.Describe`, tested with 18 examples). Photos use the 330px size: the 300px size the old page asked for is missing for most products.
+3. Merge code for the six old views, compiled against stand-ins copied from the repository's own classes ([merging.md](merging.md#my-account-pages)).
+4. Tested in the preview with a sample customer:
+   - screenshots at two widths and the layout at seven (the tabs now wrap on phones, where Sign out had been hidden off the side);
+   - every text colour on the seven pages;
+   - Track order, the return form's checks and refund note, the address form's checks, and what each form would send (recorded, not sent);
+   - the price match message with the sending stood in for, and blocked for real.
+
+Found in the code: return requests emailed to a developer's inbox (and failures hidden), a page of raw payment details at `/myaccount/view`, a page of made-up quotes, an old return link giving an error page, and no message after saving the address. See [open-questions.md](open-questions.md#account-pages).
+
+Not tested: real accounts and orders, sending returns and price matches, and saving an address.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
 - Test the checkout and the order confirmation with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
-- Account pages, part 2: My Account (orders, an order, quotes, price match, address, returns).
 - Still on the old design after that: search results, content pages other than About and Trade, the "page not found" page and the payment error page.

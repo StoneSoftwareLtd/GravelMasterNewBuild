@@ -17,7 +17,8 @@ Each piece is built to drop into the **GravelMasterSoftware** repository behind 
 | Basket page | Built and tested in the preview with a sample basket | Needs wiring into the site, and testing with real baskets |
 | Checkout | Built and tested in the preview with a sample basket | Needs wiring into the site, and testing with real orders and test payments |
 | Order confirmation | Built and tested in the preview with a sample order | Needs wiring into the site, and testing after real test payments |
-| Account pages: signing in | Built and tested in the preview (no prototype: in the new pages' style) | Needs wiring into the site; My Account to follow |
+| Account pages: signing in | Built and tested in the preview (no prototype: in the new pages' style) | Needs wiring into the site |
+| Account pages: My Account (orders, returns, price match, address) | Built and tested in the preview with a sample customer | Needs wiring into the site, and testing with real accounts |
 
 Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
@@ -33,7 +34,7 @@ Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
 ## See it
 
-Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in, the new basket and checkout with a sample basket in them, the new order confirmation for a sample order, and the new sign-in and password pages. Keep the black window open while you use it. It's read-only, so nothing is sent to the real site (the only exceptions are Sort by on category pages, which just reorders the products, and the product pages' price lookup, which only reads prices).
+Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in, the new basket and checkout with a sample basket in them, the new order confirmation for a sample order, the new sign-in and password pages, and My Account for a sample customer. Keep the black window open while you use it. It's read-only, so nothing is sent to the real site (the only exceptions are Sort by on category pages, which just reorders the products, and the product pages' price lookup, which only reads prices).
 
 Or open this folder in VS Code and use Live Server on `preview/index.html` or `preview/category.html`. See [preview/README.md](preview/README.md) for both.
 
@@ -51,7 +52,7 @@ Or open this folder in VS Code and use Live Server on `preview/index.html` or `p
 | [docs/basket-page.md](docs/basket-page.md) | The new basket page: how it changes the basket exactly as the old one did, choices, what was tested |
 | [docs/checkout-page.md](docs/checkout-page.md) | The new checkout: which checkout is live, how it sends exactly what the old one did, the delivery-date rules, what was tested |
 | [docs/confirmation-page.md](docs/confirmation-page.md) | The new order confirmation: why the page isn't a plain page view, where the old page's details went, what was tested |
-| [docs/account-pages.md](docs/account-pages.md) | The new account pages: sign in, registering, trade applications, passwords, and what the old pages did |
+| [docs/account-pages.md](docs/account-pages.md) | The new account pages: sign in, registering, trade applications, passwords, My Account, and what the old pages did |
 | [docs/merging.md](docs/merging.md) | Everything to do in GravelMasterSoftware to put this live |
 | [docs/open-questions.md](docs/open-questions.md) | Things found along the way that need a decision |
 
