@@ -1,0 +1,248 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.SignInPageModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@{
+    bool trade = Model.IsTradeRegistration;
+    var signInErrors = Model.IsRegistration ? new List<string>() : Model.Errors;
+    var registerErrors = Model.IsRegistration ? Model.Errors : new List<string>();
+    string signInEmail = Model.IsRegistration ? "" : Model.Email;
+    string registerEmail = Model.IsRegistration ? Model.Email : "";
+    // what the page moves to when it opens: the errors, or the trade form when asked for
+    string focus = registerErrors.Count > 0 ? "register-errors" : signInErrors.Count > 0 ? "signin-errors" : trade ? "register" : "";
+}
+@* New sign-in page, shown by Account/Login.cshtml when the new chrome is on. There's no Optima prototype for it: it uses the
+   new pages' panels, boxes and buttons. Styles: css/gm-account.css, linked here rather than in a Head section because most
+   account views sit in _AccountMaster, which can't pass a section on (the same in the other account partials).
+   Behaviour: js/gm-account.js.
+   It posts exactly what the old page's three forms posted:
+   - Sign in: Email and Password to /account/login (the old "Remember me" tick box had no name, so it never did anything,
+     and is left out);
+   - Create an account: FirstName, LastName, Email, Password and ConfirmPassword to /account/register;
+   - Trade account: first, last, email, phone, companyName, typeCustomer and paymentType to /account/traderegister.
+   Each form carries the anti-forgery token, as before. An approved trade customer (IsTradeConfirm) sees only the
+   create-an-account form, with their email fixed, as before. *@
+<link href="/css/gm-account.css?v1" rel="stylesheet" />
+<div class="gm-account" data-account data-focus="@focus">
+    <div class="container acc-container">
+        <nav class="acc-crumbs" aria-label="Breadcrumb">
+            <ol class="acc-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><span class="acc-crumbs__current" aria-current="page">My account</span></li>
+            </ol>
+        </nav>
+
+        @if (Model.IsTradeConfirm)
+        {
+            <div class="acc-narrow">
+                <section class="acc-panel acc-panel--centre" aria-labelledby="acc-welcome-h">
+                    <span class="acc-badge" aria-hidden="true"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7" /></svg></span>
+                    <h1 class="acc-title" id="acc-welcome-h">You&rsquo;re in!</h1>
+                    <p class="acc-intro">Thank you. Create your login below to finish setting up your trade account.</p>
+                    @if (registerErrors.Count > 0)
+                    {
+                        <div class="acc-errors" role="alert" tabindex="-1" id="register-errors">
+                            <ul>
+                                @foreach (var error in registerErrors)
+                                {
+                                    <li>@error</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                    <form class="acc-form" action="/account/register" method="post" data-account-form>
+                        @Html.AntiForgeryToken()
+                        <div class="acc-grid2">
+                            <div class="acc-field">
+                                <label for="acc-tc-first">First name <span class="acc-req" aria-hidden="true">*</span></label>
+                                <input class="acc-input" id="acc-tc-first" name="FirstName" type="text" autocomplete="given-name" required value="@Model.FirstName" data-msg-required="Please enter your first name.">
+                            </div>
+                            <div class="acc-field">
+                                <label for="acc-tc-last">Last name <span class="acc-req" aria-hidden="true">*</span></label>
+                                <input class="acc-input" id="acc-tc-last" name="LastName" type="text" autocomplete="family-name" required value="@Model.LastName" data-msg-required="Please enter your last name.">
+                            </div>
+                        </div>
+                        <div class="acc-field">
+                            <label for="acc-tc-email">Email address</label>
+                            <input class="acc-input" id="acc-tc-email" name="Email" type="email" autocomplete="email" readonly value="@Model.Email">
+                            <p class="acc-hint">The email address you applied with.</p>
+                        </div>
+                        <div class="acc-field">
+                            <label for="acc-tc-password">Password <span class="acc-req" aria-hidden="true">*</span></label>
+                            <div class="acc-password">
+                                <input class="acc-input" id="acc-tc-password" name="Password" type="password" autocomplete="new-password" required minlength="6" maxlength="100" aria-describedby="acc-tc-password-hint" data-msg-required="Please choose a password." data-msg-length="Please use at least 6 characters.">
+                                <button class="acc-password__show" type="button" aria-pressed="false" aria-controls="acc-tc-password" data-show-password>Show</button>
+                            </div>
+                            <p class="acc-hint" id="acc-tc-password-hint">At least 6 characters.</p>
+                        </div>
+                        <div class="acc-field">
+                            <label for="acc-tc-confirm">Confirm password <span class="acc-req" aria-hidden="true">*</span></label>
+                            <input class="acc-input" id="acc-tc-confirm" name="ConfirmPassword" type="password" autocomplete="new-password" required data-match="acc-tc-password" data-msg-required="Please type the password again." data-msg-match="The two passwords don&rsquo;t match.">
+                        </div>
+                        <button class="acc-btn acc-btn--primary" type="submit" data-busy-text="Creating your login">Create my login</button>
+                        <p class="acc-small">By creating an account, you agree to the GravelMaster <a href="/term-conditions" target="_blank" rel="noopener">Terms &amp; Conditions<span class="acc-visually-hidden"> (opens in a new tab)</span></a> and <a href="/privacy" target="_blank" rel="noopener">Privacy Policy<span class="acc-visually-hidden"> (opens in a new tab)</span></a>. GravelMaster may send you communications.</p>
+                    </form>
+                </section>
+            </div>
+        }
+        else
+        {
+            <div class="acc-head">
+                <h1 class="acc-title">Sign in or create an account</h1>
+                <p class="acc-intro">Sign in to see your orders, request a return or a price match, and check out with your saved address.</p>
+            </div>
+
+            <div class="acc-grid">
+                <section class="acc-panel" aria-labelledby="acc-signin-h">
+                    <h2 class="acc-h2" id="acc-signin-h"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 20.5c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" /></svg> Sign in</h2>
+                    @if (signInErrors.Count > 0)
+                    {
+                        <div class="acc-errors" role="alert" tabindex="-1" id="signin-errors">
+                            <ul>
+                                @foreach (var error in signInErrors)
+                                {
+                                    <li>@error</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                    <form class="acc-form" action="/account/login" method="post" data-account-form>
+                        @Html.AntiForgeryToken()
+                        <div class="acc-field">
+                            <label for="acc-signin-email">Email address</label>
+                            <input class="acc-input" id="acc-signin-email" name="Email" type="email" autocomplete="username" required value="@signInEmail" data-msg-required="Please enter your email address." data-msg-email="Please enter an email address like name@@example.com.">
+                        </div>
+                        <div class="acc-field">
+                            <label for="acc-signin-password">Password</label>
+                            <div class="acc-password">
+                                <input class="acc-input" id="acc-signin-password" name="Password" type="password" autocomplete="current-password" required data-msg-required="Please enter your password.">
+                                <button class="acc-password__show" type="button" aria-pressed="false" aria-controls="acc-signin-password" data-show-password>Show</button>
+                            </div>
+                        </div>
+                        <button class="acc-btn acc-btn--primary" type="submit" data-busy-text="Signing in">Sign in</button>
+                        <p class="acc-alt"><a href="/account/forgotpassword">Forgotten your password?</a></p>
+                    </form>
+                </section>
+
+                <section class="acc-panel" id="register" tabindex="-1" aria-labelledby="acc-register-h" data-register>
+                    <h2 class="acc-h2" id="acc-register-h"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="4" /><path d="M2.5 20.5c0-4 3.4-6.5 7.5-6.5 1.6 0 3.1.4 4.3 1.1" /><path d="M18.5 14v6M15.5 17h6" /></svg> New to GravelMaster?</h2>
+                    <fieldset class="acc-kinds">
+                        <legend class="acc-sub">Which account would you like?</legend>
+                        <label class="acc-kind">
+                            <input class="acc-kind__input" type="radio" name="acc-kind" value="personal" @(trade ? "" : "checked") data-kind>
+                            <span class="acc-kind__title">Personal</span>
+                            <span class="acc-kind__text">For your own home and garden</span>
+                        </label>
+                        <label class="acc-kind">
+                            <input class="acc-kind__input" type="radio" name="acc-kind" value="trade" @(trade ? "checked" : "") data-kind>
+                            <span class="acc-kind__title">Trade</span>
+                            <span class="acc-kind__text">Trade prices for landscapers, builders and other businesses</span>
+                        </label>
+                    </fieldset>
+
+                    <div class="acc-kindform" data-kind-form="personal" @(trade ? "hidden" : "")>
+                        @if (registerErrors.Count > 0)
+                        {
+                            <div class="acc-errors" role="alert" tabindex="-1" id="register-errors">
+                                <ul>
+                                    @foreach (var error in registerErrors)
+                                    {
+                                        <li>@error</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        <form class="acc-form" action="/account/register" method="post" data-account-form>
+                            @Html.AntiForgeryToken()
+                            <div class="acc-grid2">
+                                <div class="acc-field">
+                                    <label for="acc-reg-first">First name <span class="acc-req" aria-hidden="true">*</span></label>
+                                    <input class="acc-input" id="acc-reg-first" name="FirstName" type="text" autocomplete="given-name" required value="@Model.FirstName" data-msg-required="Please enter your first name.">
+                                </div>
+                                <div class="acc-field">
+                                    <label for="acc-reg-last">Last name <span class="acc-req" aria-hidden="true">*</span></label>
+                                    <input class="acc-input" id="acc-reg-last" name="LastName" type="text" autocomplete="family-name" required value="@Model.LastName" data-msg-required="Please enter your last name.">
+                                </div>
+                            </div>
+                            <div class="acc-field">
+                                <label for="acc-reg-email">Email address <span class="acc-req" aria-hidden="true">*</span></label>
+                                <input class="acc-input" id="acc-reg-email" name="Email" type="email" autocomplete="email" required value="@registerEmail" data-msg-required="Please enter your email address." data-msg-email="Please enter an email address like name@@example.com.">
+                            </div>
+                            <div class="acc-field">
+                                <label for="acc-reg-password">Password <span class="acc-req" aria-hidden="true">*</span></label>
+                                <div class="acc-password">
+                                    <input class="acc-input" id="acc-reg-password" name="Password" type="password" autocomplete="new-password" required minlength="6" maxlength="100" aria-describedby="acc-reg-password-hint" data-msg-required="Please choose a password." data-msg-length="Please use at least 6 characters.">
+                                    <button class="acc-password__show" type="button" aria-pressed="false" aria-controls="acc-reg-password" data-show-password>Show</button>
+                                </div>
+                                <p class="acc-hint" id="acc-reg-password-hint">At least 6 characters.</p>
+                            </div>
+                            <div class="acc-field">
+                                <label for="acc-reg-confirm">Confirm password <span class="acc-req" aria-hidden="true">*</span></label>
+                                <input class="acc-input" id="acc-reg-confirm" name="ConfirmPassword" type="password" autocomplete="new-password" required data-match="acc-reg-password" data-msg-required="Please type the password again." data-msg-match="The two passwords don&rsquo;t match.">
+                            </div>
+                            <button class="acc-btn acc-btn--secondary" type="submit" data-busy-text="Creating your account">Create my account</button>
+                            <p class="acc-small">By creating an account, you agree to the GravelMaster <a href="/term-conditions" target="_blank" rel="noopener">Terms &amp; Conditions<span class="acc-visually-hidden"> (opens in a new tab)</span></a> and <a href="/privacy" target="_blank" rel="noopener">Privacy Policy<span class="acc-visually-hidden"> (opens in a new tab)</span></a>. GravelMaster may send you communications.</p>
+                        </form>
+                    </div>
+
+                    <div class="acc-kindform" data-kind-form="trade" @(trade ? "" : "hidden")>
+                        <p class="acc-note">Tell us about your business. Once we&rsquo;ve reviewed your details, we&rsquo;ll email you to let you know. <a href="/trade">About trade accounts</a></p>
+                        <form class="acc-form" action="/account/traderegister" method="post" data-account-form>
+                            @Html.AntiForgeryToken()
+                            <div class="acc-grid2">
+                                <div class="acc-field">
+                                    <label for="acc-trade-first">First name <span class="acc-req" aria-hidden="true">*</span></label>
+                                    <input class="acc-input" id="acc-trade-first" name="first" type="text" autocomplete="given-name" required data-msg-required="Please enter your first name.">
+                                </div>
+                                <div class="acc-field">
+                                    <label for="acc-trade-last">Last name <span class="acc-req" aria-hidden="true">*</span></label>
+                                    <input class="acc-input" id="acc-trade-last" name="last" type="text" autocomplete="family-name" required data-msg-required="Please enter your last name.">
+                                </div>
+                                <div class="acc-field">
+                                    <label for="acc-trade-email">Email address <span class="acc-req" aria-hidden="true">*</span></label>
+                                    <input class="acc-input" id="acc-trade-email" name="email" type="email" autocomplete="email" required data-msg-required="Please enter your email address." data-msg-email="Please enter an email address like name@@example.com.">
+                                </div>
+                                <div class="acc-field">
+                                    <label for="acc-trade-phone">Phone number <span class="acc-req" aria-hidden="true">*</span></label>
+                                    <input class="acc-input" id="acc-trade-phone" name="phone" type="tel" autocomplete="tel-national" required pattern="\s*0[0-9 ]{9,14}\s*" aria-describedby="acc-trade-phone-hint" data-msg-required="Please enter a phone number." data-msg-pattern="Please enter a UK phone number starting with 0, like 01302 123456.">
+                                    <p class="acc-hint" id="acc-trade-phone-hint">Starting with 0, like 01302 123456.</p>
+                                </div>
+                            </div>
+                            <div class="acc-field">
+                                <label for="acc-trade-company">Company name <span class="acc-req" aria-hidden="true">*</span></label>
+                                <input class="acc-input" id="acc-trade-company" name="companyName" type="text" autocomplete="organization" required data-msg-required="Please enter your company name.">
+                            </div>
+                            <div class="acc-grid2">
+                                <div class="acc-field">
+                                    <label for="acc-trade-type">Type of customer <span class="acc-req" aria-hidden="true">*</span></label>
+                                    <select class="acc-input acc-select" id="acc-trade-type" name="typeCustomer" required data-msg-required="Please choose the type of customer you are.">
+                                        <option value="">Choose one</option>
+                                        <option>Landscaper / Contractor</option>
+                                        <option>Builder</option>
+                                        <option>Builders Merchant</option>
+                                        <option>Garden Designer</option>
+                                        <option>Roofer</option>
+                                        <option>Other</option>
+                                    </select>
+                                </div>
+                                <div class="acc-field">
+                                    <label for="acc-trade-payment">Payment type <span class="acc-req" aria-hidden="true">*</span></label>
+                                    <select class="acc-input acc-select" id="acc-trade-payment" name="paymentType" required data-msg-required="Please choose a payment type.">
+                                        <option value="">Choose one</option>
+                                        <option>Credit</option>
+                                        <option>Cash</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <label class="acc-check">
+                                <input type="checkbox" id="acc-trade-terms" required data-msg-required="Please agree to the terms and privacy policy to continue.">
+                                <span>I agree to the <a href="/term-conditions" target="_blank" rel="noopener">terms<span class="acc-visually-hidden"> (opens in a new tab)</span></a> and <a href="/privacy" target="_blank" rel="noopener">privacy policy<span class="acc-visually-hidden"> (opens in a new tab)</span></a> <span class="acc-req" aria-hidden="true">*</span></span>
+                            </label>
+                            <button class="acc-btn acc-btn--secondary" type="submit" data-busy-text="Sending">Register my interest</button>
+                        </form>
+                    </div>
+                    <noscript><style>.gm-account [data-kind-form][hidden] { display: block !important; } .gm-account .acc-kinds { display: none; }</style></noscript>
+                </section>
+            </div>
+        }
+    </div>
+</div>
+<script src="/js/gm-account.js?v1"></script>

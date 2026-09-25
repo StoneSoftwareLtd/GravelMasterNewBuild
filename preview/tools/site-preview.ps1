@@ -13,7 +13,9 @@
 # for that sample basket, in the live basket page's frame (the live site sends a checkout with no basket back to
 # /basket); Continue to payment is blocked like every other form. /checkout/orderresult shows the new order
 # confirmation (Views/Checkout/_ConfirmationPage.cshtml) for a sample order, in the same frame: the live page is never
-# asked for, since loading it marks an order as paid.
+# asked for, since loading it marks an order as paid. /account/login, /account/forgotpassword and /account/resetpassword
+# show the new account pages, and /account/forgotpasswordconfirmation, /resetpasswordconfirmation, /confirmemail,
+# /register and /traderegister the new messages those pages lead to (some are only reached by posting a form).
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -44,6 +46,9 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'basket-page.ps1')
 . (Join-Path $PSScriptRoot 'checkout-page.ps1')
 . (Join-Path $PSScriptRoot 'confirmation-page.ps1')
+. (Join-Path $PSScriptRoot 'account-pages.ps1')
+# the account pages shown in the live forgotten-password page's frame (the messages have no page of their own to fetch)
+$script:accountFramePattern = '^/account/(forgotpassword|resetpassword|forgotpasswordconfirmation|resetpasswordconfirmation|confirmemail|register|traderegister)/?$'
 # a category page: /garden-chippings/products/, /garden-chippings/slate-chippings/products/, and either with filters after
 $categoryPathPattern = '^/(?!products/)[a-z0-9-]+(?:/[a-z0-9-]+)?/products(?:/|$)'
 
@@ -114,6 +119,7 @@ function Get-ChangeStamp {
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Content') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Basket') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Checkout') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
+    @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Account') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'css') -Filter 'gm-*') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'js') -Filter 'gm-*') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'img') -Filter 'gm-*')
@@ -124,6 +130,8 @@ function Get-ChangeStamp {
 function Get-Live([string]$rawUrl, [string]$accept, [string]$formBody) {
   # Loading the live order confirmation isn't only a page view (it marks the order as paid): never ask for it
   if ($rawUrl -match '/checkout/orderresult(?!error)') { throw 'The preview never loads the live order confirmation' }
+  # Opening the email-confirmation link confirms an account: never ask for it either
+  if ($rawUrl -match '(?i)/account/confirmemail') { throw 'The preview never loads the live email confirmation' }
   $req = [Net.HttpWebRequest]::Create($site + $rawUrl)
   $req.Method = 'GET'
   $req.AllowAutoRedirect = $false
@@ -249,6 +257,36 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $css = '/css/gm-confirmation.css?v1'; $newPage = 'new order confirmation'
         $extraHead = '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />'
       }
+      elseif ($path -match '^/account/login/?$') {
+        # ?isTradeRegister=true as on the live site; ?signinerror=1, ?registererror=1 and ?tradeconfirm=1 show what the
+        # page looks like when the server sends it back with errors, or to an approved trade customer
+        $flags = @('signinerror', 'registererror', 'tradeconfirm' | Where-Object { $rawUrl -match "[?&]$_=1(&|$)" })
+        if ($rawUrl -match '[?&]isTradeRegister=[^&]+') { $flags += 'trade' }
+        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: signing in, registering and trade applications are blocked, like every form. Try ' +
+          '<a href="/account/login">sign in</a>, <a href="/account/login?isTradeRegister=true">the trade form</a>, <a href="/account/login?signinerror=1">a wrong password</a>, <a href="/account/login?registererror=1">a registration error</a>, <a href="/account/login?tradeconfirm=1">an approved trade customer</a>, ' +
+          '<a href="/account/forgotpassword">forgotten password</a>, <a href="/account/resetpassword">choose a new password</a> and the messages: <a href="/account/forgotpasswordconfirmation">link sent</a>, <a href="/account/resetpasswordconfirmation">password changed</a>, <a href="/account/confirmemail">email confirmed</a>, <a href="/account/register">registered</a>, <a href="/account/traderegister">trade application sent</a>.</p>'
+        $content = $notice + (Format-SignInPage (Join-Path $package 'Views\Account\_SignInPage.cshtml') (Get-SampleSignIn $flags))
+        $css = '/css/gm-account.css?v1'; $newPage = 'new account page'; $accountTitle = 'Log in'
+      }
+      elseif ($path -match $script:accountFramePattern) {
+        $page = $Matches[1]
+        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: the account pages are in the live forgotten-password page''s frame, and every form is blocked. Back to <a href="/account/login">sign in</a> for the list of pages' +
+          $(if ($page -eq 'forgotpassword' -or $page -eq 'resetpassword') { ', or try <a href="?error=1">an error</a>' } else { '' }) + '.</p>'
+        $views = @{
+          forgotpassword = @('_ForgotPasswordPage', 'Forgot your password?'); resetpassword = @('_ResetPasswordPage', 'Reset password')
+          forgotpasswordconfirmation = @('PasswordResetEmailSent', 'Forgot Password Confirmation'); resetpasswordconfirmation = @('PasswordReset', 'Reset password confirmation')
+          confirmemail = @('EmailConfirmed', 'Confirm Email'); register = @('Registered', 'Success Register'); traderegister = @('TradeApplicationSent', 'Log in')
+        }
+        $view = $views[$page.ToLowerInvariant()]
+        if ($view[0].StartsWith('_')) {
+          $errors = if ($rawUrl -match '[?&]error=1(&|$)') { $(if ($page -eq 'resetpassword') { @('Invalid token.') } else { @('The Email field is not a valid e-mail address.') }) } else { @() }
+          $form = [pscustomobject]@{ Email = $(if ($errors) { 'sample.customer@example.com' } else { $null }); Code = 'preview-code'; Errors = $errors }
+          $content = $notice + (Format-AccountFormPage (Join-Path $package "Views\Account\$($view[0]).cshtml") $form)
+        } else {
+          $content = $notice + (Format-AccountMessage (Join-Path $package 'Views\Account\_AccountMessagePage.cshtml') $view[0])
+        }
+        $css = '/css/gm-account.css?v1'; $newPage = 'new account page'; $accountTitle = $view[1]
+      }
     }
     if ($content) {
       # full width, without the old white box and orange side borders
@@ -271,6 +309,10 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $html = [regex]::Replace($html, '<link href="/css/cookiebar\.min\.css" rel="stylesheet"\s*/?>|<script type="text/javascript" src="/scripts/cookiebar\.min\.js"></script>', '')
         $title = if ($newPage -eq 'new checkout') { 'GravelMaster | Checkout' } else { 'Order Information' }   # the views' ViewBag.Title
         $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', "<title>$title</title>")
+      }
+      # The account pages: each old view's own title (ViewBag.Title), as the frame is the sign-in or forgotten-password page
+      if ($newPage -eq 'new account page') {
+        $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', "<title>$accountTitle</title>")
       }
     }
   }
@@ -401,7 +443,10 @@ while ($listener.IsListening) {
       # The live checkout sends a visitor with no basket back to /basket, and the preview has no basket, so the
       # sample checkout is shown in the live basket page's frame (the same layout, which gets the checkout header
       # here because the address has "checkout" in it, as _Layout decides)
-      $fetchUrl = if ($path -match '^/checkout/(processorder|orderresult)/?$') { '/basket' } else { $rawUrl }
+      $fetchUrl = if ($path -match '^/checkout/(processorder|orderresult)/?$') { '/basket' }
+        elseif ($path -match '^/account/login/?$') { '/account/login' }
+        elseif ($path -match $script:accountFramePattern) { '/account/forgotpassword' }
+        else { $rawUrl }
       $live = Get-Live $fetchUrl $req.Headers['Accept']
       if ($live.Status -ge 300 -and $live.Status -lt 400 -and $live.Location) {
         $res.StatusCode = $live.Status

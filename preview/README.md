@@ -20,6 +20,8 @@ The checkout (`/checkout/processorder`, or Checkout Securely on the basket) is t
 
 The order confirmation (`/checkout/orderresult`) is the new confirmation for a **sample order**, in the same frame. The live page is never asked for: loading it marks an order as paid, so the preview refuses any `/checkout/orderresult` address it would have to fetch. Its suggestions are the real products at their live prices; adding them is blocked like every other basket action.
 
+The account pages (`/account/login`, `/account/forgotpassword`, `/account/resetpassword`) are the new ones, and so are the messages they lead to: `/account/forgotpasswordconfirmation`, `/account/resetpasswordconfirmation`, `/account/confirmemail`, `/account/register` and `/account/traderegister` (the last two are only reached by posting a form on the real site). The sign-in page's yellow bar links to every state: the trade form, a wrong password, a registration error and an approved trade customer. Every form is blocked, and the preview never loads the live email-confirmation link, which confirms an account.
+
 - Saving a `gm-*.css` or `gm-*.js` file, a `gm-*` image or any `.cshtml` file reloads the page with the change. (A change to a script in `tools/`, or to a `ViewModels/Common/*.cs` file, needs the preview restarting: the product page runs the real C# model, compiled when the preview starts.)
 - Add `?newchrome=0` to an address to compare with the old header, footer, homepage and category pages (it sticks while you click around). `?newchrome=1` switches back. Page titles start with `[Preview]`.
 - It is read-only. Adding to basket, sign-ups, enquiries, "Send me my estimate", Track Order and logging in are blocked (the forms say they couldn't send). The one form let through is **Sort by** on category pages, and only with one of its four choices, because it only changes the order of the products. No cookies are sent, so the basket is always empty. Analytics, Hotjar, Clarity, Facebook and chat are removed so preview visits aren't counted.
@@ -62,6 +64,7 @@ Menus, product photos and prices come from the live site and are saved in `tools
 | `basket-page.ps1` | Builds the sample basket from live product pages and fills in `_BasketPage.cshtml` with it. |
 | `checkout-page.ps1` | Builds the sample checkout for the sample basket, with sample dates run through the real `CheckoutDates.Build` (compiled from `ViewModels/Common/CheckoutPageModels.cs` with `Add-Type`), and fills in `_CheckoutPage.cshtml` with it. |
 | `confirmation-page.ps1` | Builds the sample order, with the four suggestions read from their live product pages, and fills in `_ConfirmationPage.cshtml` with it. |
+| `account-pages.ps1` | Fills in the four account partials: the sign-in page for a few sample states, the two password forms and the five messages. |
 | `site-preview.ps1` | The whole-website preview. |
 | `fetch-data.ps1` | Re-reads menus, products, banners and a sample category page from the live site, then runs `build.ps1`. |
 | `data.json` | The live site's menus, products, prices and homepage banners (fetched 17 September 2026). |
