@@ -8,18 +8,13 @@
 
     // New Optima header and footer: on when appSettings UseNewChrome is "true".
     // ?newchrome=1 or ?newchrome=0 overrides it for this browser (via a cookie) during sign-off.
-    string chromeOverride = Request.QueryString["newchrome"];
-    if (chromeOverride == "1" || chromeOverride == "0")
+    // Views that show a new page ask NewChrome.IsOn(Request) too, so they always agree with this.
+    string chromeOverride = Agilis.ECommerce.Mvc.Web.ViewModels.Common.NewChrome.Override(Request);
+    if (chromeOverride != null)
     {
-        Response.Cookies.Add(new System.Web.HttpCookie("gm-newchrome", chromeOverride) { HttpOnly = true });
+        Response.Cookies.Add(new System.Web.HttpCookie(Agilis.ECommerce.Mvc.Web.ViewModels.Common.NewChrome.CookieName, chromeOverride) { HttpOnly = true });
     }
-    else if (Request.Cookies["gm-newchrome"] != null)
-    {
-        chromeOverride = Request.Cookies["gm-newchrome"].Value;
-    }
-    bool useNewChrome = chromeOverride == "1" || chromeOverride == "0"
-        ? chromeOverride == "1"
-        : System.Configuration.ConfigurationManager.AppSettings["UseNewChrome"] == "true";
+    bool useNewChrome = Agilis.ECommerce.Mvc.Web.ViewModels.Common.NewChrome.IsOn(Request);
 }
 
 

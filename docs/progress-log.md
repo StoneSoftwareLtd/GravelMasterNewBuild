@@ -218,6 +218,10 @@ Raised: which products to suggest (the planter is a pre-order until May 2027), t
 
 Not tested: the real page after a real test payment.
 
+## 25 September 2026: one switch for the layout and the pages
+
+Every merge step says "when the new chrome is on", but a page's view runs before `_Layout`, so it can't see the layout's own switch. The switch is now `NewChrome.IsOn(Request)` (`ViewModels/Common/NewChrome.cs`), used by `_Layout` and by any view that shows a new page, so they always agree. Checked against the old code copied from `_Layout`: the same answer in all 48 mixes of `?newchrome=` (1, 0, something else, none), the cookie (the same four) and the `UseNewChrome` setting (true, false, missing). The new `_Layout` lines compile with MVC 5.2's Razor. [merging.md](merging.md#first-start-from-the-latest-master) says how the page views use it.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).

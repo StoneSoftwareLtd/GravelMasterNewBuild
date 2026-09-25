@@ -31,10 +31,13 @@ Copying this repository's `_Layout.cshtml`, `_LegacyHeader.cshtml` or `_LegacyFo
 
 The new partials, CSS, JavaScript and images can be copied as they are.
 
+**"When the new chrome is on"**, in the steps for each page below, means `@if (Agilis.ECommerce.Mvc.Web.ViewModels.Common.NewChrome.IsOn(Request))` (or `NewChrome.IsOn(Request)` with the namespace in a `@using`). A view runs before its layout, so it can't read `_Layout`'s own variable; `NewChrome.IsOn` gives the same answer (`?newchrome=1`/`0`, then the `gm-newchrome` cookie, then `UseNewChrome`), and `_Layout` uses it too.
+
 ## Header and footer
 
 - [ ] Latest-master rebase of `_Layout`, `_LegacyHeader`, `_LegacyFooter` (above).
 - [ ] Add `<add key="UseNewChrome" value="false" />` to `Web.config` `<appSettings>`.
+- [ ] Add `ViewModels/Common/NewChrome.cs` to `Website.csproj` (the switch that `_Layout` and the page views share).
 - [ ] The **"page not found" page** (e.g. `/this-page-does-not-exist-123`) isn't built from `_Layout.cshtml`: it has its own copy of the old header and footer (no newsletter band, no product search data). Find its view or layout and give it the same switch.
 - [ ] Make a fresh patch from the finished branch. `patches/header-and-footer (before 2026-09-17 fixes).patch` is from before the fixes.
 
