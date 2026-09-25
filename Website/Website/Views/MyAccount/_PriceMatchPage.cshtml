@@ -1,0 +1,43 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.AccountAreaModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@* New price match page (/myaccount/pricematch), shown by MyAccount/PriceMatch.cshtml when the new chrome is on, with the old
+   page's words. The message goes to /product/sendpricematchquery?query= as before, now encoded so a message with & or #
+   arrives whole (js/gm-account.js). Without the script the form opens that address itself. Styles: css/gm-account.css. *@
+<link href="/css/gm-account.css?v1" rel="stylesheet" />
+<div class="gm-account" data-account>
+    <div class="container acc-container">
+        <nav class="acc-crumbs" aria-label="Breadcrumb">
+            <ol class="acc-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><a href="/myaccount/orders">My account</a></li>
+                <li><span class="acc-crumbs__current" aria-current="page">Price match</span></li>
+            </ol>
+        </nav>
+        @Html.Partial("~/Views/MyAccount/_AccountAreaHead.cshtml", Model)
+
+        <section class="acc-section" aria-labelledby="acc-page-h">
+            <h1 class="acc-title acc-title--area" id="acc-page-h">Price match promise</h1>
+            <div class="acc-grid acc-grid--wide">
+                <div class="acc-panel">
+                    <h2 class="acc-h2">How it works</h2>
+                    <p class="acc-text">If you find a lower price for the same product at another retailer before making your purchase, give us a call on <a href="tel:03300585068">0330 058 5068</a> and we&rsquo;ll match it.</p>
+                    <p class="acc-text">Additionally, if the price of an item you&rsquo;ve already ordered drops on our site, simply let us know and we will see if you&rsquo;re eligible to claim the difference.</p>
+                </div>
+                <div class="acc-panel">
+                    <h2 class="acc-h2">Ask for a price match</h2>
+                    <p class="acc-text">For all price matches, fill in the form below or give us a call.</p>
+                    <form class="acc-form" action="/product/sendpricematchquery" method="get" data-account-form data-pricematch>
+                        <div class="acc-field">
+                            <label for="acc-pricematch-message">Your message <span class="acc-req" aria-hidden="true">*</span></label>
+                            <p class="acc-hint acc-hint--above" id="acc-pricematch-hint">Tell us the product, where you spotted the cheaper option, and the price you saw, including delivery.</p>
+                            <textarea class="acc-input acc-textarea" id="acc-pricematch-message" name="query" rows="5" required minlength="5" aria-describedby="acc-pricematch-hint" data-msg-required="Please write your message." data-msg-length="Please tell us a little more: the product, where you saw it and the price."></textarea>
+                        </div>
+                        <button class="acc-btn acc-btn--primary" type="submit" data-busy-text="Sending">Send</button>
+                        <p class="acc-status" role="status" data-status></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<script src="/js/gm-account.js?v1"></script>

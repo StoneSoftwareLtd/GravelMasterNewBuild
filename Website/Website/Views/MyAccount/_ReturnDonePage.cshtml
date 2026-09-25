@@ -1,0 +1,38 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.AccountReturnDoneModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@* New "return request submitted" page (/myaccount/returnconfirmation), shown by MyAccount/ReturnConfirmation.cshtml when the
+   new chrome is on, with the old page's words. Styles: css/gm-account.css. *@
+<link href="/css/gm-account.css?v1" rel="stylesheet" />
+<div class="gm-account">
+    <div class="container acc-container">
+        <nav class="acc-crumbs" aria-label="Breadcrumb">
+            <ol class="acc-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><a href="/myaccount/orders">My account</a></li>
+                <li><span class="acc-crumbs__current" aria-current="page">Return requested</span></li>
+            </ol>
+        </nav>
+        @Html.Partial("~/Views/MyAccount/_AccountAreaHead.cshtml", Model.Area)
+
+        <div class="acc-narrow">
+            <section class="acc-panel acc-panel--centre" aria-labelledby="acc-page-h">
+                <span class="acc-badge" aria-hidden="true"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12.5 10 17.5 19 7" /></svg></span>
+                <h1 class="acc-title" id="acc-page-h">Return request sent</h1>
+                @if (!string.IsNullOrEmpty(Model.OrderNumber))
+                {
+                    <p class="acc-intro">Your return request for order <strong>#@Model.OrderNumber</strong> has been received.</p>
+                }
+                else
+                {
+                    <p class="acc-intro">Your return request has been received.</p>
+                }
+                <p class="acc-intro">Our team will review your request and get in touch within <strong>2 business days</strong> to arrange the next steps.</p>
+                <p class="acc-small">If you need to speak to us urgently, call <a href="tel:03300585068">0330 058 5068</a> or email <a href="mailto:sales@gravelmaster.co.uk">sales@gravelmaster.co.uk</a>.</p>
+                <div class="acc-actions">
+                    <a class="acc-btn acc-btn--primary" href="/myaccount/orders">Back to your orders</a>
+                    <a class="acc-btn acc-btn--ghost" href="/myaccount/returns">Returns policy</a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

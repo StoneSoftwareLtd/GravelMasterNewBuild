@@ -16,6 +16,8 @@
 # asked for, since loading it marks an order as paid. /account/login, /account/forgotpassword and /account/resetpassword
 # show the new account pages, and /account/forgotpasswordconfirmation, /resetpasswordconfirmation, /confirmemail,
 # /register and /traderegister the new messages those pages lead to (some are only reached by posting a form).
+# /myaccount/orders, /returns, /requestreturn, /returnconfirmation, /pricematch and /editaddress show the new My Account
+# pages (Views/MyAccount) for a sample customer, in the same frame: the preview is never signed in.
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -47,13 +49,16 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'checkout-page.ps1')
 . (Join-Path $PSScriptRoot 'confirmation-page.ps1')
 . (Join-Path $PSScriptRoot 'account-pages.ps1')
+. (Join-Path $PSScriptRoot 'myaccount-pages.ps1')
 # the account pages shown in the live forgotten-password page's frame (the messages have no page of their own to fetch)
 $script:accountFramePattern = '^/account/(forgotpassword|resetpassword|forgotpasswordconfirmation|resetpasswordconfirmation|confirmemail|register|traderegister)/?$'
+# the My Account pages, shown in the same frame (the live ones send the preview, never signed in, to sign in)
+$script:myAccountPattern = '^/myaccount(?:/(index|orders|returns|requestreturn|returnconfirmation|pricematch|editaddress))?/?$'
 # a category page: /garden-chippings/products/, /garden-chippings/slate-chippings/products/, and either with filters after
 $categoryPathPattern = '^/(?!products/)[a-z0-9-]+(?:/[a-z0-9-]+)?/products(?:/|$)'
 
 # Requests with real effects on the live site (found in the live pages' scripts and forms)
-$blockedPattern = 'addtobasket|removefrombasket|updatequantity|updatebasket|applycouponcode|newsletterregister|sendlooseenquiry|sendcalculatorcalculation|quicksignup|logoff|logout'
+$blockedPattern = 'addtobasket|removefrombasket|updatequantity|updatebasket|applycouponcode|newsletterregister|sendlooseenquiry|sendcalculatorcalculation|sendpricematchquery|quicksignup|logoff|logout'
 # Scripts removed from preview pages so visits aren't counted or recorded
 $trackerPattern = 'googletagmanager\.com|cookie-script\.com|static\.hotjar\.com|fbevents\.js|facebook\.com/tr\?|clarity\.ms|bat\.bing\.com|embed\.tawk\.to'
 # Stand-ins for the removed scripts, so page code that calls them doesn't throw
@@ -120,6 +125,7 @@ function Get-ChangeStamp {
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Basket') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Checkout') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Account') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
+    @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\MyAccount') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'css') -Filter 'gm-*') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'js') -Filter 'gm-*') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'img') -Filter 'gm-*')
@@ -287,6 +293,19 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         }
         $css = '/css/gm-account.css?v1'; $newPage = 'new account page'; $accountTitle = $view[1]
       }
+      elseif ($path -match $script:myAccountPattern) {
+        # A sample customer. ?trade=1, ?empty=1 and ?noreturns=1 show a trade account, no orders yet and the Returns
+        # tab switched off
+        $page = if ($Matches[1] -and $Matches[1] -ne 'index') { $Matches[1].ToLowerInvariant() } else { 'orders' }
+        $flags = @('trade', 'empty', 'noreturns' | Where-Object { $rawUrl -match "[?&]$_=1(&|$)" })
+        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: a sample customer and two sample orders of real products; the preview can''t sign in. Every form is blocked, and so is the price match message. Try ' +
+          '<a href="/myaccount/orders">orders</a>, <a href="/myaccount/orders?empty=1">no orders yet</a>, <a href="/myaccount/orders?trade=1">a trade account</a>, <a href="/myaccount/orders?noreturns=1">without Returns</a>, ' +
+          '<a href="/myaccount/requestreturn">a return request</a>, <a href="/myaccount/returnconfirmation">return sent</a>.</p>'
+        $content = $notice + (Format-MyAccountPage (Join-Path $package 'Views\MyAccount') $page (Get-SampleAccount $flags))
+        # each old view's ViewBag.Title; the address page's is set by the new branch (docs/merging.md)
+        $titles = @{ orders = 'Orders'; returns = 'Returns'; requestreturn = 'Request Return'; returnconfirmation = 'Return Request Submitted'; pricematch = 'Price Match'; editaddress = 'Your Address' }
+        $css = '/css/gm-account.css?v1'; $newPage = 'new account page'; $accountTitle = $titles[$page]
+      }
     }
     if ($content) {
       # full width, without the old white box and orange side borders
@@ -445,7 +464,7 @@ while ($listener.IsListening) {
       # here because the address has "checkout" in it, as _Layout decides)
       $fetchUrl = if ($path -match '^/checkout/(processorder|orderresult)/?$') { '/basket' }
         elseif ($path -match '^/account/login/?$') { '/account/login' }
-        elseif ($path -match $script:accountFramePattern) { '/account/forgotpassword' }
+        elseif ($path -match $script:accountFramePattern -or $path -match $script:myAccountPattern) { '/account/forgotpassword' }
         else { $rawUrl }
       $live = Get-Live $fetchUrl $req.Headers['Accept']
       if ($live.Status -ge 300 -and $live.Status -lt 400 -and $live.Location) {

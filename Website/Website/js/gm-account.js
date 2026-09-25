@@ -8,7 +8,9 @@
    - shows and hides a password;
    - switches between the personal and trade forms;
    - when the page comes back with errors (or opened for a trade account), moves to them;
-   - sends each form once.
+   - sends each form once;
+   - on the My Account pages: fills in the Track Order pop-up, shows the refund note on the return form, and sends a
+     price match message without leaving the page.
    Plain JavaScript: the site's jQuery arrives later through RequireJS. */
 (function () {
   var root = document.querySelector('.gm-account[data-account]');
@@ -90,7 +92,7 @@
     return text;
   }
   function fields(form) {
-    return [].slice.call(form.querySelectorAll('input, select')).filter(function (input) {
+    return [].slice.call(form.querySelectorAll('input, select, textarea')).filter(function (input) {
       return input.type !== 'hidden' && !input.readOnly && !input.disabled && input.id;
     });
   }
@@ -132,6 +134,24 @@
         button.disabled = true;
         button.textContent = (button.getAttribute('data-busy-text') || label) + ellipsis;
       }
+
+      // Price match: the message goes to /product/sendpricematchquery as the old page sent it, now encoded so a
+      // message with & or # arrives whole, and the page stays where it is
+      if (form.hasAttribute('data-pricematch')) {
+        e.preventDefault();
+        var status = form.querySelector('[data-status]');
+        var box = form.querySelector('textarea');
+        var done = function (text) {
+          if (status) status.textContent = text;
+          sending = false;
+          if (button) { button.disabled = false; button.textContent = label; }
+        };
+        if (status) status.textContent = '';   // so the same answer twice is still read out
+        fetch(form.getAttribute('action') + '?query=' + encodeURIComponent(box.value), { credentials: 'same-origin' })
+          .then(function (res) { if (!res.ok) throw new Error(res.status); return res.json(); })
+          .then(function () { box.value = ''; done('Thank you, your message has been sent.'); })
+          .catch(function () { done('Sorry, your message couldn' + String.fromCharCode(8217) + 't be sent. Please try again, or call us on 0330 058 5068.'); });
+      }
     });
 
     // Back from the next page: the button works again
@@ -140,6 +160,28 @@
       sending = false;
       if (button) { button.disabled = false; button.textContent = label; }
     });
+  });
+
+  /* ---- Track order: the site's Track Order pop-up (_TrackOrderModal, opened by Bootstrap's data-toggle), filled in ---- */
+  each(root.querySelectorAll('[data-track]'), function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();   // the link is only there to open the pop-up
+      var modal = document.getElementById('trackModal');
+      if (!modal) return;
+      var order = modal.querySelector('input[name="orderId"]');
+      var postcode = modal.querySelector('input[name="postcode"]');
+      if (order) order.value = link.getAttribute('data-order') || '';
+      if (postcode) postcode.value = link.getAttribute('data-postcode') || '';
+    });
+  });
+
+  /* ---- Return request: the note about refunds, when a refund is asked for ---- */
+  each(root.querySelectorAll('[data-refund-select]'), function (select) {
+    var note = select.parentNode.querySelector('[data-refund-note]');
+    if (!note) return;
+    var show = function () { note.hidden = select.value !== 'Full Refund'; };
+    select.addEventListener('change', show);
+    show();
   });
 
   /* ---- Back with errors, or opened for a trade account: go to them ----

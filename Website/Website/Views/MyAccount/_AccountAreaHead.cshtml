@@ -1,0 +1,37 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.AccountAreaModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@{
+    var names = System.Globalization.CultureInfo.GetCultureInfo("en-GB").TextInfo;
+    string first = string.IsNullOrWhiteSpace(Model.FirstName) ? "" : names.ToTitleCase(Model.FirstName.Trim());
+    var tabs = new List<KeyValuePair<AccountSection, string[]>>
+    {
+        new KeyValuePair<AccountSection, string[]>(AccountSection.Orders, new[] { "Orders", "/myaccount/orders" }),
+        new KeyValuePair<AccountSection, string[]>(AccountSection.Returns, new[] { "Returns", "/myaccount/returns" }),
+        new KeyValuePair<AccountSection, string[]>(AccountSection.PriceMatch, new[] { "Price match", "/myaccount/pricematch" }),
+        new KeyValuePair<AccountSection, string[]>(AccountSection.Address, new[] { "Address", "/myaccount/editaddress" })
+    };
+}
+@* The top of every My Account page: the greeting and the tabs, in place of the old purple side column (_AccountMaster).
+   The same links as that column: Orders, Price Match, Returns (on master only, so it can be turned off), Edit Address
+   and Log Out (/account/logoff). *@
+<div class="acc-areahead">
+    <div>
+        <p class="acc-hello">@(first.Length > 0 ? "Hi " + first : "Hello")@if (Model.IsTrade)
+        {<span class="acc-tag">Trade account</span>}</p>
+        <p class="acc-email">@Model.Email</p>
+    </div>
+    <a class="acc-shop" href="/">Continue shopping <span aria-hidden="true">&rarr;</span></a>
+</div>
+<nav class="acc-tabs" aria-label="My account">
+    <ul class="acc-tabs__list">
+        @foreach (var tab in tabs)
+        {
+            if (tab.Key == AccountSection.Returns && !Model.ShowReturns)
+            {
+                continue;
+            }
+            <li><a class="acc-tab" href="@tab.Value[1]" aria-current="@(tab.Key == Model.Section ? "page" : null)">@tab.Value[0]</a></li>
+        }
+        <li class="acc-tabs__out"><a class="acc-tab" href="/account/logoff">Sign out</a></li>
+    </ul>
+</nav>

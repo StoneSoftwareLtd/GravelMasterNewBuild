@@ -1,0 +1,85 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.AccountOrdersModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@{
+    var uk = System.Globalization.CultureInfo.GetCultureInfo("en-GB");
+}
+@* New order history (/myaccount/orders), shown by MyAccount/Orders.cshtml when the new chrome is on. The old page listed each
+   item on its own with its order number; this groups the items under their order, with the same details: photo, name, what
+   was ordered, quantity, date, delivery address and order number. "Request a return" links to the same address as before.
+   "Track order" opens the site's Track Order pop-up with the order number and postcode filled in (js/gm-account.js).
+   Styles: css/gm-account.css. *@
+<link href="/css/gm-account.css?v1" rel="stylesheet" />
+<div class="gm-account" data-account>
+    <div class="container acc-container">
+        <nav class="acc-crumbs" aria-label="Breadcrumb">
+            <ol class="acc-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><span class="acc-crumbs__current" aria-current="page">My account</span></li>
+            </ol>
+        </nav>
+        @Html.Partial("~/Views/MyAccount/_AccountAreaHead.cshtml", Model.Area)
+
+        <section class="acc-section" aria-labelledby="acc-page-h">
+            <h1 class="acc-title acc-title--area" id="acc-page-h">Your orders</h1>
+            @if (Model.Orders.Count == 0)
+            {
+                <div class="acc-panel acc-empty">
+                    <p class="acc-intro">You haven&rsquo;t placed any orders yet.</p>
+                    <div class="acc-actions acc-actions--start"><a class="acc-btn acc-btn--primary" href="/">Start shopping</a></div>
+                </div>
+            }
+            else
+            {
+                <ul class="acc-orders">
+                    @foreach (var order in Model.Orders)
+                    {
+                        <li class="acc-order">
+                            <div class="acc-order__head">
+                                <div class="acc-order__facts">
+                                    <p class="acc-order__no">Order <strong>#@order.Number</strong></p>
+                                    <p class="acc-order__meta">Ordered on @order.Date.ToString("dddd d MMMM yyyy", uk)</p>
+                                    @if (!string.IsNullOrWhiteSpace(order.DeliveryAddress))
+                                    {
+                                        <p class="acc-order__meta">Delivery to @order.DeliveryAddress</p>
+                                    }
+                                </div>
+                                <a class="acc-btn acc-btn--ghost acc-btn--small" href="#" data-toggle="modal" data-target="#trackModal" data-track data-order="@order.Number" data-postcode="@order.DeliveryPostcode">Track order<span class="acc-visually-hidden"> #@order.Number</span></a>
+                            </div>
+                            <ul class="acc-lines">
+                                @foreach (var line in order.Lines)
+                                {
+                                    <li class="acc-line">
+                                        @if (line.ImageUrl != null)
+                                        {
+                                            <img class="acc-line__img" src="@line.ImageUrl" alt="" width="330" height="330" loading="lazy" decoding="async">
+                                        }
+                                        else
+                                        {
+                                            <span class="acc-line__img" aria-hidden="true"></span>
+                                        }
+                                        <div class="acc-line__info">
+                                            @if (line.ProductName != null)
+                                            {
+                                                <p class="acc-line__name"><a href="@line.Url">@line.ProductName</a></p>
+                                            }
+                                            @if (!string.IsNullOrEmpty(line.Description))
+                                            {
+                                                <p class="acc-line__desc">@line.Description</p>
+                                            }
+                                            <p class="acc-line__qty">Quantity: @line.Quantity</p>
+                                        </div>
+                                        @if (Model.Area.ShowReturns)
+                                        {
+                                            <a class="acc-line__return" href="/myaccount/requestreturn?orderItemId=@line.ItemId">Request a return<span class="acc-visually-hidden"> of @(line.ProductName ?? line.Description)</span></a>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            }
+        </section>
+    </div>
+</div>
+<script src="/js/gm-account.js?v1"></script>

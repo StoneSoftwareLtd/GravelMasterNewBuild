@@ -1,0 +1,57 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.AccountAddressModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@* New address page (/myaccount/editaddress), shown by MyAccount/EditAddress.cshtml when the new chrome is on. It posts
+   Address.AddressID, Address.Address1, Address.Address2, Address.City, Address.County, Address.Postcode and the
+   anti-forgery token to /myaccount/editaddress, as the old form did. The old page called it the billing address, but the
+   checkout fills it in as the delivery address (OrderViewModel.DefaultAddress), so it's just "Your address".
+   Styles: css/gm-account.css. Behaviour: js/gm-account.js. *@
+<link href="/css/gm-account.css?v1" rel="stylesheet" />
+<div class="gm-account" data-account>
+    <div class="container acc-container">
+        <nav class="acc-crumbs" aria-label="Breadcrumb">
+            <ol class="acc-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><a href="/myaccount/orders">My account</a></li>
+                <li><span class="acc-crumbs__current" aria-current="page">Address</span></li>
+            </ol>
+        </nav>
+        @Html.Partial("~/Views/MyAccount/_AccountAreaHead.cshtml", Model.Area)
+
+        <section class="acc-section" aria-labelledby="acc-page-h">
+            <h1 class="acc-title acc-title--area" id="acc-page-h">Your address</h1>
+            <div class="acc-panel acc-panel--form">
+                <p class="acc-text">We fill this address in for you at the checkout.</p>
+                <form class="acc-form" action="/myaccount/editaddress" method="post" data-account-form>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="Address.AddressID" value="@Model.AddressId">
+                    <div class="acc-grid2">
+                        <div class="acc-field">
+                            <label for="acc-address-1">Address line 1 <span class="acc-req" aria-hidden="true">*</span></label>
+                            <input class="acc-input" id="acc-address-1" name="Address.Address1" type="text" autocomplete="address-line1" maxlength="60" required value="@Model.Address1" data-msg-required="Please enter the first line of the address." data-msg-length="Please use 60 characters or fewer.">
+                        </div>
+                        <div class="acc-field">
+                            <label for="acc-address-2">Address line 2</label>
+                            <input class="acc-input" id="acc-address-2" name="Address.Address2" type="text" autocomplete="address-line2" maxlength="60" value="@(string.IsNullOrWhiteSpace(Model.Address2) ? "" : Model.Address2)" data-msg-length="Please use 60 characters or fewer.">
+                        </div>
+                        <div class="acc-field">
+                            <label for="acc-address-city">Town or city <span class="acc-req" aria-hidden="true">*</span></label>
+                            <input class="acc-input" id="acc-address-city" name="Address.City" type="text" autocomplete="address-level2" maxlength="60" required value="@Model.City" data-msg-required="Please enter the town or city." data-msg-length="Please use 60 characters or fewer.">
+                        </div>
+                        <div class="acc-field">
+                            <label for="acc-address-county">County</label>
+                            <input class="acc-input" id="acc-address-county" name="Address.County" type="text" autocomplete="address-level1" maxlength="60" value="@Model.County" data-msg-length="Please use 60 characters or fewer.">
+                        </div>
+                        <div class="acc-field">
+                            <label for="acc-address-postcode">Postcode <span class="acc-req" aria-hidden="true">*</span></label>
+                            <input class="acc-input acc-input--postcode" id="acc-address-postcode" name="Address.Postcode" type="text" autocomplete="postal-code" maxlength="9" required value="@Model.Postcode" pattern="([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z])))) {0,1}[0-9][A-Za-z]{2})" data-msg-required="Please enter the postcode." data-msg-pattern="Please enter a full UK postcode, like NG1 1AA." data-msg-length="Please enter a full UK postcode, like NG1 1AA.">
+                        </div>
+                    </div>
+                    <div class="acc-actions acc-actions--start">
+                        <button class="acc-btn acc-btn--primary" type="submit" data-busy-text="Saving">Save my address</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+</div>
+<script src="/js/gm-account.js?v1"></script>

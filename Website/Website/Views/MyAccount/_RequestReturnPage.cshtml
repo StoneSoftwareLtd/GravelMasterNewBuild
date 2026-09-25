@@ -1,0 +1,104 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.AccountReturnModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@{
+    var uk = System.Globalization.CultureInfo.GetCultureInfo("en-GB");
+    var line = Model.Order != null && Model.Order.Lines.Count > 0 ? Model.Order.Lines[0] : null;
+}
+@* New return request (/myaccount/requestreturn?orderItemId=), shown by MyAccount/RequestReturn.cshtml when the new chrome is on.
+   It posts OrderItemId, HasBeenUsed, Reason, Resolution, Notes and the anti-forgery token to /myaccount/requestreturn, with
+   the old form's choices. Styles: css/gm-account.css. Behaviour: js/gm-account.js. *@
+<link href="/css/gm-account.css?v1" rel="stylesheet" />
+<div class="gm-account" data-account>
+    <div class="container acc-container">
+        <nav class="acc-crumbs" aria-label="Breadcrumb">
+            <ol class="acc-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><a href="/myaccount/orders">My account</a></li>
+                <li><span class="acc-crumbs__current" aria-current="page">Request a return</span></li>
+            </ol>
+        </nav>
+        @Html.Partial("~/Views/MyAccount/_AccountAreaHead.cshtml", Model.Area)
+
+        <section class="acc-section" aria-labelledby="acc-page-h">
+            <h1 class="acc-title acc-title--area" id="acc-page-h">Request a return</h1>
+            <p class="acc-back"><a href="/myaccount/orders"><span aria-hidden="true">&larr;</span> Back to your orders</a></p>
+            @if (line != null)
+            {
+                <div class="acc-grid acc-grid--return">
+                    <div class="acc-panel">
+                        <h2 class="acc-h2">The item</h2>
+                        <div class="acc-line acc-line--single">
+                            @if (line.ImageUrl != null)
+                            {
+                                <img class="acc-line__img" src="@line.ImageUrl" alt="" width="330" height="330" decoding="async">
+                            }
+                            else
+                            {
+                                <span class="acc-line__img" aria-hidden="true"></span>
+                            }
+                            <div class="acc-line__info">
+                                @if (line.ProductName != null)
+                                {
+                                    <p class="acc-line__name"><a href="@line.Url">@line.ProductName</a></p>
+                                }
+                                @if (!string.IsNullOrEmpty(line.Description))
+                                {
+                                    <p class="acc-line__desc">@line.Description</p>
+                                }
+                                <p class="acc-line__qty">Quantity: @line.Quantity</p>
+                                <p class="acc-line__qty">Order #@Model.Order.Number, ordered on @Model.Order.Date.ToString("d MMMM yyyy", uk)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="acc-panel">
+                        <h2 class="acc-h2">Return details</h2>
+                        <form class="acc-form" action="/myaccount/requestreturn" method="post" data-account-form>
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="OrderItemId" value="@Model.OrderItemId">
+                            <div class="acc-field">
+                                <label for="acc-return-used">Has the product been used? <span class="acc-req" aria-hidden="true">*</span></label>
+                                <select class="acc-input acc-select" id="acc-return-used" name="HasBeenUsed" required data-msg-required="Please say whether the product has been used.">
+                                    <option value="">Please choose</option>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                            </div>
+                            <div class="acc-field">
+                                <label for="acc-return-reason">Why are you returning it? <span class="acc-req" aria-hidden="true">*</span></label>
+                                <select class="acc-input acc-select" id="acc-return-reason" name="Reason" required data-msg-required="Please choose a reason.">
+                                    <option value="">Please choose</option>
+                                    <option value="Damaged in Transit">Damaged in transit</option>
+                                    <option value="Wrong Product Delivered">Wrong product delivered</option>
+                                    <option value="Faulty / Defective Product">Faulty or defective product</option>
+                                    <option value="Change of Mind">Change of mind</option>
+                                    <option value="Ordered by Mistake">Ordered by mistake</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="acc-field">
+                                <label for="acc-return-resolution">What would you like us to do? <span class="acc-req" aria-hidden="true">*</span></label>
+                                <select class="acc-input acc-select" id="acc-return-resolution" name="Resolution" required data-msg-required="Please choose what you&rsquo;d like us to do." data-refund-select>
+                                    <option value="">Please choose</option>
+                                    <option value="Full Refund">Full refund</option>
+                                    <option value="Exchange / Replacement">Exchange or replacement</option>
+                                    <option value="Store Credit">Store credit</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <p class="acc-notice" hidden data-refund-note>If you&rsquo;d like a refund, please check our <a href="/myaccount/returns" target="_blank" rel="noopener">returns policy<span class="acc-visually-hidden"> (opens in a new tab)</span></a> to see whether a full refund applies.</p>
+                            </div>
+                            <div class="acc-field">
+                                <label for="acc-return-notes">Anything else we should know? <span class="acc-optional">(optional)</span></label>
+                                <textarea class="acc-input acc-textarea" id="acc-return-notes" name="Notes" rows="4" placeholder="e.g. what&rsquo;s wrong with it"></textarea>
+                            </div>
+                            <div class="acc-actions acc-actions--start">
+                                <button class="acc-btn acc-btn--primary" type="submit" data-busy-text="Sending">Send return request</button>
+                                <a class="acc-btn acc-btn--ghost" href="/myaccount/orders">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
+</div>
+<script src="/js/gm-account.js?v1"></script>

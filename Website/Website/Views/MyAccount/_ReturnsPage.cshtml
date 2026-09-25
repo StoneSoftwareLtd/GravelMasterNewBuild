@@ -1,0 +1,39 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.AccountAreaModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@* New returns page (/myaccount/returns), shown by MyAccount/Returns.cshtml when the new chrome is on: the old page's returns
+   policy, word for word, and how to request a return. Styles: css/gm-account.css. *@
+<link href="/css/gm-account.css?v1" rel="stylesheet" />
+<div class="gm-account" data-account>
+    <div class="container acc-container">
+        <nav class="acc-crumbs" aria-label="Breadcrumb">
+            <ol class="acc-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><a href="/myaccount/orders">My account</a></li>
+                <li><span class="acc-crumbs__current" aria-current="page">Returns</span></li>
+            </ol>
+        </nav>
+        @Html.Partial("~/Views/MyAccount/_AccountAreaHead.cshtml", Model)
+
+        <section class="acc-section" aria-labelledby="acc-page-h">
+            <h1 class="acc-title acc-title--area" id="acc-page-h">Returns</h1>
+            <div class="acc-grid acc-grid--wide">
+                <div class="acc-panel">
+                    <h2 class="acc-h2">Our returns policy</h2>
+                    <p class="acc-text">We want you to be completely satisfied with your order. If you need to return an item, please read our policy below:</p>
+                    <ul class="acc-ticks">
+                        <li>Returns must be requested within <strong>14 days</strong> of delivery.</li>
+                        <li>Items must be unused and in their original condition.</li>
+                        <li>Damaged or incorrect items: please contact us as soon as possible.</li>
+                        <li>Once your return is approved, our team will contact you to arrange collection.</li>
+                    </ul>
+                    <p class="acc-text">If you have any questions, call us on <a href="tel:03300585068">0330 058 5068</a> or email <a href="mailto:sales@gravelmaster.co.uk">sales@gravelmaster.co.uk</a>.</p>
+                </div>
+                <div class="acc-panel">
+                    <h2 class="acc-h2">Request a return</h2>
+                    <p class="acc-text">Go to your orders and choose <strong>Request a return</strong> next to the item.</p>
+                    <div class="acc-actions acc-actions--start"><a class="acc-btn acc-btn--primary" href="/myaccount/orders">View my orders</a></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 /* ===== GravelMaster account pages (Optima design) =====
    Sign in, create an account, trade application, forgotten and reset password, and their messages
-   (Views/Account/_SignInPage, _ForgotPasswordPage, _ResetPasswordPage, _AccountMessagePage). There's no Optima
+   (Views/Account/_SignInPage, _ForgotPasswordPage, _ResetPasswordPage, _AccountMessagePage), and the pages behind the sign-in:
+   orders, returns, price match and address (Views/MyAccount/_*Page, with _AccountAreaHead at the top). There's no Optima
    prototype for these pages: they use the checkout's panels, boxes, errors and buttons. The old stylesheets still load
    underneath, so every rule is scoped to .gm-account, with the same shield as the other new pages:
    - .container is also Bootstrap's, so it's only styled inside .gm-account;
@@ -86,7 +87,7 @@ div:where(.gm-account) {
 .gm-account .acc-container { max-width: 1180px; padding-bottom: 60px; }
 
 /* Visible keyboard focus (global.css removes some outlines) */
-.gm-account :is(a, button, input, select):focus-visible {
+.gm-account :is(a, button, input, select, textarea):focus-visible {
   outline: 2px solid #3f8f43;
   outline-offset: 2px;
 }
@@ -267,13 +268,100 @@ div:where(.gm-account) {
 .gm-account .acc-steps li + li { margin-top: 6px; }
 .gm-account .acc-steps + .acc-small { margin-top: 14px; }
 
+/* ---- My Account: the greeting and tabs (Views/MyAccount/_AccountAreaHead) ---- */
+.gm-account .acc-areahead { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px 24px; flex-wrap: wrap; margin: 10px 0 18px; }
+.gm-account .acc-hello { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin: 0; font-size: 26px; font-weight: 700; color: var(--dark); }
+.gm-account .acc-tag { display: inline-block; padding: 3px 10px; border-radius: 999px; background: #e2edcf; font-size: 13px; font-weight: 700; color: var(--green-ink); }
+.gm-account .acc-email { margin: 4px 0 0; font-size: 15px; color: var(--muted); overflow-wrap: anywhere; }
+.gm-account .acc-shop { font-size: 15px; font-weight: 700; color: var(--green-ink); text-decoration: underline; }
+.gm-account .acc-shop:hover { color: var(--green-ink); }
+.gm-account .acc-tabs { margin: 0 0 28px; border-bottom: 1px solid #d5dccb; }
+.gm-account .acc-tabs__list { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.gm-account .acc-tabs__list::-webkit-scrollbar { display: none; }
+.gm-account .acc-tabs__out { margin-left: auto; }
+.gm-account .acc-tab { display: block; padding: 12px 16px 11px; border-bottom: 3px solid transparent; font-size: 15.5px; font-weight: 600; color: #3c4a3f; white-space: nowrap; }
+.gm-account .acc-tab:hover { color: var(--dark); border-bottom-color: #cfdcc2; }
+.gm-account .acc-tab[aria-current="page"] { color: var(--dark); font-weight: 700; border-bottom-color: var(--green-ink); }
+.gm-account .acc-tab:focus-visible { outline-offset: -2px; }
+
+/* ---- My Account pages ---- */
+.gm-account .acc-title--area { margin: 0 0 18px; font-size: 32px; -webkit-text-stroke: 0.3px currentColor; }
+.gm-account .acc-back { margin: -8px 0 18px; font-size: 15px; }
+.gm-account .acc-back a { color: var(--green-ink); font-weight: 600; text-decoration: underline; }
+.gm-account .acc-back a:hover { color: var(--green-ink); }
+.gm-account .acc-grid--wide { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+.gm-account .acc-grid--return { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+.gm-account .acc-panel--form { max-width: 760px; }
+.gm-account .acc-empty .acc-intro { margin: 0; }
+.gm-account .acc-text { margin: 0 0 12px; font-size: 16px; line-height: 1.55; color: #3c4a3f; }
+.gm-account .acc-text a { color: var(--green-ink); font-weight: 600; text-decoration: underline; }
+.gm-account .acc-text a:hover { color: var(--green-ink); }
+.gm-account .acc-ticks { margin: 0 0 14px; }
+.gm-account .acc-ticks li { position: relative; padding: 5px 0 5px 30px; font-size: 16px; line-height: 1.5; color: var(--ink); }
+.gm-account .acc-ticks li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 10px;
+  width: 16px;
+  height: 16px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f6b34' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='4 12.5 9.5 18 20 6.5'/></svg>") no-repeat center / contain;
+}
+.gm-account .acc-actions--start { justify-content: flex-start; margin-top: 8px; }
+.gm-account .acc-btn--small { width: auto; padding: 9px 16px; border-width: 2px; font-size: 15px; }
+.gm-account .acc-hint--above { margin: -3px 0 8px; }
+.gm-account .acc-optional { font-weight: 400; color: var(--muted); }
+.gm-account .acc-textarea { min-height: 110px; resize: vertical; }
+.gm-account .acc-input--postcode { max-width: 220px; }
+.gm-account .acc-notice { margin: 10px 0 0; padding: 12px 14px; border-left: 4px solid var(--green-ink); border-radius: 0 8px 8px 0; background: #eef4e4; font-size: 14.5px; line-height: 1.45; color: var(--ink); }
+.gm-account .acc-notice a { color: var(--green-ink); font-weight: 700; text-decoration: underline; }
+.gm-account .acc-notice a:hover { color: var(--green-ink); }
+.gm-account .acc-status { margin: 0; font-size: 15px; font-weight: 600; color: var(--ink); }
+.gm-account .acc-status:empty { display: none; }
+
+/* Orders */
+.gm-account .acc-orders { display: flex; flex-direction: column; gap: 18px; }
+.gm-account .acc-order { background: #fff; border: 1px solid #e1e7da; border-radius: 12px; box-shadow: 0 2px 10px rgba(33, 51, 31, .05); overflow: hidden; }
+.gm-account .acc-order__head { display: flex; justify-content: space-between; align-items: center; gap: 12px 20px; flex-wrap: wrap; padding: 16px 22px; background: #f1f6ea; border-bottom: 1px solid #dbe6cf; }
+.gm-account .acc-order__no { margin: 0 0 3px; font-size: 18px; color: var(--dark); }
+.gm-account .acc-order__meta { margin: 2px 0 0; font-size: 14.5px; color: #4b5a45; }
+.gm-account .acc-lines { padding: 6px 22px; }
+.gm-account .acc-line { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 14px 0; }
+.gm-account .acc-lines .acc-line + .acc-line { border-top: 1px solid #eef0ea; }
+.gm-account .acc-line__img { display: block; width: 84px; height: 84px; max-width: none; object-fit: cover; border-radius: 10px; background: #eef4dc; }
+.gm-account .acc-line__name { margin: 0 0 3px; font-size: 16px; font-weight: 700; color: var(--dark); }
+.gm-account .acc-line__name a:hover { color: var(--dark); text-decoration: underline; }
+.gm-account .acc-line__desc { margin: 0; font-size: 14.5px; line-height: 1.45; color: #3c4a3f; }
+.gm-account .acc-line__qty { margin: 3px 0 0; font-size: 14px; color: var(--muted); }
+.gm-account .acc-line__return { font-size: 14.5px; font-weight: 700; color: var(--green-ink); text-decoration: underline; white-space: nowrap; }
+.gm-account .acc-line__return:hover { color: var(--green-ink); }
+.gm-account .acc-line--single { grid-template-columns: 84px minmax(0, 1fr); padding: 0; }
 /* ---- Tablet / phone ---- */
 @media (max-width: 900px) {
-  .gm-account .acc-grid { grid-template-columns: 1fr; gap: 20px; }
+  .gm-account .acc-grid,
+  .gm-account .acc-grid--wide,
+  .gm-account .acc-grid--return { grid-template-columns: 1fr; gap: 20px; }
   .gm-account .acc-title { font-size: 36px; -webkit-text-stroke: 0.3px currentColor; }
 }
 @media (max-width: 560px) {
   .gm-account .acc-title { font-size: 30px; }
+  .gm-account .acc-title--area { font-size: 27px; }
+  .gm-account .acc-hello { font-size: 22px; }
+  /* the tabs as buttons that wrap, so none (Sign out especially) is hidden off the side */
+  .gm-account .acc-tabs { margin-bottom: 22px; border-bottom: 0; }
+  .gm-account .acc-tabs__list { flex-wrap: wrap; gap: 8px; overflow: visible; }
+  .gm-account .acc-tabs__out { margin-left: 0; }
+  .gm-account .acc-tab { padding: 8px 14px; border: 1px solid var(--edge); border-radius: 999px; font-size: 15px; }
+  .gm-account .acc-tab:hover { border-color: var(--green-ink); }
+  .gm-account .acc-tab[aria-current="page"],
+  .gm-account .acc-tab[aria-current="page"]:hover { background: var(--green-ink); border-color: var(--green-ink); color: #fff; }
+  .gm-account .acc-tab:focus-visible { outline-offset: 2px; }
+  .gm-account .acc-order__head { padding: 14px 16px; }
+  .gm-account .acc-lines { padding: 4px 16px; }
+  .gm-account .acc-line { grid-template-columns: 64px minmax(0, 1fr); gap: 12px; }
+  .gm-account .acc-line__img { width: 64px; height: 64px; }
+  .gm-account .acc-line__return { grid-column: 2; justify-self: start; }
+  .gm-account .acc-input--postcode { max-width: none; }
   .gm-account .acc-title--panel { font-size: 27px; }
   .gm-account .acc-panel { padding: 20px 16px 22px; }
   .gm-account .acc-h2 { font-size: 22px; }
