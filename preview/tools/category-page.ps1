@@ -3,6 +3,7 @@
 #
 #   ConvertFrom-OldCategoryPage  reads an old category page from the live site into what CategoryPageModel
 #                                holds (the same split of the description as CategoryDescription.Parse)
+#   ConvertFrom-OldProductTiles  reads the old product tiles, which the search results page has too (search-page.ps1)
 #   Format-CategoryPage          renders _CategoryPage.cshtml with it
 #
 # The markup comes from the .cshtml as it is: each Razor block is found in the file and filled in, and the
@@ -124,8 +125,14 @@ function ConvertFrom-OldCategoryPage([string]$html, [string]$path, [string]$sort
     $model.ClearFiltersUrl = [regex]::Replace($path, '(/products)(?:/.*)?$', '$1/', 'IgnoreCase')
   }
 
-  # product tiles
-  $model.Products = @(foreach ($m in [regex]::Matches($html, '<div class="grid-list-block">([\s\S]*?)<span class="grid-price-shop">')) {
+  $model.Products = @(ConvertFrom-OldProductTiles $html)
+  $model
+}
+
+# The old product tiles (<div class="grid-list-block">), which the old category and search pages share, as
+# CategoryProducts: name, link, photo address with {0} for the width, "From" customer and trade prices, synopsis
+function ConvertFrom-OldProductTiles([string]$html) {
+  foreach ($m in [regex]::Matches($html, '<div class="grid-list-block">([\s\S]*?)<span class="grid-price-shop">')) {
     $b = $m.Groups[1].Value
     $link = [regex]::Match($b, '<a href="([^"]+)"')
     $image = [regex]::Match($b, '\sdata-src="([^"]+)"')
@@ -140,8 +147,7 @@ function ConvertFrom-OldCategoryPage([string]$html, [string]$path, [string]$sort
       TradePrice = & $price 'trade-price'
       Synopsis = ConvertFrom-HtmlText ([regex]::Match($b, '<span class="synopsis">([\s\S]*?)</span>').Groups[1].Value)
     }
-  })
-  $model
+  }
 }
 
 # ---------- rendering _CategoryPage.cshtml ----------

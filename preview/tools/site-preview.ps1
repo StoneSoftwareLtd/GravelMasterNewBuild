@@ -17,7 +17,8 @@
 # show the new account pages, and /account/forgotpasswordconfirmation, /resetpasswordconfirmation, /confirmemail,
 # /register and /traderegister the new messages those pages lead to (some are only reached by posting a form).
 # /myaccount/orders, /returns, /requestreturn, /returnconfirmation, /pricematch and /editaddress show the new My Account
-# pages (Views/MyAccount) for a sample customer, in the same frame: the preview is never signed in.
+# pages (Views/MyAccount) for a sample customer, in the same frame: the preview is never signed in. /search shows the
+# new search results page (Views/Category/_SearchPage.cshtml), filled from the live search's results.
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -50,6 +51,7 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'confirmation-page.ps1')
 . (Join-Path $PSScriptRoot 'account-pages.ps1')
 . (Join-Path $PSScriptRoot 'myaccount-pages.ps1')
+. (Join-Path $PSScriptRoot 'search-page.ps1')
 # the account pages shown in the live forgotten-password page's frame (the messages have no page of their own to fetch)
 $script:accountFramePattern = '^/account/(forgotpassword|resetpassword|forgotpasswordconfirmation|resetpasswordconfirmation|confirmemail|register|traderegister)/?$'
 # the My Account pages, shown in the same frame (the live ones send the preview, never signed in, to sign in)
@@ -126,6 +128,7 @@ function Get-ChangeStamp {
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Checkout') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Account') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\MyAccount') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
+    @(Get-ChildItem -LiteralPath (Join-Path $package 'Views\Category') -Filter '*.cshtml' -ErrorAction SilentlyContinue) +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'css') -Filter 'gm-*') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'js') -Filter 'gm-*') +
     @(Get-ChildItem -LiteralPath (Join-Path $package 'img') -Filter 'gm-*')
@@ -306,6 +309,16 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $titles = @{ orders = 'Orders'; returns = 'Returns'; requestreturn = 'Request Return'; returnconfirmation = 'Return Request Submitted'; pricematch = 'Price Match'; editaddress = 'Your Address' }
         $css = '/css/gm-account.css?v1'; $newPage = 'new account page'; $accountTitle = $titles[$page]
       }
+      elseif ($path -match '^/search(?:/|$)') {
+        $model = ConvertFrom-OldSearchPage $html $html.Substring($mainBody.Index, $mainEnd - $mainBody.Index) $rawUrl
+        if ($model) {
+          $content = Format-SearchPage (Join-Path $package 'Views\Category\_SearchPage.cshtml') $model
+          # the category page's styles, then the search page's own (as DisplayProducts.cshtml's Head section loads them)
+          $extraHead = '<link href="/css/gm-category.css?v1" rel="stylesheet" />'
+          $css = '/css/gm-search.css?v1'; $newPage = 'new search page'
+          $searchPhrase = ("$($model.Phrase)").Trim()
+        }
+      }
     }
     if ($content) {
       # full width, without the old white box and orange side borders
@@ -332,6 +345,14 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
       # The account pages: each old view's own title (ViewBag.Title), as the frame is the sign-in or forgotten-password page
       if ($newPage -eq 'new account page') {
         $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', "<title>$accountTitle</title>")
+      }
+      # The search's title and description, which the new branch of DisplayProducts.cshtml sets (the live page's are empty)
+      if ($newPage -eq 'new search page') {
+        $title = if ($searchPhrase) { 'Search results for ' + $searchPhrase } else { 'All products' }
+        $description = if ($searchPhrase) { 'GravelMaster products matching ' + $searchPhrase } else { 'Every GravelMaster product' }
+        $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', [Text.RegularExpressions.MatchEvaluator] { param($m) '<title>' + [Net.WebUtility]::HtmlEncode($title + ' | GravelMaster') + '</title>' })
+        $html = [regex]::Replace($html, '<meta name="(description|twitter:description)" content="[^"]*"', [Text.RegularExpressions.MatchEvaluator] { param($m) '<meta name="' + $m.Groups[1].Value + '" content="' + [Net.WebUtility]::HtmlEncode($description) + '"' })
+        $html = [regex]::Replace($html, '<meta name="twitter:title" content="[^"]*"', [Text.RegularExpressions.MatchEvaluator] { param($m) '<meta name="twitter:title" content="' + [Net.WebUtility]::HtmlEncode($title + ' | GravelMaster') + '"' })
       }
     }
   }

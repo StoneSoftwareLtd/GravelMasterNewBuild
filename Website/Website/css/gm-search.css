@@ -1,0 +1,78 @@
+/* ===== GravelMaster search results page =====
+   For Views/Category/_SearchPage.cshtml, loaded after css/gm-category.css. The page sits inside .gm-category, so the
+   category page's shield against the old CSS, its intro band and its product cards apply as they are. These are the
+   search page's own parts, scoped to .gm-search: a shorter intro band, the grid without the sidebar, and the help
+   shown when nothing (or not everything) is found. Behaviour: js/gm-search.js. */
+
+/* ---- Intro band: the heading and how many were found ---- */
+.gm-search .srch-intro { padding: 4px 0 40px; }
+.gm-search .srch-title {
+  margin: 0 0 10px;
+  overflow-wrap: anywhere;      /* a long search can't make the page wider than the screen */
+}
+.gm-search .srch-count { font-size: 15.5px; font-weight: 700; color: #2c2733; }
+
+/* ---- Products: the category page's cards, four across without its sidebar ---- */
+.gm-search .srch-body { padding-top: 34px; padding-bottom: 48px; }
+.gm-search .srch-grid { grid-template-columns: repeat(4, 1fr); }
+
+/* ---- Help: nothing found, or not everything shown ---- */
+.gm-search .srch-help {
+  padding: 28px 26px;
+  border-radius: 10px;
+  background: #f0f5d8;          /* the category page's "No products match" panel */
+  color: #1a1a1a;
+}
+.gm-search .srch-grid + .srch-help { margin-top: 40px; }
+.gm-search .srch-help__title {
+  margin: 0 0 10px;
+  font-size: 24px;
+  color: #141117;
+  overflow-wrap: anywhere;
+}
+.gm-search .srch-help__text {
+  max-width: 760px;
+  margin: 0 0 18px;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: #2c2733;
+}
+.gm-search .srch-help__text a { font-weight: 700; color: #6d2f69; text-decoration: underline; }
+.gm-search .srch-help__text a:hover { color: #4f1f4c; text-decoration: underline; }
+
+.gm-search .srch-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 22px;
+}
+.gm-search .srch-cats__link {
+  display: inline-block;
+  padding: 9px 16px;
+  border: 1.5px solid #6b7a2c;  /* 3:1 or more against the panel and the white inside */
+  border-radius: 999px;
+  background: #fff;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #2b3308;
+}
+.gm-search .srch-cats__link:hover { background: #cede7b; color: #2b3308; }
+
+.gm-search .srch-help__call { font-size: 14.5px; line-height: 1.6; color: #2c2733; }
+.gm-search .srch-help__call a { font-weight: 700; text-decoration: underline; white-space: nowrap; }
+.gm-search .srch-help__call a:hover { text-decoration: underline; }
+
+/* ---- Responsive: the category page's breakpoints, with one more column each ---- */
+@media (max-width: 1100px) {
+  .gm-search .srch-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 860px) {
+  .gm-search .srch-grid { grid-template-columns: repeat(2, 1fr); }
+  .gm-search .srch-intro { padding-bottom: 30px; }
+  .gm-search .srch-body { padding-top: 24px; }
+}
+@media (max-width: 560px) {
+  .gm-search .srch-grid { grid-template-columns: 1fr; }
+  .gm-search .srch-help { padding: 22px 18px; }
+  .gm-search .srch-help__title { font-size: 21px; }
+}
