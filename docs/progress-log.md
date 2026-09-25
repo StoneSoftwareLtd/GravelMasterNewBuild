@@ -226,8 +226,26 @@ Every merge step says "when the new chrome is on", but a page's view runs before
 
 Found while testing the new sign-in page on a phone: up to 860px wide the new header stays at the top of the screen, so when a page moved to something (the sign-in page's errors, the checkout's first box with a mistake) it ended up underneath the header. `gm-chrome.js` now tells the browser how tall the header is (`scroll-padding-top`), whatever its height: 158px for the normal header on a phone, 92px for the checkout's. Measured in headless Edge at 390, 768, 900 and 1440px: the registration error, the checkout's Full name box and the register form's first box each land just below the header, and from 900px up (where the header doesn't stay) nothing changes. `gm-chrome.js` and `gm-chrome.css` are now `?v3`, the stylesheet's for the search-box change of 24 September.
 
+## 25 September 2026: account pages, part 1 (signing in)
+
+The site's sign-in, register, trade application, forgotten and reset password pages, and the five messages they lead to, in the new design. There's no Optima prototype for them, so they use the checkout's panels, boxes and buttons. Details: [account-pages.md](account-pages.md).
+
+1. Read the old pages, `_AccountMaster` and `AccountController`; the live sign-in and forgotten-password pages match `master`.
+2. Built four partials posting exactly the old forms' fields, each with the anti-forgery token. The old "Remember me" was never sent, so it's left out. The trade form now checks what the server silently drops (a phone number not starting with 0 or with a +, a payment type not chosen). The messages now say what actually happens.
+3. `_AccountMaster` shows just the page when the new design is on; the merge code for it and for each view compiles against stand-ins ([merging.md](merging.md#account-pages-signing-in)).
+4. Tested:
+   - screenshots at two widths and the layout at seven;
+   - every text colour on six of the pages;
+   - every form's checks, and what each would send (recorded, not sent);
+   - opening with errors, in headless Edge.
+
+Along the way: the shared `NewChrome.IsOn` switch, and room for the sticky header on phones (both their own commits). Found on the live site: trade applications dropped without a word, a broken privacy link, "Remember me" never working, password resets failing on a second try, and no limit on password guesses. See [open-questions.md](open-questions.md#account-pages).
+
+Not tested: signing in, registering and resetting for real, and the emails.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
 - Test the checkout and the order confirmation with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
-- Every page in the prototype is now built. Still on the old design: the account pages, search results, content pages other than About and Trade, the "page not found" page and the payment error page.
+- Account pages, part 2: My Account (orders, an order, quotes, price match, address, returns).
+- Still on the old design after that: search results, content pages other than About and Trade, the "page not found" page and the payment error page.

@@ -267,6 +267,84 @@ Product addresses (`/products/{category}/p/{product}`) are routed to `ProductCon
 - [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new confirmation too.
 - [ ] **`Website.csproj`**: add `Views/Checkout/_ConfirmationPage.cshtml`, `ViewModels/Common/ConfirmationPageModels.cs`, `css/gm-confirmation.css`, `js/gm-confirmation.js` and `img/gm-confirm-bag.png`.
 - [ ] Test on the real site, with test payments: the order number, amount, email and delivery address after a real order (with and without a second address line, and with a different billing address); "Track your order"; each suggestion's price and Add to basket; reloading the page (no second email); a trade login (the `trade_order` event); and that the purchase events still fire once.
+## Account pages (signing in)
+
+The views are in `Views/Account` and `Views/Shared/_AccountMaster.cshtml`; each new page is a partial with its own small model ([account-pages.md](account-pages.md)). Every step below adds `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top of the view. The code was compiled with MVC 5.2's Razor against stand-ins with the repository's names.
+
+- [ ] **`Views/Shared/_AccountMaster.cshtml`**: with the new chrome on, show just the page, without the grey bar, the purple side column, `accounts.css` or the bottom picture. Replace its `@{ }` block and `@section Head` with this, and leave the rest as it is (`return` stops the old frame being drawn):
+  ```cshtml
+  @{
+      Layout = "~/Views/Shared/_Layout.cshtml";
+      bool newChrome = Agilis.ECommerce.Mvc.Web.ViewModels.Common.NewChrome.IsOn(Request);
+  }
+  @section Head
+  {
+      @if (!newChrome)
+      {
+          <link href="/css/accounts.css" rel="stylesheet" />
+      }
+  }
+  @if (newChrome)
+  {
+      @RenderBody()
+      return;
+  }
+  ```
+  (The pages behind the sign-in, part 2, will add the new account menu here.)
+- [ ] **`Views/Account/Login.cshtml`**: after its `@{ }` block, add:
+  ```cshtml
+  @if (NewChrome.IsOn(Request))
+  {
+      var signIn = new SignInPageModel
+      {
+          Email = Model.Email,
+          FirstName = Model.FirstName,
+          LastName = Model.LastName,
+          IsTradeConfirm = Model.IsTradeConfirm,
+          IsRegistration = Model.IsRegistration,
+          IsTradeRegistration = Model.IsTradeRegistration,
+          Errors = ViewData.ModelState.Values.SelectMany(s => s.Errors).Select(e => e.ErrorMessage).Where(m => !string.IsNullOrEmpty(m)).ToList()
+      };
+      @Html.Partial("~/Views/Account/_SignInPage.cshtml", signIn)
+      return;
+  }
+  ```
+- [ ] **`Views/Account/ForgotPassword.cshtml`**: after its `@{ }` block, add:
+  ```cshtml
+  @if (NewChrome.IsOn(Request))
+  {
+      @Html.Partial("~/Views/Account/_ForgotPasswordPage.cshtml", new AccountFormModel
+      {
+          Email = Model.Email,
+          Errors = ViewData.ModelState.Values.SelectMany(s => s.Errors).Select(e => e.ErrorMessage).Where(m => !string.IsNullOrEmpty(m)).ToList()
+      })
+      return;
+  }
+  ```
+- [ ] **`Views/Account/ResetPassword.cshtml`**: after its `@{ }` block, add:
+  ```cshtml
+  @if (NewChrome.IsOn(Request))
+  {
+      @Html.Partial("~/Views/Account/_ResetPasswordPage.cshtml", new AccountFormModel
+      {
+          Email = Model.Email,
+          Code = Model.Code,
+          Errors = ViewData.ModelState.Values.SelectMany(s => s.Errors).Select(e => e.ErrorMessage).Where(m => !string.IsNullOrEmpty(m)).ToList()
+      })
+      return;
+  }
+  ```
+- [ ] **The five message views**: after each `@{ }` block, add the same three lines with its own message. For `ConfirmEmail.cshtml`:
+  ```cshtml
+  @if (NewChrome.IsOn(Request))
+  {
+      @Html.Partial("~/Views/Account/_AccountMessagePage.cshtml", AccountMessage.EmailConfirmed)
+      return;
+  }
+  ```
+  `ForgotPasswordConfirmation.cshtml`: `AccountMessage.PasswordResetEmailSent`; `ResetPasswordConfirmation.cshtml`: `AccountMessage.PasswordReset`; `SuccessRegister.cshtml`: `AccountMessage.Registered`; `TradeRegisterDone.cshtml`: `AccountMessage.TradeApplicationSent`.
+- [ ] **`Website.csproj`**: add `Views/Account/_SignInPage.cshtml`, `_ForgotPasswordPage.cshtml`, `_ResetPasswordPage.cshtml`, `_AccountMessagePage.cshtml`, `ViewModels/Common/AccountPageModels.cs`, `css/gm-account.css` and `js/gm-account.js`.
+- [ ] Test on the real site: signing in (right, wrong password, unconfirmed email), registering (new, and an email already used), the confirmation email's link, a trade application (and that it arrives in the trade enquiries), an approved trade customer's link, forgotten password and its email, resetting (and a second try after a mistake), and each message page.
 ## After merging
 
 - [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, order confirmation, account, search, content pages and the 404 page.
