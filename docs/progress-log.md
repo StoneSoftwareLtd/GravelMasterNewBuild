@@ -260,8 +260,25 @@ Found in the code: return requests emailed to a developer's inbox (and failures 
 
 Not tested: real accounts and orders, sending returns and price matches, and saving an address.
 
+## 25 September 2026: search results page
+
+The page the header's search box goes to (`/search?searchphrase=…`) in the new design. There's no Optima prototype for it, so it's the category page's intro band and cards, four across without the sidebar. Details: [search-page.md](search-page.md).
+
+1. Read how the search works: `CategoryController.Search` (in `BrandController.cs`, the two file names being swapped), `Views/Category/DisplayProducts.cshtml` and its tiles. It lists up to 100 products on sale whose name contains what was typed, and the tiles leave out the turf. Checked against ten live searches.
+2. Built `Views/Category/_SearchPage.cshtml` with `SearchPageModel`. It uses the category page's own stylesheet, so the cards match exactly; `gm-search.css` adds the rest. New: a proper title, "Search results for “slate”" and how many were found, help when nothing is found (the old page was blank) or when more than 100 match, and the search put back in the header's box.
+3. Merge code for `DisplayProducts.cshtml`, compiled against stand-ins copied from the repository's classes and, for the first time, run with sample data outside IIS: the same products in the same order, the turf left out, the title, `/search/<phrase>`, and the old page with the switch off ([merging.md](merging.md#search-results-page)).
+4. The preview shows it for every search, filled from the live results. Its reader for the old product tiles is now shared with the category preview, whose output was checked byte-for-byte unchanged.
+5. Tested:
+   - the same products, in the same order, as the live search for ten searches;
+   - the partial run for real with a search full of HTML and quotes: encoded everywhere (the old heading put the search in as typed);
+   - in headless Edge: screenshots at three widths, nothing wider than the screen at 12, every text colour passes AA, Tab and focus outlines, the header's box filled in, no script errors.
+
+Found: the customer price isn't hidden for trade customers on any page (`_Layout` uses a value browsers ignore), Azure Search admin keys written into both controller files, "turf" not finding the turf, `/search` alone giving an error page, and search pages open to Google with no title. See [open-questions.md](open-questions.md#search-results-page).
+
+Not tested: the page on the test website, and a trade login.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
 - Test the checkout and the order confirmation with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
-- Still on the old design after that: search results, content pages other than About and Trade, the "page not found" page and the payment error page.
+- Still on the old design after that: content pages other than About and Trade, the "page not found" page and the payment error page.

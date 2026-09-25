@@ -24,6 +24,8 @@ The account pages (`/account/login`, `/account/forgotpassword`, `/account/resetp
 
 My Account (`/myaccount/orders`, `/myaccount/returns`, `/myaccount/requestreturn`, `/myaccount/returnconfirmation`, `/myaccount/pricematch` and `/myaccount/editaddress`) is the new one for a **sample customer** with two sample orders of real products, in the live forgotten-password page's frame: the preview is never signed in, so the live `/myaccount` sends it to sign in. `?empty=1`, `?trade=1` and `?noreturns=1` show a customer with no orders, a trade customer and the Returns tab switched off. The return and address forms are blocked like every other form, and so is sending a price match (`/product/sendpricematchquery`), which emails the team.
 
+The search results (`/search?searchphrase=…`, or the header's search box) are the new search page, filled with the live search's results for that search, in the same order. Try a search that finds nothing (e.g. `xyzzy`) or one that finds more than fit on the page (e.g. `e`).
+
 - Saving a `gm-*.css` or `gm-*.js` file, a `gm-*` image or any `.cshtml` file reloads the page with the change. (A change to a script in `tools/`, or to a `ViewModels/Common/*.cs` file, needs the preview restarting: the product page runs the real C# model, compiled when the preview starts.)
 - Add `?newchrome=0` to an address to compare with the old header, footer, homepage and category pages (it sticks while you click around). `?newchrome=1` switches back. Page titles start with `[Preview]`.
 - It is read-only. Adding to basket, sign-ups, enquiries, "Send me my estimate", Track Order and logging in are blocked (the forms say they couldn't send). The one form let through is **Sort by** on category pages, and only with one of its four choices, because it only changes the order of the products. No cookies are sent, so the basket is always empty. Analytics, Hotjar, Clarity, Facebook and chat are removed so preview visits aren't counted.
@@ -58,7 +60,8 @@ Menus, product photos and prices come from the live site and are saved in `tools
 | File | What it does |
 |---|---|
 | `build.ps1` | Turns the `.cshtml` files in `Website/Website` into the saved pages and the pieces `site-preview.ps1` uses. Plain markup is taken from the `.cshtml` files as it is; only the Razor loops are re-created, and the build fails if any Razor is left over. |
-| `category-page.ps1` | Reads an old category page into what the new one shows (the same split of the description as `CategoryDescription.Parse`) and fills in `_CategoryPage.cshtml`. It finds each Razor block in the file, so the markup always comes from the partial, and fails if any Razor is left over. |
+| `category-page.ps1` | Reads an old category page into what the new one shows (the same split of the description as `CategoryDescription.Parse`) and fills in `_CategoryPage.cshtml`. It finds each Razor block in the file, so the markup always comes from the partial, and fails if any Razor is left over. Its reader for the old product tiles is shared with the search page. |
+| `search-page.ps1` | Reads an old search results page (the phrase, the products, whether more matched than fit) and fills in `_SearchPage.cshtml`. |
 | `product-page.ps1` | Reads an old product page into what the new one shows, and fills in `_ProductPage.cshtml` the same way. The description is split by the real `ProductDescription.Parse`, compiled from `ViewModels/Common` with `Add-Type`. |
 | `calculator.ps1` | Fills in the shared quantity calculator (`_QuantityCalculator.cshtml`) for the homepage and product pages. |
 | `about-page.ps1` | Fills in `_AboutPage.cshtml`, reading its team and photos from the partial's own C# block. |

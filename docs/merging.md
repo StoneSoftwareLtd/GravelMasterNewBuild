@@ -479,6 +479,59 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
 - [ ] **`Website.csproj`**: add the seven `Views/MyAccount/_*.cshtml` files and `ViewModels/Common/MyAccountPageModels.cs`.
 - [ ] Test on the real site, signed in as a customer with orders (one with several items, one with a product that's since been hidden or removed, one with a size that has options), a customer with no orders, a customer with no saved address, and a trade customer: each tab, Track order, Request a return (and that the request arrives), price match (a message with "&amp;" in it, and that it arrives), and saving an address (then that the checkout fills it in).
 
+## Search results page
+
+`/search?searchphrase=…` and `/search/<phrase>` are `CategoryController.Search` (in `Controllers/BrandController.cs`: the two controllers' file names are swapped), which renders `Views/Category/DisplayProducts.cshtml` with a `CategoryProductsViewModel`. Only the search uses that view: category pages are `BrandController`'s and use `Views/Brand/DisplayProducts.cshtml`. See [search-page.md](search-page.md).
+
+- [ ] **`Views/Category/DisplayProducts.cshtml`**: add `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top, and after its `@{ }` block add the code below. The view has no `Head` section yet, so this adds one. This code was compiled with MVC 5.2's Razor against stand-ins copied from the repository's own classes, and run with sample data ([search-page.md](search-page.md#tested)):
+  ```cshtml
+  @section Head
+  {
+      @if (NewChrome.IsOn(Request))
+      {
+          <link href="/css/gm-category.css?v1" rel="stylesheet" />
+          <link href="/css/gm-search.css?v1" rel="stylesheet" />
+      }
+  }
+  @if (NewChrome.IsOn(Request))
+  {
+      // what CategoryController.Search searched for: the address's /search/<phrase>, or else ?searchphrase= (the order
+      // MVC gives the action its searchphrase in)
+      var search = new SearchPageModel
+      {
+          Phrase = ViewContext.RouteData.Values["searchPhrase"] as string ?? Request.QueryString["searchphrase"],
+          HasMore = Model.Products.HasNextPage
+      };
+      // the search has no page title of its own (the old page's is empty)
+      ViewBag.Title = (search.ShownPhrase.Length > 0 ? "Search results for " + search.ShownPhrase : "All products") + " | GravelMaster";
+      ViewBag.MetaDescription = search.ShownPhrase.Length > 0 ? "GravelMaster products matching " + search.ShownPhrase : "Every GravelMaster product";
+      // the products the old grid shows, in its order: DisplayProductsComponentLarge sorts them by TaxRateID and leaves
+      // out any named Top Tee or Pro Turf
+      foreach (var item in Model.Products.OrderByDescending(p => p.TaxRateID))
+      {
+          if (item.Name.ToLower().Contains("top tee") || item.Name.ToLower().Contains("pro turf"))
+          {
+              continue;
+          }
+          search.Products.Add(new CategoryProduct(item.Name, Html.GetProductUrl(item.Name, item.Url, item.Category.Url),
+              // the photo's address with {0} where the width goes (ImagePathFormat is ".../{1}-{0}.jpg")
+              string.Format(System.Configuration.ConfigurationManager.AppSettings["ImagePathFormat"], "{0}", item.Image1),
+              item.Price, item.Cost, item.Synopsis));
+      }
+      foreach (var category in Model.MasterLayoutViewModel.TopLevelCategories.OrderByDescending(c => c.PriorityOnSubMenu))
+      {
+          search.Categories.Add(new CategoryLink(category.Name, "/" + category.Url + "/products/"));
+      }
+      @Html.Partial("~/Views/Category/_SearchPage.cshtml", search)
+      return;
+  }
+  ```
+  `ViewBag.Title` is a plain string, so `_Layout` encodes it. `item.Cost` is the trade price the old tiles show (`ProductViewModel.Cost` gives the customer price when there's no trade price).
+- [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js`, as it does now.
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new search page too.
+- [ ] **`Website.csproj`**: add `Views/Category/_SearchPage.cshtml`, `ViewModels/Common/SearchPageModels.cs`, `css/gm-search.css` and `js/gm-search.js`. It uses the category page's `css/gm-category.css` and `CategoryPageModels.cs` (in [Category page](#category-page)).
+- [ ] Test on the real site: a search with results, one with none, one word that matches more than 100 products (e.g. "e"), nothing typed, `/search/slate`, "cement" (Post Mix Concrete), a trade login (trade prices and the "Trade price" badge), the header's search box filled in on the results page (desktop and phone), and the page title in the browser tab.
+
 ## After merging
 
 - [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, order confirmation, account, search, content pages and the 404 page.
