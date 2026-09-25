@@ -1,7 +1,8 @@
 @* New delivery page, shown by Content/Display.cshtml for /delivery when the new chrome is on. There's no Optima
    prototype for it, so it's in the Trade Accounts page's style. The words are the live page's own (its content, from
-   the admin site), in the same order; docs/delivery-page.md lists the few changes. Styles: css/gm-info.css, loaded in
-   Display.cshtml's Head section. No script: "Track your order" opens the site's Track Order pop-up. *@
+   the admin site), in the same order, with headings added to break up the delivery terms and returns;
+   docs/delivery-page.md lists the changes. Styles: css/gm-info.css, loaded in Display.cshtml's Head section. No script:
+   "Track your order" opens the site's Track Order pop-up. *@
 @{
     // "Checklist before placing your order", as the live page lists it
     var checklist = new[]
@@ -64,29 +65,37 @@
                     <span class="inf-card__icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg>
                     </span>
-                    <h3>Not a Hi-Ab delivery</h3>
-                    <p>Please note that the delivery will NOT be on a Hi-Ab vehicle, so cannot be craned off. All deliveries are made with a tail lift offload. If you are ordering a large quantity (10 tonnes or more) we can sometimes arrange alternative offload so please call us to discuss.</p>
+                    <div>
+                        <h3>Not a Hi-Ab delivery</h3>
+                        <p>Please note that the delivery will NOT be on a Hi-Ab vehicle, so cannot be craned off. All deliveries are made with a tail lift offload. If you are ordering a large quantity (10 tonnes or more) we can sometimes arrange alternative offload so please call us to discuss.</p>
+                    </div>
                 </article>
                 <article class="inf-card">
                     <span class="inf-card__icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5" /><path d="M5.5 10v10h13V10" /><path d="M10 20v-5.5h4V20" /></svg>
                     </span>
-                    <h3>Access to your property</h3>
-                    <p>Goods will be placed as near to your property as the driver deems safe. It is at the drivers discretion whether the goods are left kerbside or on your property. If the driver considers your access unsuitable for whatever reason they are within their rights to refuse to unload the pallet or leave it as near as possible to the required destination. Vehicles are not insured to enter your premises.</p>
+                    <div>
+                        <h3>Access to your property</h3>
+                        <p>Goods will be placed as near to your property as the driver deems safe. It is at the drivers discretion whether the goods are left kerbside or on your property. If the driver considers your access unsuitable for whatever reason they are within their rights to refuse to unload the pallet or leave it as near as possible to the required destination. Vehicles are not insured to enter your premises.</p>
+                    </div>
                 </article>
                 <article class="inf-card">
                     <span class="inf-card__icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 4 7 15" /><path d="M7 15h13.5" /><rect x="11" y="9" width="9" height="6" rx="0.6" /><circle cx="8.5" cy="18.5" r="1.5" /><circle cx="18.5" cy="18.5" r="1.5" /><path d="M2 21.5h20" /></svg>
                     </span>
-                    <h3>Offloading your goods</h3>
-                    <p>The driver will unload using a tail-lift offload and manual pallet truck to push or pull the goods into position. The pallet truck can only be operated on a flat, level and solid surface which is free from grass or gravel. The driver will be unable to push or pull the goods up any sort of incline or pull the pallet truck over uneven ground. The small wheels on the pallet truck stop dead if an attempt is made to pull them over a rough surface or gravel.</p>
+                    <div>
+                        <h3>Offloading your goods</h3>
+                        <p>The driver will unload using a tail-lift offload and manual pallet truck to push or pull the goods into position. The pallet truck can only be operated on a flat, level and solid surface which is free from grass or gravel. The driver will be unable to push or pull the goods up any sort of incline or pull the pallet truck over uneven ground. The small wheels on the pallet truck stop dead if an attempt is made to pull them over a rough surface or gravel.</p>
+                    </div>
                 </article>
                 <article class="inf-card">
                     <span class="inf-card__icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3.5l5 5-9 9H6.5v-5z" /><path d="M13 6l5 5" /><path d="M3 21c2-2.5 3.5-2.5 4.5-.8s2.5 1.7 4-.2 2.8-1.6 3.8 0" /></svg>
                     </span>
-                    <h3>Do you need to sign?</h3>
-                    <p>No you do not need to be at the property to accept the delivery. However, as we can only guarantee a kerbside delivery, we do recommend it. The drivers will where possible, deliver the goods to the requested location and leave without a signature.</p>
+                    <div>
+                        <h3>Do you need to sign?</h3>
+                        <p>No you do not need to be at the property to accept the delivery. However, as we can only guarantee a kerbside delivery, we do recommend it. The drivers will where possible, deliver the goods to the requested location and leave without a signature.</p>
+                    </div>
                 </article>
             </div>
         </div>
@@ -98,11 +107,15 @@
                 <h2 class="inf-h2" id="dlv-how">How do we deliver to you?</h2>
                 <p>We aim to make all of our deliveries on the desired delivery date, however please note that all deliveries are subject to weather conditions and stock. Our friendly Customer Experience Team are here to assist you with any queries relating to delivery and will be happy to help with making amendments.</p>
             </div>
-            <div class="inf-grid2">
+            <div class="inf-split">
+                @* The old page's "Delivery Truck Size" photo, trimmed at the sides *@
+                <img class="inf-split__img" src="/img/gm-delivery-lorry.jpg" alt="Delivery truck size: one of the curtain-sided lorries we deliver on, driving through a housing estate" width="930" height="520" loading="lazy" decoding="async">
                 <div class="inf-block">
                     <h3>Delivery vehicle</h3>
                     <p>We strive to make our deliveries as eco-friendly as possible and build our loads efficiently and effectively within each area. This means your order may arrive on 7.5, 18 or 26 tonne vehicle with a tail-lift and a manual pump trolley. We do not use any cranes or hi-abs for our deliveries. We advise that the vehicles are slightly larger than a standard dustbin lorry, therefore there needs to be an adequate amount of space for the vehicle, with no obstructions or restrictions. If you request for a loose load delivery, an artic or 8 wheeler vehicle will be used.</p>
                 </div>
+            </div>
+            <div class="inf-grid3">
                 <div class="inf-block">
                     <h3>Offloading your products</h3>
                     <p>All deliveries are on wooden pallets and are manually wheeled onto the delivery surface. We can only guarantee a kerbside delivery. The delivery surface needs to be smooth (such as concrete or tarmac) and flat or level with no incline. Please note that it is completely down to the driver&rsquo;s discretion whether or not he deems the delivery location safe.</p>
@@ -119,25 +132,103 @@
         </div>
     </section>
 
-    <section class="inf-section inf-section--tint">
-        <div class="container inf-grid2">
-            <div class="inf-block inf-block--card">
-                <h2 class="inf-h2">Delivery terms</h2>
+    @* Delivery terms: the live page's first paragraph as the introduction, then each of the others as a point with a
+       heading of its own (the third, the longest, split in two), so the section can be read at a glance *@
+    <section class="inf-section inf-section--tint" aria-labelledby="dlv-terms">
+        <div class="container">
+            <div class="inf-head">
+                <h2 class="inf-h2" id="dlv-terms">Delivery terms</h2>
                 <p>Before placing your order it is key that as the customer you understand and take full responsibility of this important delivery information. Gravelmaster will always endeavour to satisfy your delivery requests however by agreeing to our terms and conditions it is the customers responsibility to ensure that circumstances and conditions are correct for the safe completion of delivery.</p>
-                <p>It is at the delivery drivers discretion whether or not these circumstances and conditions are deemed to be safe and suitable for the delivery to be completed. We do not accept any liability for the consequences resulting from the positioning of pallets or bulk bags by the delivery driver.</p>
-                <p>These vehicles need a firm level surface to unload on and you must ensure that the delivery vehicle will have safe access to the unloading point. Deliveries are kerbside and where possible the driver will try and leave your delivery where requested. In some cases we may require a &lsquo;drop-kerb&rsquo; in order to deliver. The lorries use small pump action trolleys to manoeuver the pallet around therefore it is key that the surface is level, these trolleys are designed to be used on concrete, tarmac or block paved areas they are unable to be used on gravel, soil, earth, uneven or loose ground. Please be aware that our lorries cannot deliver onto any form of slope, hill or incline.</p>
-                <p>Once you have selected your postal area during the quoting/buy process we are able to give you exact cost. Our pallets and bulk bags are non-returnable and we would like to encourage the recycling of all such products.</p>
-                <p>Gravelmaster is keen to meet its customers individual delivery requests and we will always do our utmost to satisfy these demands. We are happy to deliver without the customer or representative present however we can accept no liability for any damage, theft or deterioration to the items delivered.</p>
-                <p>The Company will not accept liability for non-delivery, where this is caused by circumstances beyond its control. If the delivery is unable to be completed or refused by the customer, the customer will be responsible for the delivery cost and any cost incurred by Gravelmaster to have the goods returned.</p>
             </div>
-            <div class="inf-block inf-block--card">
-                <h2 class="inf-h2">Returns</h2>
-                <p>Cancellations must be made prior to dispatch. Please note due to using a third party haulier, all items can be dispatched within 2 hours of ordering to ensure they reach the local delivery depot to meet the requested delivery date and orders cannot be halted once dispatched as they travel through the network to the local delivery depot.</p>
-                <p>Cancellations should be made via email to Customer Services - <a href="mailto:customerservices@gravelmaster.co.uk">customerservices@gravelmaster.co.uk</a> within 2 hours of order placement. Please ensure you include your full name, order number and delivery postcode.</p>
-                <p>Customers may return the goods at their own expense to the aforementioned address within 14 working days from the day following the date of delivery or we will collect the goods and charge you the cost of return which will be a minimum of &pound;80.00 per pallet plus any zonal charges.</p>
-                <p>Returned loads, if cancelled on route, will incur a return delivery charge of &pound;80.00 per pallet, this will be deducted from any refund due.</p>
-                <p>Where a delivery cannot be made on the due date due to access issues or unforeseen circumstances we will attempt a re-delivery at your request on a specific day for an additional fee, or returned at the standard return rate. If you have any queries relating to this or any other issue please call us on <a href="tel:03300585068">0330 058 5068</a> (option 2). Please note any loose loads are not eligible for return once the product has been loaded. Please speak to a member of the team for further details.</p>
-                <p>Refunds will be processed within 14 days of cancellation, bespoke items are non-refundable.</p>
+            <div class="inf-points">
+                <div class="inf-point">
+                    <span class="inf-point__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="2.4" /><path d="M3.3 10.5h6.4M14.3 10.5h6.4M12 14.4V21" /></svg>
+                    </span>
+                    <div>
+                        <h3>The driver has the final say</h3>
+                        <p>It is at the delivery drivers discretion whether or not these circumstances and conditions are deemed to be safe and suitable for the delivery to be completed. We do not accept any liability for the consequences resulting from the positioning of pallets or bulk bags by the delivery driver.</p>
+                    </div>
+                </div>
+                <div class="inf-point">
+                    <span class="inf-point__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg>
+                    </span>
+                    <div>
+                        <h3>Safe access for the lorry</h3>
+                        <p>These vehicles need a firm level surface to unload on and you must ensure that the delivery vehicle will have safe access to the unloading point. Deliveries are kerbside and where possible the driver will try and leave your delivery where requested. In some cases we may require a &lsquo;drop-kerb&rsquo; in order to deliver.</p>
+                    </div>
+                </div>
+                <div class="inf-point">
+                    <span class="inf-point__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="8.5" width="21" height="7" rx="1.5" /><rect x="8.5" y="10.5" width="7" height="3" rx="1.5" /><path d="M12 10.5v3M4.5 8.5v2M19.5 8.5v2" /></svg>
+                    </span>
+                    <div>
+                        <h3>Solid, level ground</h3>
+                        <p>The lorries use small pump action trolleys to manoeuver the pallet around therefore it is key that the surface is level, these trolleys are designed to be used on concrete, tarmac or block paved areas they are unable to be used on gravel, soil, earth, uneven or loose ground. Please be aware that our lorries cannot deliver onto any form of slope, hill or incline.</p>
+                    </div>
+                </div>
+                <div class="inf-point">
+                    <span class="inf-point__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 6.8A3.6 3.6 0 0 0 9.5 8.2V13c0 2.4-.9 4-2.6 5.2h10.6" /><path d="M6.8 12.6h7.4" /></svg>
+                    </span>
+                    <div>
+                        <h3>Cost, pallets and bulk bags</h3>
+                        <p>Once you have selected your postal area during the quoting/buy process we are able to give you exact cost. Our pallets and bulk bags are non-returnable and we would like to encourage the recycling of all such products.</p>
+                    </div>
+                </div>
+                <div class="inf-point">
+                    <span class="inf-point__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5" /><path d="M5.5 10v10h13V10" /><path d="M10 20v-5.5h4V20" /></svg>
+                    </span>
+                    <div>
+                        <h3>If you&rsquo;re not at home</h3>
+                        <p>Gravelmaster is keen to meet its customers individual delivery requests and we will always do our utmost to satisfy these demands. We are happy to deliver without the customer or representative present however we can accept no liability for any damage, theft or deterioration to the items delivered.</p>
+                    </div>
+                </div>
+                <div class="inf-point">
+                    <span class="inf-point__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 2.5 20h19z" /><path d="M12 10v4.5M12 17.4v.1" /></svg>
+                    </span>
+                    <div>
+                        <h3>If a delivery can&rsquo;t be made</h3>
+                        <p>The Company will not accept liability for non-delivery, where this is caused by circumstances beyond its control. If the delivery is unable to be completed or refused by the customer, the customer will be responsible for the delivery cost and any cost incurred by Gravelmaster to have the goods returned.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @* Returns: the key times and charges first, taken from the paragraphs below them, then the live page's paragraphs
+       under headings *@
+    <section class="inf-section" aria-labelledby="dlv-returns">
+        <div class="container">
+            <h2 class="inf-h2 inf-h2--center" id="dlv-returns">Cancellations and returns</h2>
+            <ul class="inf-facts">
+                <li class="inf-fact"><strong class="inf-fact__big">2 hours</strong> to cancel by email after you order</li>
+                <li class="inf-fact"><strong class="inf-fact__big">14 working days</strong> to send goods back yourself, from the day after delivery</li>
+                <li class="inf-fact"><strong class="inf-fact__big">From &pound;80</strong> per pallet if we collect your goods, or a load is cancelled on route</li>
+                <li class="inf-fact"><strong class="inf-fact__big">14 days</strong> for your refund to be processed after you cancel</li>
+            </ul>
+            <div class="inf-grid2">
+                <div class="inf-block">
+                    <h3>Cancelling an order</h3>
+                    <p>Cancellations must be made prior to dispatch. Please note due to using a third party haulier, all items can be dispatched within 2 hours of ordering to ensure they reach the local delivery depot to meet the requested delivery date and orders cannot be halted once dispatched as they travel through the network to the local delivery depot.</p>
+                    <p>Cancellations should be made via email to Customer Services - <a href="mailto:customerservices@gravelmaster.co.uk">customerservices@gravelmaster.co.uk</a> within 2 hours of order placement. Please ensure you include your full name, order number and delivery postcode.</p>
+                </div>
+                <div class="inf-block">
+                    <h3>Sending goods back</h3>
+                    <p>Customers may return the goods at their own expense to the aforementioned address within 14 working days from the day following the date of delivery or we will collect the goods and charge you the cost of return which will be a minimum of &pound;80.00 per pallet plus any zonal charges.</p>
+                    <p>Returned loads, if cancelled on route, will incur a return delivery charge of &pound;80.00 per pallet, this will be deducted from any refund due.</p>
+                </div>
+                <div class="inf-block">
+                    <h3>If we can&rsquo;t deliver</h3>
+                    <p>Where a delivery cannot be made on the due date due to access issues or unforeseen circumstances we will attempt a re-delivery at your request on a specific day for an additional fee, or returned at the standard return rate. If you have any queries relating to this or any other issue please call us on <a href="tel:03300585068">0330 058 5068</a> (option 2). Please note any loose loads are not eligible for return once the product has been loaded. Please speak to a member of the team for further details.</p>
+                </div>
+                <div class="inf-block">
+                    <h3>Refunds</h3>
+                    <p>Refunds will be processed within 14 days of cancellation, bespoke items are non-refundable.</p>
+                </div>
             </div>
         </div>
     </section>

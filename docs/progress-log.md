@@ -318,6 +318,22 @@ Raised: the delivery words moving from the admin site into the view, "the aforem
 
 Not tested: the pages on the test website, sending an estimate or enquiry for real, and trade prices.
 
+## 25 September 2026: delivery page easier to read
+
+Dylan found the delivery page hard going, the delivery terms and returns most of all: two tall cards of small type, just paragraphs, less inviting than the old page. Changed ([delivery-page.md](delivery-page.md#why-the-delivery-terms-and-returns-look-as-they-do)):
+
+1. All the page's paragraphs are now 16px (they were 14.5 to 15.5px), a little heavier, in shorter lines.
+2. Delivery terms: the first paragraph introduces the section, and the rest are six points, each with an icon and a heading, two to a row.
+3. Returns, now "Cancellations and returns": four key figures in large type first (2 hours, 14 working days, from £80 per pallet, 14 days), then the paragraphs under four headings.
+4. The key questions are two to a row, with the icon beside the words, so the lines aren't as narrow.
+5. The old page's "Delivery Truck Size" photo is back, beside "Delivery vehicle" (287 KB to 119 KB).
+
+The paragraphs' words are unchanged; the headings and the four figures are new ([open-questions.md](open-questions.md#delivery-page)).
+
+Tested: the partial compiles and runs with sample data; every block of the live page's text is still on it word for word (one paragraph now in two halves, each checked); nothing wider than the screen at 12 widths from 1440 to 320px; every text colour passes AA; no script errors.
+
+Not tested: the page on the test website.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
