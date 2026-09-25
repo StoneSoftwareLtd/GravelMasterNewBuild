@@ -295,6 +295,10 @@ Found: a sold-out size can still be ordered (the checkout doesn't check), and a 
 
 Not tested: real stock levels, on the test website.
 
+## 25 September 2026: the quantity calculator on the narrowest phones
+
+Found while building the calculator page, which uses the shared calculator: below about 370px wide, "I'm looking for..." and the product type list didn't fit side by side, so at 320px the list ran 29px off the screen, on the homepage and product pages too. The two boxes a row also cut "Metres" to "Met" and squeezed the depth against its unit. From 370px down, the label now sits above the list in the same white box, and the boxes are one a row. Measured in headless Edge on the homepage at 320, 340, 370, 371, 375 and 390px, and on a product page and the calculator page at 320px: nothing wider than the screen, "Metres" shown whole. From 371px up nothing changes: the new rules only apply below it.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).

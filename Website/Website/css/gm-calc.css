@@ -276,3 +276,13 @@
   .gm-calc .calc__bulk { flex-direction: column; text-align: center; }
   .gm-calc .calc__bulk-btn { width: 100%; margin: 6px 0 0; }
 }
+
+@media (max-width: 370px) {
+  /* "I'm looking for..." and "Gravel & Chippings" don't fit side by side (at 320px the list ran 29px off the
+     screen): the label goes above the list, in the same white box */
+  .gm-calc .calc__type { flex-wrap: wrap; gap: 0; border-radius: 14px; padding: 8px 14px 2px; }
+  .gm-calc .calc__type-label { flex-basis: 100%; font-size: 14px; text-align: left; }
+  .gm-calc .calc__select { flex-basis: 100%; min-width: 0; margin-left: 0; padding-left: 0; background-position: right 2px center; }
+  /* two boxes a row cut "Metres" to "Met" and squeezed the depth against its unit: one box a row */
+  .gm-calc .calc__form { grid-template-columns: 1fr; }
+}
