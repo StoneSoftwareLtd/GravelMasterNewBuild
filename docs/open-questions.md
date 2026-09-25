@@ -111,3 +111,11 @@ Decided 23 September 2026: the prices and the quantity calculator stay exactly a
 | **Postcode outside the basket's area** | The new message: "Your basket was priced for delivery to NG postcodes, and this postcode isn't one. Please check it." The old pop-up only said the address "does not match". Neither says what to do next. | Agree the words, and what a customer should do (e.g. go back and add the products again with the new postcode) |
 | **Words from the prototype** | "A more sustainable choice" and "Sustainable materials" are left out: they're environmental claims the live site doesn't make. "Next day delivery: on most products", "Price match promise", "UK nationwide delivery: to home or site" and "Secure payment: card details go to our payment provider, not to us" are in. | Read them, and say if the sustainable wording should go in |
 | **Text updates** | The old tick box said "Please untick this box if you wish to not receive SMS updates about your delivery"; the new one says "Send me text updates about my delivery" (ticked, as before) and "You can stop them at any time by replying STOP." | Agree the words |
+
+## Order confirmation
+
+| Found | Detail | Suggestion |
+|---|---|---|
+| **Which products to suggest** | "You might also like" has the prototype's picks that are on the site: the FeatherSnap Bird Feeder (£149.99), the Large Galvanised Stainless Steel Planter (£62.99), the Trowel (£9.00) and the Gardening Gloves (£9.99). The prototype's wheelbarrow isn't sold on the site. The planter's only size is a pre-order, dated 25 May 2027 (its product page, 24 September 2026), so adding it makes the next basket a pre-order. | Keep these, swap the planter for something in stock, or choose products that go with what was just bought |
+| **The confirmation page marks the order as paid** (live now) | `CheckoutController.OrderResult` calls `SetSuccessfullTransaction` every time `/checkout/orderresult?transId=…` is loaded, after Opayo has already reported the payment. The emails are guarded (`EmailSent`), but the payment status isn't. | Check `SetSuccessfullTransaction` does nothing harmful when it's repeated, or only call it from `OrderNotify` |
+| **The customer's name** | The old page said "Thanks *name*, your order has been confirmed!"; the new one says the prototype's "Thank you for your order!" | Keep it, or add the name back |

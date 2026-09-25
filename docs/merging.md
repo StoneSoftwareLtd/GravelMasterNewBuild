@@ -219,7 +219,52 @@ Product addresses (`/products/{category}/p/{product}`) are routed to `ProductCon
 - [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new checkout too.
 - [ ] **`Website.csproj`**: add `Views/Checkout/_CheckoutPage.cshtml`, `ViewModels/Common/CheckoutPageModels.cs`, `css/gm-checkout.css` and `js/gm-checkout.js`.
 - [ ] Test on the real site, with test payments: a basket of bulk bags (dates, the next-day charge, a Saturday, the morning slot if the setting is on), turf, samples (Royal Mail), a pre-order size alone and with others, a postcode outside the basket's area, an Isle of Wight postcode, a different billing address, both address finders, a logged-in customer with a saved address, a trade login, and that each order's address, date, time, delivery charge, instructions, SMS choice and trade tick arrive as they did from the old page.
+## Order confirmation
+
+`/checkout/orderresult?transId=…` is `CheckoutController.OrderResult`, which marks the order as paid, sends the confirmation emails (once per order), empties the basket and renders `Views/Checkout/OrderResult.cshtml` with an `OrderResultViewModel`. By then `SendEmails` has loaded `Order.DeliveryAddress`.
+
+- [ ] **`Views/Checkout/OrderResult.cshtml`**: when the new chrome is on, render `_ConfirmationPage` in place of the `checkout-thanks` block. Keep `@section Head` (the Bing revenue), `@section analyticscripts` (the purchase event), `@section facebook` and the `trade_order` script after them as they are. Add the Caveat font and `<link href="/css/gm-confirmation.css?v1" rel="stylesheet" />` to `@section Head`. Build the model like this (with `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top). This code was compiled with MVC 5.2's Razor against stand-ins with the repository's class and property names:
+  ```cshtml
+  @{
+      var delivery = Model.Order.DeliveryAddress;   // SendEmails loads it before the page is drawn
+      var confirmation = new ConfirmationPageModel
+      {
+          OrderNumber = Model.Order.OrderID.ToString(),
+          AmountPaid = Model.Order.Amount,
+          Email = Model.Order.Email,
+          // its lines without the blank ones (an empty second line is saved as a space)
+          DeliveryAddress = delivery == null ? null : string.Join(", ", new[] { delivery.Address1, delivery.Address2, delivery.City, delivery.County, delivery.Postcode }
+              .Where(line => !string.IsNullOrWhiteSpace(line)).Select(line => line.Trim())),
+          DeliveryPostcode = delivery == null ? null : delivery.Postcode,
+          PostalArea = Session["PA"] != null ? Session["PA"].ToString() : null
+      };
+      // "You might also like": the prototype's picks that are on the site. Each size's price is looked up as
+      // CheckoutController.CreateProducts looks sizes up; a product or size that's gone is left out.
+      var picks = new[]
+      {
+          new { Name = "FeatherSnap Bird Feeder", Url = "/products/accessories/p/bird-feeder", Code = "Feathsnapparent", Size = "Feathsnap" },
+          new { Name = "Large Galvanised Stainless Steel Planter", Url = "/products/accessories/p/large-galvanised", Code = "RSDBED1", Size = "RSDBED" },
+          new { Name = "Trowel", Url = "/products/accessories/p/trowel", Code = "TROWEL", Size = "TROWEL1" },
+          new { Name = "Gardening Gloves", Url = "/products/accessories/p/gardening-gloves", Code = "GDNGLOVE1", Size = "GDNGLOVE" }
+      };
+      foreach (var pick in picks)
+      {
+          var product = Model.ProductRepo.GetProduct(pick.Code);
+          var size = Model.ProductRepo.GetProduct(pick.Size);
+          if (product == null || size == null) { continue; }
+          confirmation.Suggestions.Add(new BasketSuggestion(pick.Name, pick.Url,
+              string.Format(System.Configuration.ConfigurationManager.AppSettings["ImagePathFormat"], "330", product.Image1),
+              size.Price, null, pick.Code, pick.Size));
+      }
+  }
+  @Html.Partial("~/Views/Checkout/_ConfirmationPage.cshtml", confirmation)
+  ```
+  Check on the test site that `ProductRepo.GetProduct` gives each size's customer price for the area, as the product pages show it.
+- [ ] **`@section requirecontroller`**: nothing to change. The old view has none, so `_Layout` loads `Content/Display.js`, which brings jQuery and Bootstrap for the Track Order pop-up (as in the preview, where "Track your order" opened it).
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new confirmation too.
+- [ ] **`Website.csproj`**: add `Views/Checkout/_ConfirmationPage.cshtml`, `ViewModels/Common/ConfirmationPageModels.cs`, `css/gm-confirmation.css`, `js/gm-confirmation.js` and `img/gm-confirm-bag.png`.
+- [ ] Test on the real site, with test payments: the order number, amount, email and delivery address after a real order (with and without a second address line, and with a different billing address); "Track your order"; each suggestion's price and Add to basket; reloading the page (no second email); a trade login (the `trade_order` event); and that the purchase events still fire once.
 ## After merging
 
-- [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, account, search, content pages and the 404 page.
+- [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, order confirmation, account, search, content pages and the 404 page.
 - [ ] Check with a trade login that trade prices show in the new homepage and category cards.

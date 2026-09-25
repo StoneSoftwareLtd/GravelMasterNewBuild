@@ -197,8 +197,29 @@ Not tested: the real address finders, a real order and the payment page, and the
 
 Found while building the order confirmation, which uses the same cards: on phones, where the basket's "You might also like" cards are two across, "Add to basket" wrapped onto two lines (measured at 390 and 320px wide). The buttons now keep to one line: slightly tighter below 560px, and without the basket icon below 420px. Measured at eight widths from 1440 to 320px: one line each time, and nothing wider than the screen.
 
+## 24 and 25 September 2026: order confirmation
+
+Rebuilt the prototype's order confirmation (`confirmation.html`) as `Views/Checkout/_ConfirmationPage.cshtml`, with `ConfirmationPageModel`. Details: [confirmation-page.md](confirmation-page.md).
+
+1. Mapped the old page (`OrderResult.cshtml`) and `CheckoutController.OrderResult`. Loading the page marks the order as paid and sends the confirmation emails (once per order), so the new page never reloads itself, and the preview never asks the live site for it (it refuses any such address).
+2. Built the page with what the old one showed (order number, amount paid, email, delivery address) in the prototype's layout, with "Track your order" opening the site's Track Order pop-up already filled in, and "You might also like" with the prototype's picks that are on the site, at their live prices.
+3. The analytics and Facebook purchase events stay in the old view's sections, untouched.
+4. The preview shows it at `/checkout/orderresult` for a sample order.
+5. Tested:
+   - the partial and the code `OrderResult.cshtml` will need compile with MVC 5.2's Razor;
+   - screenshots at four widths and the layout at 11;
+   - every text colour;
+   - Track your order, and Add to basket's request (recorded) and its failure in the read-only preview;
+   - the preview's refusal to load the live page.
+
+Along the way: the email address now breaks after the @ in its narrow panel, the illustration is smaller on phones, and the suggestions' buttons keep to one line (the basket's too, in its own commit).
+
+Raised: which products to suggest (the planter is a pre-order until May 2027), the page marking the order as paid on every load, and the customer's name. See [open-questions.md](open-questions.md#order-confirmation).
+
+Not tested: the real page after a real test payment.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
-- The prototype's order confirmation (`confirmation.html`), which the site shows after payment (`CheckoutController.OrderResult`).
-- Test the checkout with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
+- Test the checkout and the order confirmation with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
+- Every page in the prototype is now built. Still on the old design: the account pages, search results, content pages other than About and Trade, the "page not found" page and the payment error page.
