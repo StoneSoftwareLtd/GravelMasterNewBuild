@@ -443,6 +443,16 @@ Raised: the old error page's security hole (fix now), and losing the checkout's 
 
 Not tested: the real basket, checkout and a failed payment, which need the test website.
 
+## 28 September 2026: security fixes to pass on
+
+Dylan asked for the payment error page's security hole to be fixed here, to pass on. Details: [security-fixes/README.md](../security-fixes/README.md).
+
+1. Looked for the same mistake across the site's views and controllers: text from a link or form printed without encoding. Found four: the payment error page, the old search results and special offers pages (the search words), and Track Order's answer (the postcode).
+2. Made the fixes on copies of master's four files (GravelMasterSoftware itself is unchanged) and turned them into a patch, `security-fixes/encode-visitor-input.patch`, which `git apply --check` accepts against master. Each is also given as "find this, replace with this", as the live code isn't on any branch.
+3. Checked: the three views parse with MVC 5.2's Razor; the fixed payment error page compiled and ran, giving the same sentence as before for `?loc=ng` and plain text for a script. The patch holds no passwords or keys.
+4. Also found: an old CyberSource test page (`/checkout/paymentconfirmation`, live) that prints whatever is posted to it and signs it with a secret key written into `Services/Security.cs`. To delete. And the list of passwords and keys written into the code, to change.
+5. Checked and fine: redirects after signing in only go to the site's own pages.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).

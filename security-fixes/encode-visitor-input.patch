@@ -1,0 +1,52 @@
+diff --git a/Website/Website/Controllers/CheckoutController.cs b/Website/Website/Controllers/CheckoutController.cs
+index 1ac14da..2a6e45a 100644
+--- a/Website/Website/Controllers/CheckoutController.cs
++++ b/Website/Website/Controllers/CheckoutController.cs
+@@ -1069,7 +1069,7 @@ namespace Agilis.ECommerce.Mvc.Web.Controllers
+ 
+                 }
+ 
+-                return Content("We have found the order, but the postcode is not: " + postcode);
++                return Content("We have found the order, but the postcode is not: " + System.Web.HttpUtility.HtmlEncode(postcode));
+             }
+             catch
+             {
+diff --git a/Website/Website/Views/Category/DisplayProducts.cshtml b/Website/Website/Views/Category/DisplayProducts.cshtml
+index 111d469..ea3a642 100644
+--- a/Website/Website/Views/Category/DisplayProducts.cshtml
++++ b/Website/Website/Views/Category/DisplayProducts.cshtml
+@@ -23,7 +23,7 @@
+             <div class="grid-padding">
+                 @if (Request.QueryString["searchphrase"] != null)
+                 {
+-                   <h1> @Html.Raw("'" + Request.QueryString["searchphrase"] + "'")</h1>
++                   <h1> @("'" + Request.QueryString["searchphrase"] + "'")</h1>
+                 }
+                
+              
+diff --git a/Website/Website/Views/Checkout/Error.cshtml b/Website/Website/Views/Checkout/Error.cshtml
+index 500dfdb..3f31169 100644
+--- a/Website/Website/Views/Checkout/Error.cshtml
++++ b/Website/Website/Views/Checkout/Error.cshtml
+@@ -10,7 +10,7 @@
+         @if (Request.QueryString["loc"] != null)
+         {
+         <div>
+-            @Html.Raw("The delivery address entered does not match the selected area (" + Request.QueryString["loc"] + ") used to add to basket.") <br />
++            @("The delivery address entered does not match the selected area (" + Request.QueryString["loc"] + ") used to add to basket.") <br />
+             Please call customer services on 0330 058 5068
+         </div>
+         }
+diff --git a/Website/Website/Views/Product/SpecialOffers.cshtml b/Website/Website/Views/Product/SpecialOffers.cshtml
+index d439449..d7c7aa2 100644
+--- a/Website/Website/Views/Product/SpecialOffers.cshtml
++++ b/Website/Website/Views/Product/SpecialOffers.cshtml
+@@ -18,7 +18,7 @@
+                 <div class="grid-padding">
+                     @if (Request.QueryString["searchphrase"] != null)
+                     {
+-                        <h1> @Html.Raw("'" + Request.QueryString["searchphrase"] + "'")</h1>
++                        <h1> @("'" + Request.QueryString["searchphrase"] + "'")</h1>
+                     }
+ 
+ 

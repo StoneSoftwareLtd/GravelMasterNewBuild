@@ -278,7 +278,7 @@ Product addresses (`/products/{category}/p/{product}`) are routed to `ProductCon
 
 `/checkout/orderresulterror` is `CheckoutController.OrderResultError`, which shows `Views/Checkout/Error.cshtml` ([payment-error-page.md](payment-error-page.md)).
 
-- [ ] **Now, on the live site, whatever happens with the new design**: in `Error.cshtml`, stop writing `?loc` into the page unencoded (cross-site scripting). Replace
+- [ ] **Now, on the live site, whatever happens with the new design**: in `Error.cshtml`, stop writing `?loc` into the page unencoded (cross-site scripting). This is one of the four fixes in [security-fixes](../security-fixes/README.md), with a patch. Replace
   ```cshtml
   @Html.Raw("The delivery address entered does not match the selected area (" + Request.QueryString["loc"] + ") used to add to basket.") <br />
   ```

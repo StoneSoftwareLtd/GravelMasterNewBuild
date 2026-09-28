@@ -41,6 +41,7 @@ Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 | `Start website preview.cmd` | Double-click to open the preview |
 | `docs/` | Notes for each piece, the merge checklist and open questions |
 | `patches/` | The new-chrome branch's original patch, from before the 17 September fixes |
+| `security-fixes/` | Security fixes for the live site to pass on now, with a patch ([README](security-fixes/README.md)) |
 
 ## See it
 
