@@ -392,8 +392,25 @@ Raised: there are no offers on it: 38 popular products at their normal prices. S
 
 Not tested: the page on the test website, and trade prices.
 
+## 28 September 2026: Ideas & Advice pages
+
+The Ideas & Advice landing page, topic pages and articles in the new design, in the information pages' style. Details: [ideas-pages.md](ideas-pages.md).
+
+1. Read how they're made: `IdeasController`'s three views use `_ContentHubLayout.cshtml`, a layout inside `_Layout` that adds the banner and topic tabs. So the new bar goes in that layout's new branch, and each view shows its new partial.
+2. The bar: "Ideas & Advice" and the topics as buttons, the page's own marked; on phones, one row that scrolls sideways.
+3. The landing page shows the 20 newest articles the controller already gives it (the old one showed three chosen ones), the newest large; topic pages show their articles as cards; articles show their title, picture and words in the privacy page's readable column, then "Planning a project?".
+4. The articles' empty spacer paragraphs are taken out (nothing else is changed); the landing page gets a proper title, and a topic without one its name.
+5. Merge code for the layout and the three views, compiled against stand-ins copied from the repository's classes and run through the real `_ContentHubLayout`. The preview's five pages are character for character the compiled partials' with the same live data; the comparison found the preview missing an article behind a redirected tab (fixed).
+6. Tested: nothing wider than the screen from 1440 to 320px; the cards' columns; the bar; pictures; contrast; no script errors.
+
+Along the way, found that 48 of GravelMasterSoftware's source files have database passwords written into them (the Ideas pages' `IdeasRepository` among them), and that every Ideas page loads a stylesheet from Wayfair's servers.
+
+Raised: the database passwords (urgent), the Wayfair stylesheet, pictures of 1 to 1.5 MB, the landing page's articles, the empty and untitled topics, doubled site names in titles, and the old `/articles` section. See [open-questions.md](open-questions.md#ideas--advice) and [Putting it live](open-questions.md#putting-it-live).
+
+Not tested: the pages on the test website.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
 - Test the checkout and the order confirmation with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
-- Still on the old design after that: the Ideas & Advice articles and their lists, meet the team, the other pages from the admin site, the "page not found" page and the payment error page.
+- Still on the old design after that: meet the team, the old "Articles" section, the other pages from the admin site, the "page not found" page and the payment error page.

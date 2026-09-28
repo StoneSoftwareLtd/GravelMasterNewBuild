@@ -702,6 +702,79 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
 - [ ] **`Website.csproj`**: add `Views/Content/_ContactPage.cshtml` (and `css/gm-info.css`, if another information page hasn't added it).
 - [ ] Test on the real site: the page with the new design on and off, the map (with the cookie banner, if it asks first), "Track your order" with a real order number, and the phone and email links on a phone.
 
+## Ideas & Advice pages
+
+`/ideas-advice`, `/ideas-advice/<topic>` and `/ideas-advice/<id>/<name>` are `IdeasController`'s `LatestNews`, `DisplayCategory` and `DisplayArticle`, whose views use `Views/Shared/_ContentHubLayout.cshtml` (a layout inside `_Layout`). See [ideas-pages.md](ideas-pages.md). The code below was compiled with MVC 5.2's Razor against stand-ins copied from the repository's classes, and run with sample data through the real `_ContentHubLayout` ([ideas-pages.md](ideas-pages.md#tested)). Each file also needs `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top.
+
+- [ ] **`Views/Shared/_ContentHubLayout.cshtml`**: after its second `@{ }` block (the one that reads `catList`), add:
+  ```cshtml
+  @section Head
+  {
+      @if (NewChrome.IsOn(Request))
+      {
+          <link href="/css/gm-info.css?v1" rel="stylesheet" />
+      }
+  }
+  @if (NewChrome.IsOn(Request))
+  {
+      // the old banner's tabs: every topic but the archive, in the same order
+      var topics = catList.Where(c => c.Name != "Archive").Select(c => new CategoryLink(c.Name, "/ideas-advice/" + c.Url)).ToList();
+      <div class="gm-info gm-ideas">
+          @Html.Partial("~/Views/Ideas/_IdeasTopics.cshtml", topics)
+          @RenderBody()
+      </div>
+      return;
+  }
+  ```
+  The old banner, tabs, `content-hub.css` and Wayfair stylesheet are after the `return`, so they aren't sent.
+- [ ] **`Views/Ideas/LatestNews.cshtml`**: after its `@{ }` block, add:
+  ```cshtml
+  @if (NewChrome.IsOn(Request))
+  {
+      ViewBag.Title = "Ideas & Advice | GravelMaster";
+      ViewBag.MetaDescription = "How-to guides, garden inspiration and advice on choosing and using our products.";
+      // the 20 newest articles the controller gives, newest first (the old page shows three chosen ones instead)
+      var list = new IdeasListModel { Title = "Ideas & Advice", IsLanding = true };
+      foreach (var article in Model.LatestArticles)
+      {
+          list.Articles.Add(new IdeasCard(article.Name, IdeasCard.ArticleAddress(article.ID, article.Url), IdeasCard.ImageAddress(article.Image), article.Summary));
+      }
+      @Html.Partial("~/Views/Ideas/_IdeasList.cshtml", list)
+      return;
+  }
+  ```
+- [ ] **`Views/Ideas/DisplayCategory.cshtml`**: after its `@{ }` block (before its `<style>` and stylesheets), add:
+  ```cshtml
+  @if (NewChrome.IsOn(Request))
+  {
+      if (string.IsNullOrWhiteSpace(Model.PageTitle))
+      {
+          // a topic with no page title of its own (the old page's reads "| GravelMaster")
+          ViewBag.Title = Model.Name + " | GravelMaster";
+      }
+      var list = new IdeasListModel { Title = Model.Name, Description = Model.Description };
+      foreach (var article in Model.NewsArticles)
+      {
+          list.Articles.Add(new IdeasCard(article.Name, IdeasCard.ArticleAddress(article.ID, article.Url), IdeasCard.ImageAddress(article.Image), article.Summary));
+      }
+      @Html.Partial("~/Views/Ideas/_IdeasList.cshtml", list)
+      return;
+  }
+  ```
+- [ ] **`Views/Ideas/DisplayArticle.cshtml`**: after its `@{ }` block, add:
+  ```cshtml
+  @if (NewChrome.IsOn(Request))
+  {
+      var page = new IdeasArticleModel { Title = Model.Name, ImageUrl = IdeasCard.ImageAddress(Model.Image), Contents = IdeasArticleModel.WithoutEmptyParagraphs(Model.Contents) };
+      @Html.Partial("~/Views/Ideas/_IdeasArticle.cshtml", page)
+      return;
+  }
+  ```
+- [ ] **`@section requirecontroller`**: nothing to change (the views have none; `Content/Display.js`, as now).
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the Ideas & Advice pages too (a check on the address starting `/ideas-advice` covers all three).
+- [ ] **`Website.csproj`**: add `Views/Ideas/_IdeasTopics.cshtml`, `_IdeasList.cshtml`, `_IdeasArticle.cshtml` and `ViewModels/Common/IdeasPageModels.cs` (and `css/gm-info.css`, if another information page hasn't added it).
+- [ ] Test on the real site: the landing page's 20 articles (and whether "Archive" ones should be among them), each topic, a few articles (old ones with pictures in `/img/blog/` too), the design off, and a phone.
+
 ## Privacy and terms pages
 
 `/privacy` and `/term-conditions` are `ContentController.Display` with those keys: `Views/Content/Display.cshtml` shows their HTML from the admin site. The new design keeps the words in the admin site and shows them in a readable column. See [legal-pages.md](legal-pages.md).

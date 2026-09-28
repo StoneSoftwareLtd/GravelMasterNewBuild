@@ -26,6 +26,7 @@ Each piece is built to drop into the **GravelMasterSoftware** repository behind 
 | FAQ page | Built and tested in the preview (no prototype: in the delivery and calculator pages' style, with a search) | Needs wiring into the site |
 | Contact page | Built and tested in the preview (no prototype: in the other information pages' style) | Needs wiring into the site |
 | Privacy and terms pages | Built and tested in the preview (the admin site's words in the new design) | Needs wiring into the site, and the tidied words pasting into the admin site |
+| Ideas & Advice (landing, topics, articles) | Built and tested in the preview (no prototype: in the information pages' style) | Needs wiring into the site |
 
 Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
@@ -41,7 +42,7 @@ Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
 ## See it
 
-Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in, the new basket and checkout with a sample basket in them, the new order confirmation for a sample order, the new sign-in and password pages, My Account for a sample customer, the new search results for any search, the new special offers page, the new delivery, calculator, FAQ and contact pages, and the privacy and terms pages in the new design. Keep the black window open while you use it. It's read-only, so nothing is sent to the real site (the only exceptions are Sort by on category pages, which just reorders the products, and the product pages' price lookup, which only reads prices).
+Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in, the new basket and checkout with a sample basket in them, the new order confirmation for a sample order, the new sign-in and password pages, My Account for a sample customer, the new search results for any search, the new special offers page, the new delivery, calculator, FAQ and contact pages, the privacy and terms pages in the new design, and the new Ideas & Advice pages. Keep the black window open while you use it. It's read-only, so nothing is sent to the real site (the only exceptions are Sort by on category pages, which just reorders the products, and the product pages' price lookup, which only reads prices).
 
 Or open this folder in VS Code and use Live Server on `preview/index.html` or `preview/category.html`. See [preview/README.md](preview/README.md) for both.
 
@@ -66,6 +67,7 @@ Or open this folder in VS Code and use Live Server on `preview/index.html` or `p
 | [docs/calculator-page.md](docs/calculator-page.md) | The new calculator page: the shared calculator, where the old page's parts went, what was tested |
 | [docs/faq-page.md](docs/faq-page.md) | The new FAQ page: where its words come from, the search, the spelling fixes, what was tested |
 | [docs/contact-page.md](docs/contact-page.md) | The new contact page: where its words come from, where the old page's parts went, the map, what was tested |
+| [docs/ideas-pages.md](docs/ideas-pages.md) | The new Ideas & Advice pages: how they're made, where the old pages' parts went, what was tested |
 | [docs/legal-pages.md](docs/legal-pages.md) | The privacy and terms pages: why their words stay in the admin site, the tidied copies, what was tested |
 | [docs/admin-content/](docs/admin-content/) | Tidied copies of the privacy and terms words, to paste into the admin site |
 | [docs/merging.md](docs/merging.md) | Everything to do in GravelMasterSoftware to put this live |
