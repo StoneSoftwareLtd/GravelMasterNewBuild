@@ -1,0 +1,46 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.PaymentErrorModel
+@* New payment error page, shown by Checkout/Error.cshtml (/checkout/orderresulterror) when the new chrome is on. The
+   checkout sends customers here when the delivery postcode isn't in the postcode area their basket was priced for
+   (Model.Area), and the payment's return when a payment fails (no Model.Area). There's no Optima prototype for it, so
+   it's in the information pages' style (css/gm-info.css, .gm-payerror, loaded in Error.cshtml's Head section). The
+   words are the old page's, with a heading, a little more explanation and buttons; docs/payment-error-page.md lists
+   the changes. *@
+<div class="gm-info gm-payerror">
+    <div class="container">
+        <section class="pay-card" aria-labelledby="pay-title">
+            <span class="pay-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+            </span>
+            @if (Model.Area != null)
+            {
+                <h1 class="pay-title" id="pay-title">Your delivery postcode doesn&rsquo;t match your basket</h1>
+            }
+            else
+            {
+                <h1 class="pay-title" id="pay-title">There was a problem with your payment</h1>
+            }
+            <p class="pay-safe">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+                No payment has been taken
+            </p>
+            @if (Model.Area != null)
+            {
+                <p class="pay-text">The delivery address entered does not match the area (<strong>@Model.Area</strong>) used to add to your basket. Our prices include delivery, so they depend on where we deliver.</p>
+                <p class="pay-text">Please check the delivery postcode, or call customer services on <a href="tel:03300585068">0330 058 5068</a>.</p>
+                <div class="pay-actions">
+                    <a class="inf-btn" href="/checkout/processorder">Back to checkout</a>
+                    <a class="inf-btn inf-btn--outline" href="/basket">View your basket</a>
+                </div>
+            }
+            else
+            {
+                <p class="pay-text">Unfortunately, there was a problem with the transaction. Please try again, or call customer services on <a href="tel:03300585068">0330 058 5068</a>.</p>
+                <div class="pay-actions">
+                    <a class="inf-btn" href="/basket">Back to your basket</a>
+                    <a class="inf-btn inf-btn--outline" href="tel:03300585068">Call 0330 058 5068</a>
+                </div>
+            }
+            <p class="pay-help">Customer services are open Monday to Friday, 8am - 5pm (option 2), or email <a href="mailto:customerservices@gravelmaster.co.uk">customerservices&#64;<wbr>gravelmaster.co.uk</a>.</p>@* &#64; is @: Razor would read "@<" as code *@
+        </section>
+    </div>
+</div>
