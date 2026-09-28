@@ -8,10 +8,13 @@
 # category page and product page from Views/Home/_HomePage.cshtml, Views/Shared/_CategoryPage.cshtml and
 # Views/Shared/_ProductPage.cshtml, filled from the live page. Product prices come from the live site's own
 # price lookup, as they do on the real page. /about-us and /trade show the new About us and Trade Accounts pages (Views/Content/_AboutPage.cshtml and
-# _TradePage.cshtml). /basket shows the new basket page (Views/Basket/_BasketPage.cshtml) with a sample basket, since
-# no cookies reach the live site. /checkout/processorder shows the new checkout (Views/Checkout/_CheckoutPage.cshtml)
-# for that sample basket, in the live basket page's frame (the live site sends a checkout with no basket back to
-# /basket); Continue to payment is blocked like every other form. /checkout/orderresult shows the new order
+# _TradePage.cshtml). /basket shows the new basket page (Views/Basket/_BasketPage.cshtml) with the preview's own working
+# basket (preview-basket.ps1), since no cookies reach the live site: adding, changing and removing work, answered here
+# the way the site's basket answers. /checkout/processorder shows the new checkout (Views/Checkout/_CheckoutPage.cshtml)
+# for it, in the live basket page's frame (the live site sends a checkout with no basket back to /basket); Continue to
+# payment checks the postcode as the site does, then goes to the new payment error page
+# (/checkout/orderresulterror, Views/Checkout/_PaymentErrorPage.cshtml): payment isn't set up in the preview.
+# ?sample=1 and the other flags on /basket and /checkout/processorder show sample ones. /checkout/orderresult shows the new order
 # confirmation (Views/Checkout/_ConfirmationPage.cshtml) for a sample order, in the same frame: the live page is never
 # asked for, since loading it marks an order as paid. /account/login, /account/forgotpassword and /account/resetpassword
 # show the new account pages, and /account/forgotpasswordconfirmation, /resetpasswordconfirmation, /confirmemail,
@@ -27,8 +30,9 @@
 # The Track Order pop-up (Views/Shared/_TrackOrderPopup.cshtml) gets the preview's answers for a few sample orders
 # (track-order.ps1): the live order lookup is never asked.
 #
-# It is read-only, so nothing reaches the real website except page views and read-only lookups:
-#   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
+# Nothing reaches the real website except page views and read-only lookups:
+#   - the basket and checkout are the preview's own (above), priced by the live site's read-only price lookup
+#   - sign-ups, enquiries and every other form post are blocked, except a category page's
 #     Sort by (only "sort=<one of the four sorts>"), which only changes the order of the products
 #   - no cookies are sent, so you are never logged in or using a real basket
 #   - analytics, ads, Hotjar, Clarity, Facebook and chat scripts are removed from the pages
@@ -62,6 +66,7 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'info-pages.ps1')
 . (Join-Path $PSScriptRoot 'ideas-pages.ps1')
 . (Join-Path $PSScriptRoot 'track-order.ps1')
+. (Join-Path $PSScriptRoot 'preview-basket.ps1')
 # the account pages shown in the live forgotten-password page's frame (the messages have no page of their own to fetch)
 $script:accountFramePattern = '^/account/(forgotpassword|resetpassword|forgotpasswordconfirmation|resetpasswordconfirmation|confirmemail|register|traderegister)/?$'
 # the My Account pages, shown in the same frame (the live ones send the preview, never signed in, to sign in)
@@ -200,8 +205,10 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
     # old newsletter band + footer (which holds the old Track Order pop-up) -> _SiteFooter, _TrackOrderPopup, _SiteMobileMenu, gm-chrome.js
     $newFooter = $chrome.Footer + "`n" + $(if ($isCheckout) { '' } else { $chrome.MobileMenu + "`n" }) + $chrome.Scripts
     $html = $html.Substring(0, $footStart) + $newFooter + $html.Substring($footEnd + '</footer>'.Length)
-    # old header -> _SiteHeader
-    $html = $html.Substring(0, $header.Index) + $(if ($isCheckout) { $chrome.HeaderCheckout } else { $chrome.Header }) + $html.Substring($header.Index + $header.Length)
+    # old header -> _SiteHeader, with the preview basket's total (MasterLayoutViewModel.BasketTotal on the site)
+    $newHeader = $(if ($isCheckout) { $chrome.HeaderCheckout } else { $chrome.Header }).Replace('<span class="js-basket-total">&#163;0.00</span>',
+      '<span class="js-basket-total">' + [Net.WebUtility]::HtmlEncode((Format-Pounds (Get-PreviewBasketTotals).Total)) + '</span>')
+    $html = $html.Substring(0, $header.Index) + $newHeader + $html.Substring($header.Index + $header.Length)
     # fonts and gm-chrome.css, where _Layout puts them
     $html = [regex]::Replace($html, '<link href="https://fonts\.googleapis\.com/css2\?family=Quicksand:wght@400&display=swap" rel="stylesheet"\s*/?>', '')
     $icons = $html.IndexOf('<link rel="apple-touch-icon"')
@@ -234,6 +241,10 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
       elseif ($path -match $script:productPathPattern) {
         $model = ConvertFrom-OldProductPage $html.Substring($mainBody.Index, $mainEnd - $mainBody.Index) $path
         if ($model) {
+          # the working basket adds this product's sizes from what this page read (preview-basket.ps1)
+          $key = $path.TrimEnd('/').ToLowerInvariant()
+          $script:basketProductModels[$key] = $model | Add-Member -NotePropertyName PagePath -NotePropertyValue $key -PassThru -Force
+          Register-BasketProduct $model.Code $key
           $content = Format-ProductPage (Join-Path $package 'Views\Shared\_ProductPage.cshtml') $model $chrome.Enquiry
           $css = '/css/gm-product.css?v1'; $newPage = 'new product page'
         }
@@ -280,14 +291,21 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $css = '/css/gm-trade.css?v1'; $newPage = 'new trade page'
       }
       elseif ($path -match '^/basket(/index)?/?$') {
-        # No cookies reach the live site, so its basket is always empty: show a sample one instead.
-        # ?empty=1, ?voucher=1 and ?discount=1 show the empty basket, a voucher message and the discount rows; ?stock=1 a
-        # line of each stock state (in stock, pre-order, and a sample sold-out line)
+        # The preview's own working basket (preview-basket.ps1): no cookies reach the live site, so its basket is always
+        # empty. ?sample=1 shows a sample basket instead, and ?empty=1, ?voucher=1, ?discount=1 and ?stock=1 the empty
+        # basket, a voucher message, the discount rows and a line of each stock state (in stock, pre-order, and a sample
+        # sold-out line)
         $flags = @('empty', 'voucher', 'discount', 'stock' | Where-Object { $rawUrl -match "[?&]$_=1(&|$)" })
-        $sample = Get-SampleBasket $flags
-        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.4 Quicksand,Arial,sans-serif;text-align:center">Preview: ' +
-          $(if ($flags -contains 'empty') { 'an empty basket' } else { 'a sample basket of real products at their live prices. The preview can''t use a real basket, so changes to it are blocked' }) +
-          '. Try <a href="/basket">sample</a>, <a href="/basket?empty=1">empty</a>, <a href="/basket?voucher=1&amp;discount=1">with a voucher</a> or <a href="/basket?stock=1">in stock, pre-order and sold out</a> (the sold-out line is a sample: the preview can''t see stock).</p>'
+        $samples = 'Or look at a sample basket: <a href="/basket?sample=1">sample</a>, <a href="/basket?empty=1">empty</a>, <a href="/basket?voucher=1&amp;discount=1">with a voucher</a> or <a href="/basket?stock=1">in stock, pre-order and sold out</a>.'
+        if ($flags.Count -gt 0 -or $rawUrl -match '[?&]sample=1(&|$)') {
+          $sample = Get-SampleBasket $flags
+          $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.4 Quicksand,Arial,sans-serif;text-align:center">Preview: ' +
+            $(if ($flags -contains 'empty') { 'an empty sample basket' } else { 'a sample basket of real products at their live prices, to look at: changing it does nothing (the sold-out line is a sample, as the preview can''t see stock)' }) +
+            '. Back to <a href="/basket">your basket</a>. ' + $samples + '</p>'
+        } else {
+          $sample = ConvertTo-PreviewBasketPage ($rawUrl -match '[?&]couponAttempt=true(&|$)')
+          $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.4 Quicksand,Arial,sans-serif;text-align:center">Preview: your basket. It works like the real one, with the live site''s prices: add to it from any product page, change quantities, remove lines, try the voucher PREVIEW10 (10% off orders over &#163;40), then check out. The preview keeps it while it runs; nothing reaches the real basket. ' + $samples + '</p>'
+        }
         $content = $notice + (Format-BasketPage (Join-Path $package 'Views\Basket\_BasketPage.cshtml') $sample)
         $css = '/css/gm-basket.css?v1'; $newPage = 'new basket page'
         $extraHead = '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />'
@@ -299,16 +317,34 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $flags = @('samples', 'preorder', 'mixed', 'simple', 'notimes' | Where-Object { $rawUrl -match "[?&]$_=1(&|$)" })
         $areaMatch = [regex]::Match($rawUrl, '[?&]area=([A-Za-z]{1,2})(&|$)')
         $area = if ($areaMatch.Success) { $areaMatch.Groups[1].Value.ToUpperInvariant() } else { 'NG' }
-        $sample = Get-SampleCheckout $flags $area
         $q = if ($area -ne 'NG') { "area=$area&amp;" } else { '' }
-        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: a sample checkout for the sample basket, with sample delivery dates and prices (the real ones come from the site''s settings) and the basket priced for ' + $area + ' postcodes. Nothing is sent: Continue to payment is blocked. Try ' +
-          '<a href="/checkout/processorder">dates</a>, <a href="/checkout/processorder?' + $q + 'samples=1">samples</a>, <a href="/checkout/processorder?' + $q + 'preorder=1">pre-order</a>, <a href="/checkout/processorder?' + $q + 'mixed=1">mixed pre-order</a>, <a href="/checkout/processorder?' + $q + 'simple=1">no date step</a>, <a href="/checkout/processorder?' + $q + 'notimes=1">no morning slot</a> or <a href="/checkout/processorder?area=PO">PO postcodes</a>.</p>'
+        $samples = '<a href="/checkout/processorder?' + $q + 'sample=1">dates</a>, <a href="/checkout/processorder?' + $q + 'samples=1">samples</a>, <a href="/checkout/processorder?' + $q + 'preorder=1">pre-order</a>, <a href="/checkout/processorder?' + $q + 'mixed=1">mixed pre-order</a>, <a href="/checkout/processorder?' + $q + 'simple=1">no date step</a>, <a href="/checkout/processorder?' + $q + 'notimes=1">no morning slot</a> or <a href="/checkout/processorder?area=PO">PO postcodes</a>'
+        if ($flags.Count -gt 0 -or $areaMatch.Success -or $rawUrl -match '[?&]sample=1(&|$)') {
+          $sample = Get-SampleCheckout $flags $area
+          $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: a sample checkout for the sample basket, with sample delivery dates and prices (the real ones come from the site''s settings) and the basket priced for ' + $area + ' postcodes. Continue to payment checks out your own basket, not this sample. Back to <a href="/checkout/processorder">your checkout</a>, or try ' + $samples + '.</p>'
+        } else {
+          # the preview's working basket (the main loop sends an empty one back to /basket, as the live site does)
+          $sample = Get-PreviewCheckout
+          $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: the checkout for your basket, with sample delivery dates and prices (the real ones come from the site''s settings). Continue to payment checks the delivery postcode as the real site does, then shows the payment error page: payment isn''t set up in the preview, and nothing is sent. Sample checkouts: ' + $samples + '.</p>'
+        }
         $content = $notice + (Format-CheckoutPage (Join-Path $package 'Views\Checkout\_CheckoutPage.cshtml') $sample)
         $css = '/css/gm-checkout.css?v1'; $newPage = 'new checkout'
       }
+      elseif ($path -match '^/checkout/orderresulterror/?$') {
+        # Where Continue to payment ends in the preview, in the live error page's own frame. With ?loc= it's the page for a
+        # delivery postcode outside the basket's area, as CheckoutController.ProcessOrder sends it
+        $locMatch = [regex]::Match($rawUrl, '[?&]loc=([^&]*)')
+        $loc = if ($locMatch.Success) { [Uri]::UnescapeDataString($locMatch.Groups[1].Value.Replace('+', ' ')) } else { $null }
+        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: ' +
+          $(if ($loc) { 'the delivery postcode wasn''t in the area your basket was priced for, so the checkout sent you here before payment, as the real site does.' }
+            else { 'payment isn''t set up in the preview, so Continue to payment always ends here. On the real site, this page shows when a payment fails.' }) +
+          ' See <a href="/checkout/orderresulterror">a failed payment</a> or <a href="/checkout/orderresulterror?loc=ng">a postcode outside the basket''s area</a>.</p>'
+        $content = $notice + (Format-PaymentErrorPage (Join-Path $package 'Views\Checkout\_PaymentErrorPage.cshtml') $loc)
+        $css = '/css/gm-info.css?v1'; $newPage = 'new payment error page'
+      }
       elseif ($path -match '^/checkout/orderresult/?$') {
         # The live basket page's frame (see the main loop) with a sample order: the live page is never asked for
-        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: a sample order confirmation, as shown after payment (sample order number, amount, email and address). The suggestions are real products at their live prices; adding them is blocked like every other basket action.</p>'
+        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: a sample order confirmation, as shown after payment (sample order number, amount, email and address): payment isn''t set up in the preview, so no checkout reaches it. The suggestions are real products at their live prices; adding one puts it in your preview basket.</p>'
         $content = $notice + (Format-ConfirmationPage (Join-Path $package 'Views\Checkout\_ConfirmationPage.cshtml') (Get-SampleConfirmation))
         $css = '/css/gm-confirmation.css?v1'; $newPage = 'new order confirmation'
         $extraHead = '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />'
@@ -433,6 +469,10 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $title = if ($newPage -eq 'new checkout') { 'GravelMaster | Checkout' } else { 'Order Information' }   # the views' ViewBag.Title
         $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', "<title>$title</title>")
       }
+      # The payment error page's title, which its new branch in Error.cshtml sets (the old one is "Error")
+      if ($newPage -eq 'new payment error page') {
+        $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', '<title>Payment problem</title>')
+      }
       # The account pages: each old view's own title (ViewBag.Title), as the frame is the sign-in or forgotten-password page
       if ($newPage -eq 'new account page') {
         $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', "<title>$accountTitle</title>")
@@ -496,7 +536,7 @@ $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:$Port/")
 try { $listener.Start() } catch { Write-Host "Couldn't start the preview on port $Port - is it already running? ($($_.Exception.Message))" -ForegroundColor Red; exit 1 }
 Write-Host "GravelMaster preview with the new header and footer: http://localhost:$Port/"
-Write-Host "Read-only: basket, sign-ups, enquiries and forms are blocked (only Sort by on category pages goes through). Press Ctrl+C to stop."
+Write-Host "The basket is the preview's own, kept while it runs; payment isn't set up. Sign-ups, enquiries and other forms are blocked (only Sort by on category pages goes through). Press Ctrl+C to stop."
 if (-not $NoBrowser) { Start-Process "http://localhost:$Port/" }
 
 while ($listener.IsListening) {
@@ -534,7 +574,28 @@ while ($listener.IsListening) {
         if ($script:categorySortOptions -contains $value) { $sort = $value }
       }
     }
-    if ($req.HttpMethod -eq 'POST' -and $path -match '^/checkout/checkmyorder/?$') {
+    $sampleFlag = $rawUrl -match '[?&](sample|empty|voucher|discount|stock|samples|preorder|mixed|simple|notimes|area)=[^&]*'
+    if ($path -match '^/basket/(addtobasket|updatequantity|getbasketsummary|getselectedpostcode|updatebasket|removefrombasket|applycouponcode)/?$' -or
+        ($req.HttpMethod -eq 'POST' -and $path -match '^/checkout/processorder/?$')) {
+      # The preview's working basket (preview-basket.ps1): these never reach the live site
+      $body = ''
+      if ($req.HttpMethod -eq 'POST') {
+        $reader = New-Object IO.StreamReader($req.InputStream, [Text.Encoding]::UTF8)
+        $body = $reader.ReadToEnd()
+        $reader.Close()
+      }
+      $referer = if ($req.UrlReferrer -and $req.UrlReferrer.Host -eq $req.Url.Host) { $req.UrlReferrer.AbsolutePath } else { $null }
+      $answer = Invoke-PreviewBasket $req.HttpMethod $path ([System.Web.HttpUtility]::ParseQueryString($req.Url.Query)) ([System.Web.HttpUtility]::ParseQueryString($body)) ($req.Headers['X-Requested-With'] -eq 'XMLHttpRequest') $referer
+      if ($answer.Location) { $res.StatusCode = 302; $res.RedirectLocation = $answer.Location }
+      else { Send-Response $res $answer.Status $answer.ContentType ([Text.Encoding]::UTF8.GetBytes($answer.Body)) $withBody }
+      $note = $answer.Note
+    }
+    elseif ($req.HttpMethod -eq 'GET' -and $path -match '^/checkout/processorder/?$' -and -not $sampleFlag -and $script:previewBasket.Lines.Count -eq 0) {
+      # as the live site does with an empty basket (?sample=1 shows the sample checkout)
+      $res.StatusCode = 302; $res.RedirectLocation = '/basket'
+      $note = 'checkout: the basket is empty'
+    }
+    elseif ($req.HttpMethod -eq 'POST' -and $path -match '^/checkout/checkmyorder/?$') {
       # The Track Order pop-up. The live order lookup is never asked (it reads real customers' orders): the preview
       # answers for its sample orders, as the lookup would (track-order.ps1)
       $reader = New-Object IO.StreamReader($req.InputStream, [Text.Encoding]::UTF8)
@@ -590,7 +651,9 @@ while ($listener.IsListening) {
       # The live checkout sends a visitor with no basket back to /basket, and the preview has no basket, so the
       # sample checkout is shown in the live basket page's frame (the same layout, which gets the checkout header
       # here because the address has "checkout" in it, as _Layout decides)
-      $fetchUrl = if ($path -match '^/checkout/(processorder|orderresult)/?$') { '/basket' }
+      $fetchUrl = if ($path -match '^/checkout/(processorder|orderresult)/?$' -or $path -match '^/basket/index/?$') { '/basket' }
+        # the payment error page's own frame, without the address's "loc" (the new page is filled in here)
+        elseif ($path -match '^/checkout/orderresulterror/?$') { '/checkout/orderresulterror' }
         elseif ($path -match '^/account/login/?$') { '/account/login' }
         elseif ($path -match $script:accountFramePattern -or $path -match $script:myAccountPattern) { '/account/forgotpassword' }
         else { $rawUrl }

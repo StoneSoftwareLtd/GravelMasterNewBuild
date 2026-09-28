@@ -5,6 +5,7 @@
 #                        and would send the page back to /basket. The sample basket's lines, and sample delivery dates
 #                        run through the real date rules (CheckoutDates.Build, compiled from CheckoutPageModels.cs)
 #   Format-CheckoutPage  renders _CheckoutPage.cshtml with it
+#   Format-PaymentErrorPage  renders _PaymentErrorPage.cshtml, where "Continue to payment" ends in the preview
 #
 # The markup comes from the .cshtml as it is: each Razor block is found in the file and filled in, and the render
 # fails if any Razor is left over. The address finders (Postcode Anywhere) aren't loaded in the preview: each is
@@ -14,17 +15,29 @@
 if (-not ('Agilis.ECommerce.Mvc.Web.ViewModels.Common.CheckoutDates' -as [type])) {
   Add-Type -Path (Join-Path $PSScriptRoot '..\..\Website\Website\ViewModels\Common\CheckoutPageModels.cs') -ReferencedAssemblies System.Core
 }
+if (-not ('Agilis.ECommerce.Mvc.Web.ViewModels.Common.PaymentErrorModel' -as [type])) {
+  Add-Type -Path (Join-Path $PSScriptRoot '..\..\Website\Website\ViewModels\Common\PaymentErrorModels.cs')
+}
 
 # $flags: 'samples' (Royal Mail), 'preorder' (only pre-order sizes), 'mixed' (a pre-order size with others),
-# 'simple' (a cart the old page skipped the dates for), 'notimes' (no morning slot); $area: the basket's postcode area
-function Get-SampleCheckout([string[]]$flags, [string]$area) {
-  $basket = Get-SampleBasket @()
+# 'simple' (a cart the old page skipped the dates for), 'notimes' (no morning slot); $area: the basket's postcode area;
+# $basket: a basket page model to check out (the preview's working basket, with its own pre-order dates), or none for
+# the sample basket
+function Get-SampleCheckout([string[]]$flags, [string]$area, $basket = $null) {
+  $given = $null -ne $basket
+  if (-not $given) { $basket = Get-SampleBasket @() }
   $preOrder = (Get-Date).Date.AddDays(28 - [int](Get-Date).DayOfWeek + 1)   # the Monday about four weeks away
   $lines = @($basket.Lines | ForEach-Object {
-    [pscustomobject]@{ NameHtml = $_.NameHtml; SizeHtml = $_.SizeHtml; ImageUrl = $_.ImageUrl; Quantity = $_.Quantity; LinePrice = [decimal]$_.LinePrice; PreOrderDate = $null }
+    [pscustomobject]@{ NameHtml = $_.NameHtml; SizeHtml = $_.SizeHtml; ImageUrl = $_.ImageUrl; Quantity = $_.Quantity; LinePrice = [decimal]$_.LinePrice; PreOrderDate = $(if ($given) { $_.PreOrderDate } else { $null }) }
   })
-  if ($flags -contains 'preorder') { foreach ($l in $lines) { $l.PreOrderDate = $preOrder } }
-  if ($flags -contains 'mixed') { $lines[0].PreOrderDate = $preOrder }
+  if ($given) {
+    # the latest pre-order week in the basket
+    $weeks = @($lines | Where-Object { $_.PreOrderDate } | ForEach-Object { [datetime]$_.PreOrderDate } | Sort-Object)
+    if ($weeks.Count) { $preOrder = $weeks[-1] }
+  } else {
+    if ($flags -contains 'preorder') { foreach ($l in $lines) { $l.PreOrderDate = $preOrder } }
+    if ($flags -contains 'mixed') { $lines[0].PreOrderDate = $preOrder }
+  }
   $total = [decimal]0
   foreach ($l in $lines) { $total += $l.LinePrice }
 
@@ -67,6 +80,25 @@ function Get-SampleCheckout([string[]]$flags, [string]$area) {
     PreOrderDate = $(if ($flags -contains 'preorder' -or $flags -contains 'mixed') { $preOrder } else { $null })
     ShowTradeLink = $true
   }
+}
+
+# The payment error page (Views/Checkout/_PaymentErrorPage.cshtml). $loc: the address's "loc", as Error.cshtml passes it
+# to PaymentErrorModel (compiled from PaymentErrorModels.cs, so the preview works out the area the same way)
+function Format-PaymentErrorPage([string]$templatePath, [string]$loc) {
+  $src = [IO.File]::ReadAllText($templatePath)
+  $src = [regex]::Replace($src, '[ \t]*@\*[\s\S]*?\*@[ \t]*\r?\n?', '')   # Razor comments
+  $area = (New-Object Agilis.ECommerce.Mvc.Web.ViewModels.Common.PaymentErrorModel $loc).Area
+  $start = $src.IndexOf('<div class="gm-info gm-payerror"')
+  if ($start -lt 0) { throw "Couldn't find <div class=""gm-info gm-payerror""> in _PaymentErrorPage.cshtml" }
+  $h = $src.Substring($start)
+  $h = Set-EachRazorBlock $h '@if \(Model\.Area != null\)\s*\{' { param($b) if ($area) { $b.Inner } else { $b.ElseInner } }
+  if ($area) {
+    if (-not $h.Contains('@Model.Area')) { throw "Couldn't find @Model.Area in _PaymentErrorPage.cshtml" }
+    $h = $h.Replace('@Model.Area', [Net.WebUtility]::HtmlEncode($area))
+  }
+  $m = [regex]::Match($h, '(?<![\w.&#])@[A-Za-z(*{]|(?m)^\s*(?:(?:if|foreach|for|while)\s*\(|else\s*(?:\{|$|if\b))')
+  if ($m.Success) { throw "_PaymentErrorPage still contains Razor near: " + $h.Substring([Math]::Max(0, $m.Index - 80), [Math]::Min(160, $h.Length - [Math]::Max(0, $m.Index - 80))) }
+  $h
 }
 
 function Format-CheckoutPage([string]$templatePath, $model) {
