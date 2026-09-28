@@ -23,6 +23,7 @@
 # (Views/Content/_DeliveryPage.cshtml, _CalculatorPage.cshtml, _FaqPage.cshtml and _ContactPage.cshtml), and /privacy and
 # /term-conditions the admin site's words in the new design (_LegalPage.cshtml; ?tidy=1 for docs/admin-content's copy).
 # /special-offers is the new special offers page (Views/Product/_OffersPage.cshtml), filled from the live page's products.
+# /ideas-advice and its topic and article pages are the new Ideas & Advice pages (Views/Ideas/_Ideas*.cshtml).
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -57,6 +58,7 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'myaccount-pages.ps1')
 . (Join-Path $PSScriptRoot 'search-page.ps1')
 . (Join-Path $PSScriptRoot 'info-pages.ps1')
+. (Join-Path $PSScriptRoot 'ideas-pages.ps1')
 # the account pages shown in the live forgotten-password page's frame (the messages have no page of their own to fetch)
 $script:accountFramePattern = '^/account/(forgotpassword|resetpassword|forgotpasswordconfirmation|resetpasswordconfirmation|confirmemail|register|traderegister)/?$'
 # the My Account pages, shown in the same frame (the live ones send the preview, never signed in, to sign in)
@@ -357,6 +359,39 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
           $searchPhrase = ("$($model.Phrase)").Trim()
         }
       }
+      elseif ($path -match '^/ideas-advice(?:/|$)') {
+        # The landing page, a topic's page or an article, under the Ideas & Advice bar with the old banner's topics.
+        # The landing page's latest articles are a stand-in (ideas-pages.ps1): the live page doesn't show them
+        $topics = @(Get-OldIdeasTopics $html)
+        $views = Join-Path $package 'Views\Ideas'
+        $ideasTitle = $null
+        if ($topics.Count -gt 0) {
+          if ($path -match '^/ideas-advice/?$') {
+            # a topic's tab can be a redirect (Product-Information goes to product-information): follow it
+            $fetch = {
+              param($u)
+              $r = Get-Live $u 'text/html' $null
+              if ($r.Status -ge 300 -and $r.Status -lt 400 -and $r.Location) { $r = Get-Live ([regex]::Replace($r.Location, '^https?://[^/]+', '')) 'text/html' $null }
+              [Text.Encoding]::UTF8.GetString($r.Body)
+            }
+            $content = Format-IdeasPage $views $topics $path (Get-IdeasLatest $topics $fetch) $null
+            $ideasTitle = 'Ideas & Advice | GravelMaster'   # LatestNews.cshtml's new branch
+          }
+          elseif ($path -match '^/ideas-advice/\d+/') {
+            $article = ConvertFrom-OldIdeasArticle $html.Substring($mainBody.Index, $mainEnd - $mainBody.Index)
+            if ($article) { $content = Format-IdeasPage $views $topics $path $null $article }
+          }
+          else {
+            $list = ConvertFrom-OldIdeasTopic $html $path
+            if ($list) {
+              $content = Format-IdeasPage $views $topics $path $list $null
+              # DisplayCategory.cshtml's new branch: the topic's name when it has no page title
+              if ($html -match '<title>\s*\|') { $ideasTitle = $list.Title + ' | GravelMaster' }
+            }
+          }
+        }
+        if ($content) { $css = '/css/gm-info.css?v1'; $newPage = 'new ideas page' }
+      }
       elseif ($path -match '^/special-offers/?$') {
         # ?empty=1 shows the page with no products on it
         $model = ConvertFrom-OldOffersPage $html.Substring($mainBody.Index, $mainEnd - $mainBody.Index)
@@ -402,6 +437,13 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', [Text.RegularExpressions.MatchEvaluator] { param($m) '<title>' + [Net.WebUtility]::HtmlEncode($title + ' | GravelMaster') + '</title>' })
         $html = [regex]::Replace($html, '<meta name="(description|twitter:description)" content="[^"]*"', [Text.RegularExpressions.MatchEvaluator] { param($m) '<meta name="' + $m.Groups[1].Value + '" content="' + [Net.WebUtility]::HtmlEncode($description) + '"' })
         $html = [regex]::Replace($html, '<meta name="twitter:title" content="[^"]*"', [Text.RegularExpressions.MatchEvaluator] { param($m) '<meta name="twitter:title" content="' + [Net.WebUtility]::HtmlEncode($title + ' | GravelMaster') + '"' })
+      }
+      # The Ideas & Advice titles the new branches set: the landing page's, and a topic's with no page title
+      if ($newPage -eq 'new ideas page' -and $ideasTitle) {
+        $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', [Text.RegularExpressions.MatchEvaluator] { param($m) '<title>' + [Net.WebUtility]::HtmlEncode($ideasTitle) + '</title>' })
+        if ($path -match '^/ideas-advice/?$') {
+          $html = [regex]::Replace($html, '<meta name="(description|twitter:description)" content="[^"]*"', [Text.RegularExpressions.MatchEvaluator] { param($m) '<meta name="' + $m.Groups[1].Value + '" content="' + [Net.WebUtility]::HtmlEncode('How-to guides, garden inspiration and advice on choosing and using our products.') + '"' })
+        }
       }
     }
   }

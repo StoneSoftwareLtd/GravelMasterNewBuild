@@ -1,0 +1,36 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.IdeasArticleModel
+@* The new Ideas & Advice article page (Ideas/DisplayArticle.cshtml). There's no Optima prototype for it, so it's in
+   the information pages' style (css/gm-info.css, .gm-ideas), inside the .gm-info wrapper and under the Ideas & Advice
+   bar that _ContentHubLayout.cshtml adds. The article is the admin site's HTML, in the same readable column as the
+   privacy policy's. No script. *@
+<nav class="container inf-crumbs" aria-label="Breadcrumb">
+    <ol class="inf-crumbs__list">
+        <li><a href="/">Home</a></li>
+        <li><a href="/ideas-advice">Ideas &amp; Advice</a></li>
+        <li><span class="inf-crumbs__current" aria-current="page">@Model.Title</span></li>
+    </ol>
+</nav>
+
+<article class="container ida-article">
+    <h1 class="ida-article__title">@Model.Title</h1>
+    @if (Model.ImageUrl != null)
+    {
+        <img class="ida-article__img" src="@Model.ImageUrl" alt="" width="1000" height="550" decoding="async">
+    }
+    <div class="ida-body">
+        @Html.Raw(Model.Contents)
+    </div>
+</article>
+
+<section class="container ida-help" aria-labelledby="ida-help-title">
+    <div class="ida-help__box">
+        <div class="ida-help__words">
+            <h2 class="ida-help__title" id="ida-help-title">Planning a project?</h2>
+            <p class="ida-help__text">Our team can help you choose the right products and work out how much you need. Call us 8am - 5pm.</p>
+        </div>
+        <div class="ida-help__actions">
+            <a href="tel:03300585068" class="inf-btn">Call 0330 058 5068</a>
+            <a href="/calculator" class="inf-btn inf-btn--outline">Gravel calculator</a>
+        </div>
+    </div>
+</section>

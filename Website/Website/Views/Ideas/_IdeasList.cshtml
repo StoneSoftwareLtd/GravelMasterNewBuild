@@ -1,0 +1,108 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.IdeasListModel
+@{
+    int count = Model.Articles.Count;
+    // on the landing page the first article is shown large, above the others
+    int first = Model.IsLanding && count > 0 ? 1 : 0;
+}
+@* The new Ideas & Advice landing page (Ideas/LatestNews.cshtml: the latest articles) and topic pages
+   (Ideas/DisplayCategory.cshtml: a topic's articles). There's no Optima prototype for them, so they're in the
+   information pages' style (css/gm-info.css, .gm-ideas), inside the .gm-info wrapper and under the Ideas & Advice bar
+   that _ContentHubLayout.cshtml adds. No script. *@
+<nav class="container inf-crumbs" aria-label="Breadcrumb">
+    <ol class="inf-crumbs__list">
+        <li><a href="/">Home</a></li>
+        @if (Model.IsLanding)
+        {
+            <li><span class="inf-crumbs__current" aria-current="page">Ideas &amp; Advice</span></li>
+        }
+        else
+        {
+            <li><a href="/ideas-advice">Ideas &amp; Advice</a></li>
+            <li><span class="inf-crumbs__current" aria-current="page">@Model.Title</span></li>
+        }
+    </ol>
+</nav>
+
+<section class="ida-intro">
+    <div class="container">
+        @if (Model.IsLanding)
+        {
+            <p class="inf-eyebrow">Guides and inspiration</p>
+        }
+        <h1 class="ida-intro__title">@Model.Title</h1>
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <p class="ida-intro__text">@Model.Description</p>
+        }
+        @if (Model.IsLanding && string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <p class="ida-intro__text">How-to guides, garden inspiration and advice on choosing and using our products.</p>
+        }
+    </div>
+</section>
+
+<div class="container ida-list">
+    @if (count == 0)
+    {
+        <div class="ida-empty">
+            <p class="ida-empty__title">There are no articles here yet</p>
+            <p class="ida-empty__text"><a href="/ideas-advice">See all our ideas and advice</a>, or call us 8am - 5pm on <a href="tel:03300585068">0330 058 5068</a>.</p>
+        </div>
+    }
+    else
+    {
+        if (first == 1)
+        {
+            var feature = Model.Articles[0];
+            <a href="@feature.Url" class="ida-card ida-card--feature">
+                <span class="ida-card__media">
+                    @if (feature.ImageUrl != null)
+                    {
+                        <img class="ida-card__img" src="@feature.ImageUrl" alt="" width="1000" height="550" decoding="async">
+                    }
+                </span>
+                <span class="ida-card__body">
+                    <span class="ida-card__label">Latest</span>
+                    <h2 class="ida-card__name">@feature.Name</h2>
+                    @if (!string.IsNullOrWhiteSpace(feature.Summary))
+                    {
+                        <span class="ida-card__summary">@feature.Summary</span>
+                    }
+                    <span class="ida-card__more">Read more</span>
+                </span>
+            </a>
+        }
+        if (count > first)
+        {
+            <h2 class="@(Model.IsLanding ? "ida-list__title" : "inf-sr")">@(Model.IsLanding ? "More articles" : "Articles")</h2>
+            <div class="ida-grid">
+                @for (int i = first; i < count; i++)
+                {
+                    var card = Model.Articles[i];
+                    <a href="@card.Url" class="ida-card">
+                        <span class="ida-card__media">
+                            @if (card.ImageUrl != null)
+                            {
+                                <img class="ida-card__img" src="@card.ImageUrl" alt="" width="1000" height="550" loading="@(i < 3 + first ? "eager" : "lazy")" decoding="async">
+                            }
+                        </span>
+                        <span class="ida-card__body">
+                            <h3 class="ida-card__name">@card.Name</h3>
+                            @if (!string.IsNullOrWhiteSpace(card.Summary))
+                            {
+                                <span class="ida-card__summary">@card.Summary</span>
+                            }
+                            <span class="ida-card__more">Read more</span>
+                        </span>
+                    </a>
+                }
+            </div>
+        }
+    }
+
+    @if (Model.IsLanding)
+    {
+        @* The old landing page's Instagram and Pinterest pictures, as links *@
+        <p class="ida-follow">Find more ideas on our <a href="https://www.instagram.com/gravelmaster/" target="_blank" rel="noopener">Instagram<span class="inf-sr"> (opens in a new tab)</span></a> and <a href="https://www.pinterest.co.uk/gravelmaster/" target="_blank" rel="noopener">Pinterest<span class="inf-sr"> (opens in a new tab)</span></a>.</p>
+    }
+</div>

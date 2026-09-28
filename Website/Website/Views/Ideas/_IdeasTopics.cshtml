@@ -1,0 +1,18 @@
+@model List<Agilis.ECommerce.Mvc.Web.ViewModels.Common.CategoryLink>
+@{
+    // the topic whose page this is, if it is one
+    string here = Request.Url.AbsolutePath.TrimEnd('/');
+}
+@* The Ideas & Advice bar, at the top of every Ideas & Advice page: _ContentHubLayout.cshtml shows it, with the topics
+   the old banner's tabs list (not "Archive"), in their order. It takes the place of the old banner and tabs. *@
+<nav class="ida-bar" aria-label="Ideas &amp; Advice">
+    <div class="container ida-bar__inner">
+        <a href="/ideas-advice" class="ida-bar__home">Ideas &amp; Advice</a>
+        <ul class="ida-bar__topics">
+            @foreach (var topic in Model)
+            {
+                <li><a href="@topic.Url" class="ida-bar__topic" aria-current="@(string.Equals(topic.Url.TrimEnd('/'), here, StringComparison.OrdinalIgnoreCase) ? "page" : null)">@topic.Name</a></li>
+            }
+        </ul>
+    </div>
+</nav>
