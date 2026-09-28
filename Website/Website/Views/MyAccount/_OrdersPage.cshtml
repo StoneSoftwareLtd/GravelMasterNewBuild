@@ -6,7 +6,7 @@
 @* New order history (/myaccount/orders), shown by MyAccount/Orders.cshtml when the new chrome is on. The old page listed each
    item on its own with its order number; this groups the items under their order, with the same details: photo, name, what
    was ordered, quantity, date, delivery address and order number. "Request a return" links to the same address as before.
-   "Track order" opens the site's Track Order pop-up with the order number and postcode filled in (js/gm-account.js).
+   "Track order" opens the header's Track Order pop-up (_TrackOrderPopup), which looks up that order with its postcode.
    Styles: css/gm-account.css. *@
 <link href="/css/gm-account.css?v1" rel="stylesheet" />
 <div class="gm-account" data-account>
@@ -43,7 +43,7 @@
                                         <p class="acc-order__meta">Delivery to @order.DeliveryAddress</p>
                                     }
                                 </div>
-                                <a class="acc-btn acc-btn--ghost acc-btn--small" href="#" data-toggle="modal" data-target="#trackModal" data-track data-order="@order.Number" data-postcode="@order.DeliveryPostcode">Track order<span class="acc-visually-hidden"> #@order.Number</span></a>
+                                <a class="acc-btn acc-btn--ghost acc-btn--small" href="#" data-track-open aria-haspopup="dialog" data-order="@order.Number" data-postcode="@order.DeliveryPostcode">Track order<span class="acc-visually-hidden"> #@order.Number</span></a>
                             </div>
                             <ul class="acc-lines">
                                 @foreach (var line in order.Lines)

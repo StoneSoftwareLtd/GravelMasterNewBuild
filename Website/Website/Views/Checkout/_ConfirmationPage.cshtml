@@ -5,8 +5,8 @@
    section. Behaviour: js/gm-confirmation.js.
    - It shows what the old page did: the order number, the amount paid, where the confirmation email goes and the
      delivery address.
-   - "Track your order" opens the site's own Track Order pop-up (_TrackOrderModal), filled in with the order number
-     and the delivery postcode.
+   - "Track your order" opens the header's Track Order pop-up (_TrackOrderPopup), which looks up this order with the
+     delivery postcode.
    - "Add to basket" on a suggestion calls /basket/addtobasket as the basket page's suggestions do, then goes to the
      basket. It never reloads this page: loading /checkout/orderresult isn't only a page view, it marks the order as paid. *@
 <div class="gm-confirm" data-postal-area="@Model.PostalArea">
@@ -43,7 +43,7 @@
                 }
                 <p>If we need anything else to arrange your delivery, we&rsquo;ll be in touch. Thank you for choosing GravelMaster.</p>
                 <div class="cnf-actions">
-                    <a class="cnf-btn cnf-btn--solid" href="#" data-toggle="modal" data-target="#trackModal" data-track data-order="@Model.OrderNumber" data-postcode="@Model.DeliveryPostcode"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg> Track your order</a>
+                    <a class="cnf-btn cnf-btn--solid" href="#" data-track-open aria-haspopup="dialog" data-order="@Model.OrderNumber" data-postcode="@Model.DeliveryPostcode"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg> Track your order</a>
                     <a class="cnf-btn cnf-btn--outline" href="/"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4h2.2l2.3 10.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.76L20 8H6" /><circle cx="9.5" cy="19" r="1.4" /><circle cx="16.5" cy="19" r="1.4" /></svg> Continue shopping</a>
                 </div>
             </div>

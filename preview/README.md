@@ -30,7 +30,8 @@ The search results (`/search?searchphrase=…`, or the header's search box) are 
 
 - Saving a `gm-*.css` or `gm-*.js` file, a `gm-*` image or any `.cshtml` file reloads the page with the change. (A change to a script in `tools/`, or to a `ViewModels/Common/*.cs` file, needs the preview restarting: the product page runs the real C# model, compiled when the preview starts.)
 - Add `?newchrome=0` to an address to compare with the old header, footer, homepage and category pages (it sticks while you click around). `?newchrome=1` switches back. Page titles start with `[Preview]`.
-- It is read-only. Adding to basket, sign-ups, enquiries, "Send me my estimate", Track Order and logging in are blocked (the forms say they couldn't send). The one form let through is **Sort by** on category pages, and only with one of its four choices, because it only changes the order of the products. No cookies are sent, so the basket is always empty. Analytics, Hotjar, Clarity, Facebook and chat are removed so preview visits aren't counted.
+- The Track Order pop-up is the new one. The live order lookup is never asked (it reads real customers' orders): the preview answers for sample orders with the lookup's own sentences, and the pop-up lists them (postcode NG7 2RD with 123456, 123457, 123458 or 118870; see `tools/track-order.ps1`).
+- It is read-only. Adding to basket, sign-ups, enquiries, "Send me my estimate" and logging in are blocked (the forms say they couldn't send). The one form let through is **Sort by** on category pages, and only with one of its four choices, because it only changes the order of the products. No cookies are sent, so the basket is always empty. Analytics, Hotjar, Clarity, Facebook and chat are removed so preview visits aren't counted.
 
 ### Known limits
 
@@ -75,6 +76,7 @@ Menus, product photos and prices come from the live site and are saved in `tools
 | `confirmation-page.ps1` | Builds the sample order, with the four suggestions read from their live product pages, and fills in `_ConfirmationPage.cshtml` with it. |
 | `account-pages.ps1` | Fills in the four account partials: the sign-in page for a few sample states, the two password forms and the five messages. |
 | `myaccount-pages.ps1` | Builds the sample customer and orders from live product pages and fills in the My Account partials, with `_AccountAreaHead.cshtml` at the top of each. |
+| `track-order.ps1` | The Track Order pop-up's answers for the sample orders, as the site's order lookup gives them. |
 | `site-preview.ps1` | The whole-website preview. |
 | `fetch-data.ps1` | Re-reads menus, products, banners and a sample category page from the live site, then runs `build.ps1`. |
 | `data.json` | The live site's menus, products, prices and homepage banners (fetched 17 September 2026). |

@@ -90,7 +90,7 @@ else
     @RenderSection("Head", false)
     @if (useNewChrome)
     {
-    <link href="~/css/gm-chrome.css?v3" rel="stylesheet" />
+    <link href="~/css/gm-chrome.css?v4" rel="stylesheet" />
     }
     <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -566,12 +566,12 @@ else
     @if (useNewChrome)
     {
         @Html.Partial("_SiteFooter")
-        @Html.Partial("_TrackOrderModal")
+        @Html.Partial("_TrackOrderPopup")
         if (!isCheckout)
         {
             @Html.Partial("_SiteMobileMenu")
         }
-        <script src="/js/gm-chrome.js?v3"></script>
+        <script src="/js/gm-chrome.js?v4"></script>
     }
     else
     {

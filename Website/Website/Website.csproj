@@ -1734,6 +1734,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\_TrackOrderModal.cshtml" />
+    <Content Include="Views\Shared\_TrackOrderPopup.cshtml" />
     <Content Include="Views\Shared\_LegacyFooter.cshtml" />
     <Content Include="Views\Shared\_LegacyHeader.cshtml" />
     <Content Include="Views\Shared\_SiteFooter.cshtml" />

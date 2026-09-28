@@ -1,0 +1,77 @@
+@* Track Order pop-up in the new design, rendered once on every page by _Layout with the new header and footer (the old
+   pop-up, _TrackOrderModal, stays with the old ones). Its look is the Track Order modal from the July 2026 prototypes.
+   - Any element with data-track-open opens it: the header, the phone menu, the delivery, FAQ and contact pages, the
+     order confirmation and My Account. data-order and data-postcode on it fill the boxes in and look the order up
+     straight away.
+   - "Find my order" posts the old pop-up's two fields (orderId, postcode) to the same address, the site's order lookup
+     (CheckoutController.CheckMyOrder), which answers with a sentence. Each step's data-says is part of the sentence
+     the lookup gives for an order at that step, so those answers also light up the steps; any other answer (not
+     found, a different postcode, the lookup not working) is shown on its own.
+   - It doesn't need Bootstrap or jQuery, so it works as soon as the page has loaded.
+   Styles: css/gm-chrome.css (.gm-track). Behaviour: js/gm-chrome.js. *@
+<div class="gm-track" id="trackOrder" hidden>
+    <div class="trk-overlay" data-track-close></div>
+    <div class="trk-dialog" role="dialog" aria-modal="true" aria-labelledby="trackOrderTitle">
+        <div class="trk-head">
+            <h2 class="trk-title" id="trackOrderTitle">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg>
+                Track your order
+            </h2>
+            <button type="button" class="trk-close" aria-label="Close" data-track-close>
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+            </button>
+        </div>
+        <div class="trk-body">
+            <p class="trk-intro">Enter your order number and the delivery or billing postcode to see where your order is.</p>
+            @* novalidate: gm-chrome.js tidies the boxes ("#123456", spaces) before checking them *@
+            <form class="trk-form" action="/checkout/checkmyorder?id=track" method="post" novalidate>
+                <div class="trk-field">
+                    <label class="trk-label" for="trackOrderId">Order number</label>
+                    <input class="trk-input" id="trackOrderId" name="orderId" type="text" inputmode="numeric" pattern="[0-9]+" maxlength="12" autocomplete="off" required aria-describedby="trackOrderIdHint">
+                    <p class="trk-hint" id="trackOrderIdHint">It&rsquo;s in your order confirmation email.</p>
+                </div>
+                <div class="trk-field">
+                    <label class="trk-label" for="trackPostcode">Delivery or billing postcode</label>
+                    <input class="trk-input trk-input--postcode" id="trackPostcode" name="postcode" type="text" maxlength="10" autocomplete="postal-code" autocapitalize="characters" spellcheck="false" required>
+                </div>
+                <button type="submit" class="trk-submit">Find my order</button>
+            </form>
+            <p class="trk-sr" aria-live="polite" data-track-announce></p>
+            <div class="trk-result" hidden>
+                <p class="trk-result__order">Order <strong data-track-number></strong></p>
+                <ol class="trk-steps">
+                    <li class="trk-step" data-says="being processed">
+                        <span class="trk-step__dot" aria-hidden="true">
+                            <svg class="trk-step__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z" /><path d="M3.3 7 12 12l8.7-5" /><path d="M12 22V12" /></svg>
+                            <svg class="trk-step__tick" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+                        </span>
+                        <span class="trk-step__label"><span class="trk-sr" data-step-state></span>Being prepared</span>
+                    </li>
+                    <li class="trk-step" data-says="local delivery depot">
+                        <span class="trk-step__dot" aria-hidden="true">
+                            <svg class="trk-step__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12" /><path d="M7 21v-8h10v8" /><path d="M7 17h10" /></svg>
+                            <svg class="trk-step__tick" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+                        </span>
+                        <span class="trk-step__label"><span class="trk-sr" data-step-state></span>At your local depot</span>
+                    </li>
+                    <li class="trk-step" data-says="on a delivery vehicle">
+                        <span class="trk-step__dot" aria-hidden="true">
+                            <svg class="trk-step__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg>
+                            <svg class="trk-step__tick" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+                        </span>
+                        <span class="trk-step__label"><span class="trk-sr" data-step-state></span>Out for delivery</span>
+                    </li>
+                    <li class="trk-step" data-says="been delivered">
+                        <span class="trk-step__dot" aria-hidden="true">
+                            <svg class="trk-step__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8" /><path d="M5 10v11h14V10" /><path d="M10 21v-6h4v6" /></svg>
+                            <svg class="trk-step__tick" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+                        </span>
+                        <span class="trk-step__label"><span class="trk-sr" data-step-state></span>Delivered</span>
+                    </li>
+                </ol>
+                <p class="trk-message" data-track-message></p>
+            </div>
+            <p class="trk-help">Questions about a delivery? Call <a href="tel:03300585068">0330 058 5068</a>, option 2, Monday to Friday, 8am - 5pm.</p>
+        </div>
+    </div>
+</div>

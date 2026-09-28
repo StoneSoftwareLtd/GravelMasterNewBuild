@@ -1,6 +1,7 @@
 /* ===== GravelMaster header, footer and mobile menu behaviour =====
    menu.js and foot-features.js from the Optima prototype, plus the live basket
-   total. Loaded at the end of <body> only when _Layout renders the new chrome. */
+   total and the Track Order pop-up. Loaded at the end of <body> only when _Layout
+   renders the new chrome. */
 
 /* Slide-in mobile menu */
 (function () {
@@ -168,4 +169,163 @@
   update();
   if (window.ResizeObserver) new ResizeObserver(update).observe(header);
   window.addEventListener('resize', update);
+})();
+
+/* Track Order pop-up (_TrackOrderPopup.cshtml). Any element with data-track-open opens it; data-order and data-postcode
+   on it fill the boxes in and look the order up straight away. "Find my order" posts the old pop-up's two fields to
+   the site's order lookup, which answers with a sentence: shown as it is, and the steps light up when it's one of
+   theirs (each step's data-says). */
+(function () {
+  var popup = document.getElementById('trackOrder');
+  if (!popup || !window.fetch || !window.DOMParser) return;
+  var form = popup.querySelector('.trk-form');
+  var orderBox = form.querySelector('[name="orderId"]');
+  var postcodeBox = form.querySelector('[name="postcode"]');
+  var button = form.querySelector('.trk-submit');
+  var label = button.textContent;
+  var result = popup.querySelector('.trk-result');
+  var number = result.querySelector('[data-track-number]');
+  var steps = result.querySelectorAll('.trk-step');
+  var message = result.querySelector('[data-track-message]');
+  var announce = popup.querySelector('[data-track-announce]');
+  var ellipsis = String.fromCharCode(8230);
+  var apostrophe = String.fromCharCode(8217);
+  var opener = null;
+  var sending = false;
+
+  function open(trigger) {
+    // From the phone menu, which closes as the pop-up opens, focus goes back to the menu button afterwards
+    var inMenu = trigger.closest && trigger.closest('.mobile-menu');
+    opener = inMenu ? document.querySelector('.menu-toggle') : trigger;
+    popup.hidden = false;
+    document.body.style.overflow = 'hidden';
+    var order = trigger.getAttribute('data-order');
+    var postcode = trigger.getAttribute('data-postcode');
+    if (order) {
+      // an order's own "Track order": its details, looked up straight away
+      orderBox.value = order;
+      postcodeBox.value = postcode || '';
+      result.hidden = true;
+      if (postcode) { orderBox.focus(); look(); return; }
+    }
+    (!orderBox.value ? orderBox : !postcodeBox.value ? postcodeBox : button).focus();
+  }
+
+  function close() {
+    popup.hidden = true;
+    document.body.style.overflow = '';
+    if (opener && opener.focus) opener.focus();
+  }
+
+  document.addEventListener('click', function (e) {
+    var trigger = e.target.closest ? e.target.closest('[data-track-open]') : null;
+    if (!trigger) return;
+    e.preventDefault();   // the links are only there to open the pop-up
+    open(trigger);
+  });
+  Array.prototype.forEach.call(popup.querySelectorAll('[data-track-close]'), function (el) {
+    el.addEventListener('click', close);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !popup.hidden) close();
+  });
+
+  // Keep Tab inside the open pop-up: it covers the page, so focus shouldn't move behind it
+  popup.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') return;
+    var items = Array.prototype.filter.call(popup.querySelectorAll('a[href], button, input'), function (el) {
+      return el.getClientRects().length > 0;
+    });
+    if (!items.length) return;
+    var first = items[0];
+    var last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
+  // The answer is a sentence, sometimes with the phone number in bold. Only its words and bold are kept: one answer
+  // repeats the postcode typed in, which mustn't be read as HTML.
+  function fill(el, html) {
+    el.textContent = '';
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    Array.prototype.forEach.call(doc.body.childNodes, function (node) {
+      if (node.nodeType === 1 && (node.nodeName === 'B' || node.nodeName === 'STRONG')) {
+        var strong = document.createElement('strong');
+        strong.textContent = node.textContent;
+        el.appendChild(strong);
+      } else {
+        el.appendChild(document.createTextNode(node.textContent));
+      }
+    });
+  }
+
+  function show(order, html) {
+    fill(message, html);
+    var said = message.textContent.replace(/\s+/g, ' ').trim();
+    var reached = -1;
+    Array.prototype.forEach.call(steps, function (step, i) {
+      if (said.toLowerCase().indexOf(step.getAttribute('data-says')) >= 0) reached = i;
+    });
+    number.textContent = order;
+    number.parentNode.hidden = reached < 0;
+    steps[0].parentNode.hidden = reached < 0;
+    Array.prototype.forEach.call(steps, function (step, i) {
+      var done = i < reached || (i === reached && i === steps.length - 1);   // delivered is the last step, and done
+      step.classList.toggle('is-done', done);
+      step.classList.toggle('is-current', i === reached && !done);
+      if (i === reached) step.setAttribute('aria-current', 'step'); else step.removeAttribute('aria-current');
+      step.querySelector('[data-step-state]').textContent = done ? 'Done: ' : i === reached ? 'Now: ' : 'To come: ';
+    });
+    message.classList.toggle('trk-message--problem', reached < 0);
+    result.hidden = false;
+    announce.textContent = said;
+  }
+
+  function look() {
+    if (sending) return;
+    sending = true;
+    button.setAttribute('aria-disabled', 'true');   // not disabled, so it keeps the focus
+    button.textContent = 'Finding your order' + ellipsis;
+    announce.textContent = '';
+    var order = orderBox.value;
+    var data = new URLSearchParams();
+    data.append('orderId', order);
+    data.append('postcode', postcodeBox.value);
+    fetch(form.action, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'X-Requested-With': 'XMLHttpRequest' },
+      body: data
+    }).then(function (res) {
+      if (!res.ok) throw new Error(res.status);
+      return res.text();
+    }).then(function (text) {
+      // a sentence, not a whole page (an error page, or signing in)
+      if (!text.trim() || /<(html|head|body|script)\b/i.test(text)) throw new Error('not an answer');
+      show(order, text);
+    }).catch(function () {
+      show(order, 'Sorry, we couldn' + apostrophe + 't look up your order just now. Please try again, or call us on <b>0330 058 5068</b>, option 2.');
+    }).then(function () {
+      sending = false;
+      button.removeAttribute('aria-disabled');
+      button.textContent = label;
+    });
+  }
+
+  orderBox.addEventListener('input', function () { orderBox.setCustomValidity(''); });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (sending) return;
+    // as order numbers are sometimes written: "#123456", "123 456"
+    orderBox.value = orderBox.value.replace(/[\s#]/g, '');
+    postcodeBox.value = postcodeBox.value.trim().toUpperCase();
+    orderBox.setCustomValidity(orderBox.validity.patternMismatch ? 'Order numbers are only numbers, like 123456.' : '');
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    look();
+  });
 })();

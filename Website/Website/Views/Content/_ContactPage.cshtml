@@ -2,7 +2,7 @@
    prototype for it, so it's in the style of the other information pages (css/gm-info.css, loaded in Contact.cshtml's
    Head section; its own rules are scoped to .gm-contact). The words are the live page's own, which are newer than
    master's Contact.cshtml (the Meteor House address, weekends closed, the customer services email);
-   docs/contact-page.md lists the changes. No script: "Track your order" opens the site's Track Order pop-up. *@
+   docs/contact-page.md lists the changes. No script: "Track your order" opens the header's Track Order pop-up. *@
 <div class="gm-info gm-contact">
     <section class="inf-intro">
         <nav class="container inf-crumbs" aria-label="Breadcrumb">
@@ -49,8 +49,8 @@
                     </span>
                     <h2 class="con-card__title">Track your order</h2>
                     <p class="con-card__text">Already ordered? Check its status with your order ID and postcode.</p>
-                    @* The site's Track Order pop-up (_TrackOrderModal), as the header's Track Order link opens it *@
-                    <button type="button" class="inf-btn con-card__btn" data-toggle="modal" data-target="#trackModal">Track your order</button>
+                    @* The header's Track Order pop-up (_TrackOrderPopup) *@
+                    <button type="button" class="inf-btn con-card__btn" data-track-open aria-haspopup="dialog">Track your order</button>
                 </li>
             </ul>
         </div>

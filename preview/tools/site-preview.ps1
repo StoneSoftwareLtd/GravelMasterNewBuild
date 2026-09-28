@@ -24,6 +24,8 @@
 # /term-conditions the admin site's words in the new design (_LegalPage.cshtml; ?tidy=1 for docs/admin-content's copy).
 # /special-offers is the new special offers page (Views/Product/_OffersPage.cshtml), filled from the live page's products.
 # /ideas-advice and its topic and article pages are the new Ideas & Advice pages (Views/Ideas/_Ideas*.cshtml).
+# The Track Order pop-up (Views/Shared/_TrackOrderPopup.cshtml) gets the preview's answers for a few sample orders
+# (track-order.ps1): the live order lookup is never asked.
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -59,6 +61,7 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'search-page.ps1')
 . (Join-Path $PSScriptRoot 'info-pages.ps1')
 . (Join-Path $PSScriptRoot 'ideas-pages.ps1')
+. (Join-Path $PSScriptRoot 'track-order.ps1')
 # the account pages shown in the live forgotten-password page's frame (the messages have no page of their own to fetch)
 $script:accountFramePattern = '^/account/(forgotpassword|resetpassword|forgotpasswordconfirmation|resetpasswordconfirmation|confirmemail|register|traderegister)/?$'
 # the My Account pages, shown in the same frame (the live ones send the preview, never signed in, to sign in)
@@ -125,6 +128,10 @@ function Update-Chrome {
     Home = $(if (Test-Path -LiteralPath (Join-Path $fragments 'home.html')) { Read-Fragment 'home.html' } else { $null })
     Enquiry = Read-Fragment 'enquiry.html'
   }
+  # the Track Order pop-up says which sample orders the preview answers for (track-order.ps1)
+  $intro = [regex]::Match($script:chrome.Footer, '<p class="trk-intro">[\s\S]*?</p>')
+  if (-not $intro.Success) { throw "Couldn't find the Track Order pop-up's intro in footer.html" }
+  $script:chrome.Footer = $script:chrome.Footer.Insert($intro.Index + $intro.Length, "`n" + $script:sampleTrackNote)
 }
 
 function Get-ChangeStamp {
@@ -190,7 +197,7 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
   $footEnd = if ($footStart -ge 0) { $html.IndexOf('</footer>', $footStart) } else { -1 }
   $header = [regex]::Match($html, '<header class="sticky">[\s\S]*?</header>')
   if ($useNewChrome -and $header.Success -and $footEnd -gt $footStart) {
-    # old newsletter band + footer (which holds the Track Order modal) -> _SiteFooter, _TrackOrderModal, _SiteMobileMenu, gm-chrome.js
+    # old newsletter band + footer (which holds the old Track Order pop-up) -> _SiteFooter, _TrackOrderPopup, _SiteMobileMenu, gm-chrome.js
     $newFooter = $chrome.Footer + "`n" + $(if ($isCheckout) { '' } else { $chrome.MobileMenu + "`n" }) + $chrome.Scripts
     $html = $html.Substring(0, $footStart) + $newFooter + $html.Substring($footEnd + '</footer>'.Length)
     # old header -> _SiteHeader
@@ -527,7 +534,16 @@ while ($listener.IsListening) {
         if ($script:categorySortOptions -contains $value) { $sort = $value }
       }
     }
-    if ($sort) {
+    if ($req.HttpMethod -eq 'POST' -and $path -match '^/checkout/checkmyorder/?$') {
+      # The Track Order pop-up. The live order lookup is never asked (it reads real customers' orders): the preview
+      # answers for its sample orders, as the lookup would (track-order.ps1)
+      $reader = New-Object IO.StreamReader($req.InputStream, [Text.Encoding]::UTF8)
+      $posted = $reader.ReadToEnd()
+      $reader.Close()
+      Send-Response $res 200 'text/html; charset=utf-8' ([Text.Encoding]::UTF8.GetBytes((Get-SampleTrackAnswer $posted))) $withBody
+      $note = 'sample order lookup'
+    }
+    elseif ($sort) {
       $live = Get-Live $rawUrl 'text/html' ('sort=' + [Uri]::EscapeDataString($sort))
       if ($live.Status -eq 200 -and $live.ContentType -and $live.ContentType.StartsWith('text/html')) {
         Update-Chrome

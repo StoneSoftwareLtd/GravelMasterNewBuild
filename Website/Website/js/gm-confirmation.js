@@ -1,7 +1,6 @@
 /* ===== GravelMaster order confirmation (Optima design) =====
    Views/Checkout/_ConfirmationPage.cshtml.
-   - "Track your order" opens the site's Track Order pop-up (_TrackOrderModal, through Bootstrap's data-toggle) and
-     fills in its order number and postcode.
+   - ("Track your order" is the header's Track Order pop-up's, in gm-chrome.js.)
    - "Add to basket" on a suggestion calls /basket/addtobasket as the basket page's suggestions do, then goes to the
      basket. It never reloads this page: loading /checkout/orderresult isn't only a page view, it marks the order as paid.
    - A photo that doesn't load leaves its pale box.
@@ -20,20 +19,6 @@
     if (img.complete && img.naturalWidth === 0) missing();
     else img.addEventListener('error', missing);
   });
-
-  /* ---- Track your order ---- */
-  var track = root.querySelector('[data-track]');
-  if (track) {
-    track.addEventListener('click', function (e) {
-      e.preventDefault();   // the link is only there to open the pop-up
-      var modal = document.getElementById('trackModal');
-      if (!modal) return;
-      var order = modal.querySelector('input[name="orderId"]');
-      var postcode = modal.querySelector('input[name="postcode"]');
-      if (order && !order.value) order.value = track.getAttribute('data-order') || '';
-      if (postcode && !postcode.value) postcode.value = track.getAttribute('data-postcode') || '';
-    });
-  }
 
   /* ---- Add a suggestion, then go to the basket ---- */
   var area = root.getAttribute('data-postal-area') || '';

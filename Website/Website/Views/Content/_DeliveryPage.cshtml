@@ -2,7 +2,7 @@
    prototype for it, so it's in the Trade Accounts page's style. The words are the live page's own (its content, from
    the admin site), in the same order, with headings added to break up the delivery terms and returns;
    docs/delivery-page.md lists the changes. Styles: css/gm-info.css, loaded in Display.cshtml's Head section. No script:
-   "Track your order" opens the site's Track Order pop-up. *@
+   "Track your order" opens the header's Track Order pop-up. *@
 @{
     // "Checklist before placing your order", as the live page lists it
     var checklist = new[]
@@ -33,8 +33,8 @@
                     <p class="inf-hero__lead">All internet deliveries are made via tail-lift vehicles. We do not use cranes or Hi-Abs.</p>
                     <p class="inf-hero__text">All orders are delivered on wooden pallets by a lorry with tail lift off load. We strive to make our deliveries as eco-friendly as possible and build our loads efficiently and effectively within each area. This means your order may arrive on an 18 or 26 tonne vehicle with a tail-lift and a manual pump trolley.</p>
                     <div class="inf-hero__actions">
-                        @* The site's Track Order pop-up (_TrackOrderModal), as the header's Track Order link opens it *@
-                        <button type="button" class="inf-btn" data-toggle="modal" data-target="#trackModal">Track your order</button>
+                        @* The header's Track Order pop-up (_TrackOrderPopup) *@
+                        <button type="button" class="inf-btn" data-track-open aria-haspopup="dialog">Track your order</button>
                         <a href="tel:03300585068" class="inf-btn inf-btn--outline">Call 0330 058 5068</a>
                     </div>
                 </div>

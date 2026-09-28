@@ -9,8 +9,8 @@
    - switches between the personal and trade forms;
    - when the page comes back with errors (or opened for a trade account), moves to them;
    - sends each form once;
-   - on the My Account pages: fills in the Track Order pop-up, shows the refund note on the return form, and sends a
-     price match message without leaving the page.
+   - on the My Account pages: shows the refund note on the return form, and sends a price match message without
+     leaving the page. (Each order's "Track order" is the header's Track Order pop-up's, in gm-chrome.js.)
    Plain JavaScript: the site's jQuery arrives later through RequireJS. */
 (function () {
   var root = document.querySelector('.gm-account[data-account]');
@@ -159,19 +159,6 @@
       if (!e.persisted) return;
       sending = false;
       if (button) { button.disabled = false; button.textContent = label; }
-    });
-  });
-
-  /* ---- Track order: the site's Track Order pop-up (_TrackOrderModal, opened by Bootstrap's data-toggle), filled in ---- */
-  each(root.querySelectorAll('[data-track]'), function (link) {
-    link.addEventListener('click', function (e) {
-      e.preventDefault();   // the link is only there to open the pop-up
-      var modal = document.getElementById('trackModal');
-      if (!modal) return;
-      var order = modal.querySelector('input[name="orderId"]');
-      var postcode = modal.querySelector('input[name="postcode"]');
-      if (order) order.value = link.getAttribute('data-order') || '';
-      if (postcode) postcode.value = link.getAttribute('data-postcode') || '';
     });
   });
 

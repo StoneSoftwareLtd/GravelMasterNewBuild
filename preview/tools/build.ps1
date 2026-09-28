@@ -219,15 +219,14 @@ function Invoke-Build {
     $h
   }
 
-  # ---------- _SiteFooter.cshtml, _TrackOrderModal.cshtml ----------
+  # ---------- _SiteFooter.cshtml, _TrackOrderPopup.cshtml ----------
   $footer = Remove-RazorComments (Read-Package 'Views\Shared\_SiteFooter.cshtml')
   $footer = $footer.Replace('@(DateTime.Now.Year)', (Get-Date).Year.ToString())
   Assert-NoRazor '_SiteFooter' $footer
 
-  $track = Remove-RazorComments (Read-Package 'Views\Shared\_TrackOrderModal.cshtml')
-  $track = [regex]::Replace($track, '@using \(Ajax\.BeginForm\([^\r\n]*\)\)\s*\{([\s\S]*?)\r?\n[ \t]*\}',
-    '<form action="/checkout/checkmyorder?id=track" data-ajax="true" data-ajax-mode="replace" data-ajax-update="#trackBodyMessage" id="form0" method="post">$1</form>')
-  Assert-NoRazor '_TrackOrderModal' $track
+  # plain markup: _Layout renders it after the footer when the new chrome is on
+  $track = Remove-RazorComments (Read-Package 'Views\Shared\_TrackOrderPopup.cshtml')
+  Assert-NoRazor '_TrackOrderPopup' $track
 
   # ---------- _SiteMobileMenu.cshtml ----------
   $mobileSrc = Remove-RazorComments (Read-Package 'Views\Shared\_SiteMobileMenu.cshtml')
