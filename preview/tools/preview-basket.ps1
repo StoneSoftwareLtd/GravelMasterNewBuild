@@ -205,7 +205,17 @@ function Get-PreviewCheckout {
   elseif (@($lines | Where-Object { -not $_.PreOrderDate }).Count -eq 0) { $flags += 'preorder' }  # all pre-orders
   elseif (@($lines | Where-Object { $_.PreOrderDate }).Count -gt 0) { $flags += 'mixed' }          # some pre-orders
   $area = if ($script:previewBasket.Area) { $script:previewBasket.Area } else { '' }
-  Get-SampleCheckout $flags $area $page
+  $checkout = Get-SampleCheckout $flags $area $page
+  # a signed-in preview customer (preview-account.ps1): their saved address, as ProcessOrder.cshtml fills it in
+  # (Model.DefaultAddress), no "log in" prompt, and no trade link for a trade account
+  $account = Get-PreviewSignedIn
+  if ($account) {
+    $a = $account.Address
+    $checkout.IsLoggedIn = $true
+    $checkout.ShowTradeLink = -not $account.IsTrade
+    $checkout.Address = [pscustomobject]@{ Address1 = $a.Address1; Address2 = $a.Address2; City = $a.City; County = $a.County; Postcode = $a.Postcode }
+  }
+  $checkout
 }
 
 # Answers one of the basket's addresses. $query and $form: the request's NameValueCollections. Returns what to send:
@@ -236,7 +246,10 @@ function Invoke-PreviewBasket([string]$method, [string]$path, $query, $form, [bo
     }
     'getbasketsummary' {
       $totals = Get-PreviewBasketTotals
-      return & $answer ("{0} Items: {1}|" -f $totals.ItemCount, (Format-Pounds $totals.Total)) 'text/plain; charset=utf-8' 'basket summary'
+      # then the signed-in customer's first name, as GetBasketSummary adds it
+      $account = Get-PreviewSignedIn
+      $name = if ($account) { (Get-Culture).TextInfo.ToTitleCase(([string]$account.FirstName).ToLower()) } else { '' }
+      return & $answer (("{0} Items: {1}|" -f $totals.ItemCount, (Format-Pounds $totals.Total)) + $name) 'text/plain; charset=utf-8' 'basket summary'
     }
     'getselectedpostcode' {
       return & $answer $(if ($b.Area) { $b.Area } else { '' }) 'text/plain; charset=utf-8' 'basket area'

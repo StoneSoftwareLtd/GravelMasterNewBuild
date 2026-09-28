@@ -30,9 +30,14 @@
 # The Track Order pop-up (Views/Shared/_TrackOrderPopup.cshtml) gets the preview's answers for a few sample orders
 # (track-order.ps1): the live order lookup is never asked.
 #
+# Accounts are the preview's own too (preview-account.ps1): signing in (the sample customer, or accounts made here),
+# registering with the confirmation email's link shown on the page, trade applications and their approval link,
+# forgotten and reset passwords, and My Account's address, return and price match forms. Enquiries, "Send me my
+# estimate" and the newsletter answer as the site does but send nothing (the window lists what they would have sent).
+#
 # Nothing reaches the real website except page views and read-only lookups:
-#   - the basket and checkout are the preview's own (above), priced by the live site's read-only price lookup
-#   - sign-ups, enquiries and every other form post are blocked, except a category page's
+#   - the basket, checkout and accounts are the preview's own (above), priced by the live site's read-only price lookup
+#   - any other form post is blocked, except a category page's
 #     Sort by (only "sort=<one of the four sorts>"), which only changes the order of the products
 #   - no cookies are sent, so you are never logged in or using a real basket
 #   - analytics, ads, Hotjar, Clarity, Facebook and chat scripts are removed from the pages
@@ -67,6 +72,7 @@ $utf8 = New-Object System.Text.UTF8Encoding $false
 . (Join-Path $PSScriptRoot 'ideas-pages.ps1')
 . (Join-Path $PSScriptRoot 'track-order.ps1')
 . (Join-Path $PSScriptRoot 'preview-basket.ps1')
+. (Join-Path $PSScriptRoot 'preview-account.ps1')
 # the account pages shown in the live forgotten-password page's frame (the messages have no page of their own to fetch)
 $script:accountFramePattern = '^/account/(forgotpassword|resetpassword|forgotpasswordconfirmation|resetpasswordconfirmation|confirmemail|register|traderegister)/?$'
 # the My Account pages, shown in the same frame (the live ones send the preview, never signed in, to sign in)
@@ -74,7 +80,8 @@ $script:myAccountPattern = '^/myaccount(?:/(index|orders|returns|requestreturn|r
 # a category page: /garden-chippings/products/, /garden-chippings/slate-chippings/products/, and either with filters after
 $categoryPathPattern = '^/(?!products/)[a-z0-9-]+(?:/[a-z0-9-]+)?/products(?:/|$)'
 
-# Requests with real effects on the live site (found in the live pages' scripts and forms)
+# Requests with real effects on the live site (found in the live pages' scripts and forms): never passed on. The
+# preview answers most of them itself first (preview-basket.ps1, preview-account.ps1)
 $blockedPattern = 'addtobasket|removefrombasket|updatequantity|updatebasket|applycouponcode|newsletterregister|sendlooseenquiry|sendcalculatorcalculation|sendpricematchquery|quicksignup|logoff|logout'
 # Scripts removed from preview pages so visits aren't counted or recorded
 $trackerPattern = 'googletagmanager\.com|cookie-script\.com|static\.hotjar\.com|fbevents\.js|facebook\.com/tr\?|clarity\.ms|bat\.bing\.com|embed\.tawk\.to'
@@ -349,21 +356,43 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $css = '/css/gm-confirmation.css?v1'; $newPage = 'new order confirmation'
         $extraHead = '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />'
       }
+      elseif ($script:pendingAccount -and $path -match '^/(account|myaccount)/') {
+        # An account form's answer (preview-account.ps1): the sign-in page sent back with errors, a message, or the
+        # reset form sent back, at the form's own address as the site shows it
+        $pa = $script:pendingAccount
+        $content = [string]$pa.Notice
+        switch ($pa.Render) {
+          'signin' { $content += Format-SignInPage (Join-Path $package 'Views\Account\_SignInPage.cshtml') $pa.Model; $accountTitle = 'Log in' }
+          'message' { $content += Format-AccountMessage (Join-Path $package 'Views\Account\_AccountMessagePage.cshtml') $pa.Message; $accountTitle = @{ Registered = 'Success Register'; EmailConfirmed = 'Confirm Email'; TradeApplicationSent = 'Log in' }[$pa.Message] }
+          'reset' { $content += Format-AccountFormPage (Join-Path $package 'Views\Account\_ResetPasswordPage.cshtml') $pa.Model; $accountTitle = 'Reset password' }
+        }
+        $css = '/css/gm-account.css?v1'; $newPage = 'new account page'
+      }
       elseif ($path -match '^/account/login/?$') {
-        # ?isTradeRegister=true as on the live site; ?signinerror=1, ?registererror=1 and ?tradeconfirm=1 show what the
-        # page looks like when the server sends it back with errors, or to an approved trade customer
+        # ?isTradeRegister=true as on the live site; ?tradeEmail= the approval email's link for a trade application made
+        # in the preview (preview-account.ps1). ?signinerror=1, ?registererror=1 and ?tradeconfirm=1 show samples of the page
+        # sent back with errors, and of an approved trade customer
         $flags = @('signinerror', 'registererror', 'tradeconfirm' | Where-Object { $rawUrl -match "[?&]$_=1(&|$)" })
         if ($rawUrl -match '[?&]isTradeRegister=[^&]+') { $flags += 'trade' }
-        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: signing in, registering and trade applications are blocked, like every form. Try ' +
-          '<a href="/account/login">sign in</a>, <a href="/account/login?isTradeRegister=true">the trade form</a>, <a href="/account/login?signinerror=1">a wrong password</a>, <a href="/account/login?registererror=1">a registration error</a>, <a href="/account/login?tradeconfirm=1">an approved trade customer</a>, ' +
+        $tradeEmail = [System.Web.HttpUtility]::ParseQueryString(($rawUrl -split '\?', 2)[1])['tradeEmail']
+        $signInModel = if ($tradeEmail) { Get-PreviewTradeConfirm $tradeEmail } else { $null }
+        if (-not $signInModel) { $signInModel = Get-SampleSignIn $flags }
+        $signedIn = Get-PreviewSignedIn
+        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: ' +
+          $(if ($signedIn) { 'you''re signed in as ' + (Enc $signedIn.Email) + ' (<a href="/myaccount/orders">My Account</a>, <a href="/account/logoff">sign out</a>). ' } else { '' }) +
+          'Signing in, creating an account, trade applications and passwords work, with the preview''s own accounts (kept while it runs; nothing reaches the real site, and no email is sent: the page after each form shows the email''s link). ' +
+          'Try the sample customer: ' + $script:sampleAccountEmail + ', password ' + $script:sampleAccountPassword + '. Samples of the page: ' +
+          '<a href="/account/login?isTradeRegister=true">the trade form</a>, <a href="/account/login?signinerror=1">a wrong password</a>, <a href="/account/login?registererror=1">a registration error</a>, <a href="/account/login?tradeconfirm=1">an approved trade customer</a>, ' +
           '<a href="/account/forgotpassword">forgotten password</a>, <a href="/account/resetpassword">choose a new password</a> and the messages: <a href="/account/forgotpasswordconfirmation">link sent</a>, <a href="/account/resetpasswordconfirmation">password changed</a>, <a href="/account/confirmemail">email confirmed</a>, <a href="/account/register">registered</a>, <a href="/account/traderegister">trade application sent</a>.</p>'
-        $content = $notice + (Format-SignInPage (Join-Path $package 'Views\Account\_SignInPage.cshtml') (Get-SampleSignIn $flags))
+        $content = $notice + (Format-SignInPage (Join-Path $package 'Views\Account\_SignInPage.cshtml') $signInModel)
         $css = '/css/gm-account.css?v1'; $newPage = 'new account page'; $accountTitle = 'Log in'
       }
       elseif ($path -match $script:accountFramePattern) {
         $page = $Matches[1]
-        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: the account pages are in the live forgotten-password page''s frame, and every form is blocked. Back to <a href="/account/login">sign in</a> for the list of pages' +
-          $(if ($page -eq 'forgotpassword' -or $page -eq 'resetpassword') { ', or try <a href="?error=1">an error</a>' } else { '' }) + '.</p>'
+        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: the account pages are in the live forgotten-password page''s frame; their forms work with the preview''s own accounts. Back to <a href="/account/login">sign in</a> for the list of pages' +
+          $(if ($page -eq 'forgotpassword' -or $page -eq 'resetpassword') { ', or see <a href="?error=1">an error</a>' } else { '' }) + '.</p>'
+        # the forgotten-password "email"'s link, once, after its form
+        if ($page -eq 'forgotpasswordconfirmation' -and $script:previewLastLink) { $notice = $script:previewLastLink; $script:previewLastLink = $null }
         $views = @{
           forgotpassword = @('_ForgotPasswordPage', 'Forgot your password?'); resetpassword = @('_ResetPasswordPage', 'Reset password')
           forgotpasswordconfirmation = @('PasswordResetEmailSent', 'Forgot Password Confirmation'); resetpasswordconfirmation = @('PasswordReset', 'Reset password confirmation')
@@ -372,7 +401,9 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $view = $views[$page.ToLowerInvariant()]
         if ($view[0].StartsWith('_')) {
           $errors = if ($rawUrl -match '[?&]error=1(&|$)') { $(if ($page -eq 'resetpassword') { @('Invalid token.') } else { @('The Email field is not a valid e-mail address.') }) } else { @() }
-          $form = [pscustomobject]@{ Email = $(if ($errors) { 'sample.customer@example.com' } else { $null }); Code = 'preview-code'; Errors = $errors }
+          # the reset email's link carries its code (?code=), as the site's does
+          $code = [System.Web.HttpUtility]::ParseQueryString(($rawUrl -split '\?', 2)[1])['code']
+          $form = [pscustomobject]@{ Email = $(if ($errors) { 'sample.customer@example.com' } else { $null }); Code = $(if ($code) { $code } else { 'preview-code' }); Errors = $errors }
           $content = $notice + (Format-AccountFormPage (Join-Path $package "Views\Account\$($view[0]).cshtml") $form)
         } else {
           $content = $notice + (Format-AccountMessage (Join-Path $package 'Views\Account\_AccountMessagePage.cshtml') $view[0])
@@ -384,10 +415,28 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         # tab switched off
         $page = if ($Matches[1] -and $Matches[1] -ne 'index') { $Matches[1].ToLowerInvariant() } else { 'orders' }
         $flags = @('trade', 'empty', 'noreturns' | Where-Object { $rawUrl -match "[?&]$_=1(&|$)" })
-        $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: a sample customer and two sample orders of real products; the preview can''t sign in. Every form is blocked, and so is the price match message. Try ' +
-          '<a href="/myaccount/orders">orders</a>, <a href="/myaccount/orders?empty=1">no orders yet</a>, <a href="/myaccount/orders?trade=1">a trade account</a>, <a href="/myaccount/orders?noreturns=1">without Returns</a>, ' +
-          '<a href="/myaccount/requestreturn">a return request</a>, <a href="/myaccount/returnconfirmation">return sent</a>.</p>'
-        $content = $notice + (Format-MyAccountPage (Join-Path $package 'Views\MyAccount') $page (Get-SampleAccount $flags))
+        $samples = 'Samples: <a href="/myaccount/orders?sample=1">orders</a>, <a href="/myaccount/orders?empty=1">no orders yet</a>, <a href="/myaccount/orders?trade=1">a trade account</a>, <a href="/myaccount/orders?noreturns=1">without Returns</a>, ' +
+          '<a href="/myaccount/requestreturn?sample=1">a return request</a>, <a href="/myaccount/returnconfirmation?sample=1">return sent</a>.'
+        $signedIn = Get-PreviewSignedIn
+        if ($signedIn -and -not ($flags.Count -gt 0 -or $rawUrl -match '[?&]sample=1(&|$)')) {
+          # the signed-in preview account (preview-account.ps1); the main loop sends anyone else to sign in
+          $account = Get-PreviewAccountPage $signedIn
+          if ($page -eq 'requestreturn') {
+            $itemId = [System.Web.HttpUtility]::ParseQueryString(($rawUrl -split '\?', 2)[1])['orderItemId']
+            foreach ($o in $account.Orders) { foreach ($l in $o.Lines) { if ([string]$l.ItemId -eq [string]$itemId) {
+              $account | Add-Member -NotePropertyName ReturnOrder -NotePropertyValue $o -Force
+              $account | Add-Member -NotePropertyName ReturnLine -NotePropertyValue $l -Force
+            } } }
+          }
+          $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: signed in as ' + (Enc $signedIn.Email) +
+            ', one of the preview''s own accounts' + $(if ($signedIn.IsSample) { ', with two sample orders of real products' } else { ' (made here, so no orders: payment isn''t set up)' }) +
+            '. The address, return request and price match forms work; nothing is sent. ' + $samples + '</p>'
+          $content = $notice + (Format-MyAccountPage (Join-Path $package 'Views\MyAccount') $page $account)
+          if ($page -eq 'returnconfirmation') { $script:previewLastReturn = $null }   # TempData: once
+        } else {
+          $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: a sample customer and two sample orders of real products, to look at (<a href="/account/login">sign in</a> to use My Account with the preview''s accounts). ' + $samples + '</p>'
+          $content = $notice + (Format-MyAccountPage (Join-Path $package 'Views\MyAccount') $page (Get-SampleAccount $flags))
+        }
         # each old view's ViewBag.Title; the address page's is set by the new branch (docs/merging.md)
         $titles = @{ orders = 'Orders'; returns = 'Returns'; requestreturn = 'Request Return'; returnconfirmation = 'Return Request Submitted'; pricematch = 'Price Match'; editaddress = 'Your Address' }
         $css = '/css/gm-account.css?v1'; $newPage = 'new account page'; $accountTitle = $titles[$page]
@@ -536,7 +585,7 @@ $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:$Port/")
 try { $listener.Start() } catch { Write-Host "Couldn't start the preview on port $Port - is it already running? ($($_.Exception.Message))" -ForegroundColor Red; exit 1 }
 Write-Host "GravelMaster preview with the new header and footer: http://localhost:$Port/"
-Write-Host "The basket is the preview's own, kept while it runs; payment isn't set up. Sign-ups, enquiries and other forms are blocked (only Sort by on category pages goes through). Press Ctrl+C to stop."
+Write-Host "The basket and accounts are the preview's own, kept while it runs; payment isn't set up, and no email is sent (this window lists what would have been). Nothing is sent to the real site but page views and price lookups. Press Ctrl+C to stop."
 if (-not $NoBrowser) { Start-Process "http://localhost:$Port/" }
 
 while ($listener.IsListening) {
@@ -575,7 +624,45 @@ while ($listener.IsListening) {
       }
     }
     $sampleFlag = $rawUrl -match '[?&](sample|empty|voucher|discount|stock|samples|preorder|mixed|simple|notimes|area)=[^&]*'
-    if ($path -match '^/basket/(addtobasket|updatequantity|getbasketsummary|getselectedpostcode|updatebasket|removefrombasket|applycouponcode)/?$' -or
+    # The preview's accounts and email forms (preview-account.ps1): these never reach the live site. A page to show
+    # (the sign-in page sent back, a message) is kept in $script:pendingAccount and drawn below like any page
+    $script:pendingAccount = $null
+    $accountAnswer = $null
+    if (($req.HttpMethod -eq 'POST' -and $path -match '^/(account/(login|register|traderegister|forgotpassword|resetpassword)|myaccount/(editaddress|requestreturn)|basket/sendlooseenquiry|email/sendcalculatorcalculation)/?$') -or
+        $path -match '^/(account/(logoff|logout)|myaccount/getuser|product/istrade|product/sendpricematchquery|product/newsletterregister)/?$' -or
+        ($path -match '^/account/confirmemail/?$' -and $req.Url.Query -match '[?&]userId=')) {
+      $body = ''
+      if ($req.HttpMethod -eq 'POST') {
+        $reader = New-Object IO.StreamReader($req.InputStream, [Text.Encoding]::UTF8)
+        $body = $reader.ReadToEnd()
+        $reader.Close()
+      }
+      $accountAnswer = Invoke-PreviewAccount $req.HttpMethod $path ([System.Web.HttpUtility]::ParseQueryString($req.Url.Query)) ([System.Web.HttpUtility]::ParseQueryString($body))
+      if ($accountAnswer -and $accountAnswer.Render) { $script:pendingAccount = $accountAnswer; $note = $accountAnswer.Note; $accountAnswer = $null }
+    }
+    # My Account needs signing in, as MyAccountController's [Authorize] does, unless a sample state is asked for
+    # (?trade=1, ?empty=1, ?noreturns=1 or ?sample=1); /myaccount and /myaccount/index go on to the orders
+    $myAccountRedirect = $null
+    if ($req.HttpMethod -eq 'GET' -and $path -match $script:myAccountPattern -and $rawUrl -notmatch '[?&](trade|empty|noreturns|sample)=1(&|$)') {
+      if (-not (Get-PreviewSignedIn)) { $myAccountRedirect = '/account/login?ReturnUrl=' + [Uri]::EscapeDataString($path) }
+      elseif ($path -match '^/myaccount(/index)?/?$') { $myAccountRedirect = '/myaccount/orders' }
+      elseif ($path -match '^/myaccount/requestreturn/?$') {
+        # RequestReturn(orderItemId): only the customer's own items
+        $itemId = [System.Web.HttpUtility]::ParseQueryString($req.Url.Query)['orderItemId']
+        $own = @((Get-PreviewAccountPage (Get-PreviewSignedIn)).Orders | ForEach-Object { $_.Lines } | Where-Object { [string]$_.ItemId -eq [string]$itemId })
+        if (-not $own.Count) { $myAccountRedirect = '/myaccount/orders' }
+      }
+    }
+    if ($accountAnswer) {
+      if ($accountAnswer.Location) { $res.StatusCode = 302; $res.RedirectLocation = $accountAnswer.Location }
+      else { Send-Response $res 200 $accountAnswer.ContentType ([Text.Encoding]::UTF8.GetBytes([string]$accountAnswer.Body)) $withBody }
+      $note = $accountAnswer.Note
+    }
+    elseif ($myAccountRedirect) {
+      $res.StatusCode = 302; $res.RedirectLocation = $myAccountRedirect
+      $note = "my account: to $myAccountRedirect"
+    }
+    elseif ($path -match '^/basket/(addtobasket|updatequantity|getbasketsummary|getselectedpostcode|updatebasket|removefrombasket|applycouponcode)/?$' -or
         ($req.HttpMethod -eq 'POST' -and $path -match '^/checkout/processorder/?$')) {
       # The preview's working basket (preview-basket.ps1): these never reach the live site
       $body = ''
@@ -616,7 +703,7 @@ while ($listener.IsListening) {
         $note = "sort failed: $($live.Status)"
       }
     }
-    elseif ($req.HttpMethod -ne 'GET' -and $req.HttpMethod -ne 'HEAD') {
+    elseif ($req.HttpMethod -ne 'GET' -and $req.HttpMethod -ne 'HEAD' -and -not $script:pendingAccount) {
       Send-Response $res 403 'text/html; charset=utf-8' $blockedPage $true
       $note = 'blocked (read-only preview)'
     }

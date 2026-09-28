@@ -99,8 +99,9 @@ function Format-MyAccountPage([string]$viewsPath, [string]$page, $sample) {
       }
     }
     'requestreturn' {
-      $order = @($script:sampleAccountOrders)[0]   # an item from an order, even with ?empty=1
-      $line = $order.Lines[0]
+      # the item asked for (a signed-in preview account's), else an item from the sample orders, even with ?empty=1
+      if ($sample.PSObject.Properties['ReturnOrder'] -and $sample.ReturnOrder) { $order = $sample.ReturnOrder; $line = $sample.ReturnLine }
+      else { $order = @($script:sampleAccountOrders)[0]; $line = $order.Lines[0] }
       $h = Set-RazorBlock $h '@if \(line != null\)\s*\{' { param($b)
         $inner = $b.Inner
         $single = [regex]::Match($inner, '<div class="acc-line acc-line--single">[\s\S]*?</div>\s*</div>')
@@ -109,11 +110,14 @@ function Format-MyAccountPage([string]$viewsPath, [string]$page, $sample) {
       }
     }
     'returnconfirmation' {
-      $h = Set-RazorBlock $h '@if \(!string\.IsNullOrEmpty\(Model\.OrderNumber\)\)\s*\{' { param($b) $b.Inner.Replace('@Model.OrderNumber', '123456') }
+      # a signed-in preview account's last return request (TempData on the site), else the sample order
+      $number = if ($sample.PSObject.Properties['ReturnOrderNumber']) { $sample.ReturnOrderNumber } else { '123456' }
+      $h = Set-RazorBlock $h '@if \(!string\.IsNullOrEmpty\(Model\.OrderNumber\)\)\s*\{' { param($b) if ($number) { $b.Inner.Replace('@Model.OrderNumber', (Enc $number)) } else { '' } }
     }
     'editaddress' {
-      $pairs = @(@('@Model.AddressId', '4242'), @('@Model.Address1', '1 Sample Street'), @('@(string.IsNullOrWhiteSpace(Model.Address2) ? "" : Model.Address2)', ''),
-        @('@Model.City', 'Nottingham'), @('@Model.County', 'Nottinghamshire'), @('@Model.Postcode', 'NG7 2RD'))
+      $a = if ($sample.PSObject.Properties['Address'] -and $sample.Address) { $sample.Address } else { [pscustomobject]@{ AddressId = 4242; Address1 = '1 Sample Street'; Address2 = ''; City = 'Nottingham'; County = 'Nottinghamshire'; Postcode = 'NG7 2RD' } }
+      $pairs = @(@('@Model.AddressId', [string]$a.AddressId), @('@Model.Address1', (Enc $a.Address1)), @('@(string.IsNullOrWhiteSpace(Model.Address2) ? "" : Model.Address2)', (Enc $a.Address2)),
+        @('@Model.City', (Enc $a.City)), @('@Model.County', (Enc $a.County)), @('@Model.Postcode', (Enc $a.Postcode)))
       foreach ($p in $pairs) { if (-not $h.Contains($p[0])) { throw "Couldn't find $($p[0]) in _AddressPage.cshtml" }; $h = $h.Replace($p[0], $p[1]) }
     }
   }
