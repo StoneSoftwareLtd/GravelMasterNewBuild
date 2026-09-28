@@ -10,6 +10,8 @@
 #   Format-FaqPage            renders the FAQ page (no data from the site either: its topics and questions are in the
 #                             partial's own C# block)
 #   Format-ContactPage        renders the contact page (plain markup: nothing to fill in)
+#   Get-OldContentHtml        the admin site's HTML from an old content page (what Display.cshtml shows)
+#   Format-LegalPage          renders the privacy or terms page around that HTML
 #
 # The markup comes from the .cshtml as it is, and the render fails if any Razor is left over.
 # Keep this file ASCII: Windows PowerShell 5.1 reads .ps1 files without a byte order mark as ANSI.
@@ -157,4 +159,25 @@ function Format-ContactPage([string]$templatePath) {
   $h = $src.Substring($start)
   Assert-NoRazorLeft '_ContactPage' $h
   $h
+}
+
+# $mainHtml: the old page from its #mainBody to the end of it. Display.cshtml shows the admin site's HTML and nothing
+# else, and the privacy and terms pages' HTML starts with the old design's wrapper; $null if it isn't there.
+function Get-OldContentHtml([string]$mainHtml) {
+  $start = $mainHtml.IndexOf('<div class="padding-wrap')
+  if ($start -lt 0) { return $null }
+  $mainHtml.Substring($start).Trim()
+}
+
+function Format-LegalPage([string]$templatePath, [string]$title, [string]$contentHtml) {
+  $src = [IO.File]::ReadAllText($templatePath)
+  $src = [regex]::Replace($src, '[ \t]*@\*[\s\S]*?\*@[ \t]*\r?\n?', '')   # Razor comments
+  $start = $src.IndexOf('<div class="gm-info gm-legal">')
+  if ($start -lt 0) { throw "Couldn't find <div class=""gm-info gm-legal""> in _LegalPage.cshtml" }
+  $h = $src.Substring($start)
+  foreach ($key in '@Model.PageTitle', '@Model.WebContentHtml') { if (-not $h.Contains($key)) { throw "Couldn't find $key in _LegalPage.cshtml" } }
+  # the admin HTML goes in after the Razor check, as it's the site's content, not the partial's
+  $h = $h.Replace('@Model.PageTitle', [Net.WebUtility]::HtmlEncode($title)).Replace('@Model.WebContentHtml', [string][char]2)
+  Assert-NoRazorLeft '_LegalPage' $h
+  $h.Replace([string][char]2, $contentHtml)
 }

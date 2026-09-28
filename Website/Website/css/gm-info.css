@@ -1,16 +1,17 @@
 /* ===== GravelMaster information pages (Optima design) =====
    For the pages without an Optima prototype that are mostly words: the delivery page
    (Views/Content/_DeliveryPage.cshtml), the calculator page (Views/Content/_CalculatorPage.cshtml), the FAQ page
-   (Views/Content/_FaqPage.cshtml, whose own rules are scoped to .gm-faqpage) and the contact page
-   (Views/Content/_ContactPage.cshtml, .gm-contact). They use the
+   (Views/Content/_FaqPage.cshtml, whose own rules are scoped to .gm-faqpage), the contact page
+   (Views/Content/_ContactPage.cshtml, .gm-contact) and the privacy and terms pages (Views/Content/_LegalPage.cshtml,
+   .gm-legal). They use the
    Trade Accounts page's look (css/gm-trade.css): its hero card, colours, buttons, breadcrumb and FAQs. The old
    stylesheets still load underneath, so every rule is scoped to .gm-info, the wrapper around each page, with the
    same shield as the other new pages:
    - .container is also Bootstrap's, so it's only styled inside .gm-info;
    - the shield resets the old element rules (Bootstrap 4 Reboot, global.css) at element-level specificity, so the
      class rules below still win.
-   The FAQs are <details> and "Track your order" is the header's pop-up, so only the FAQ page has a script of its own
-   (js/gm-faq.js, for its search). */
+   The FAQs are <details> and "Track your order" is the header's pop-up, so only the FAQ page (js/gm-faq.js, for its
+   search) and the privacy and terms pages (js/gm-legal.js, for "On this page") have scripts of their own. */
 
 .gm-info {
   --green: #5ca458;
@@ -557,6 +558,79 @@ div:where(.gm-info) {
   background: #e8ece4;          /* while it loads */
 }
 
+/* ---- The privacy and terms pages: the admin site's HTML in a readable column ----
+   Only plain elements are styled (headings, paragraphs, lists, links), as that's what the admin site's editor makes.
+   Its wrappers from the old design (.padding-wrap, .grid-padding) lose their padding. */
+.gm-legal .leg-layout { padding-top: 8px; padding-bottom: 72px; }
+.gm-legal .leg-layout--contents {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 64px;
+  align-items: start;
+}
+.gm-legal .leg-body { max-width: 800px; overflow-wrap: break-word; }   /* email addresses typed in as plain text */
+.gm-legal .leg-body :is(.padding-wrap, .grid-padding, .padding-top-btm) { margin: 0; padding: 0; max-width: none; }
+.gm-legal .leg-body h1 {
+  margin: 14px 0 30px;
+  font-size: clamp(30px, 3.4vw, 44px);
+  line-height: 1.15;
+  color: var(--ink);
+}
+.gm-legal .leg-body h2 {
+  margin: 44px 0 14px;
+  font-size: clamp(22px, 2vw, 26px);
+  line-height: 1.25;
+  color: var(--ink);
+  scroll-margin-top: 20px;      /* on phones, on top of the sticky header's room (gm-chrome.js) */
+}
+.gm-legal .leg-body h3 { margin: 28px 0 10px; font-size: 19px; line-height: 1.3; color: var(--ink); }
+.gm-legal .leg-body h1 + h2 { margin-top: 0; }
+.gm-legal .leg-body :is(p, li, div) { font-size: 16px; line-height: 1.75; font-weight: 500; color: #333; }
+.gm-legal .leg-body p { margin: 0 0 14px; }
+.gm-legal .leg-body :is(ul, ol) { margin: 0 0 18px; padding-left: 24px; list-style: disc; }
+.gm-legal .leg-body ol { list-style: decimal; }
+.gm-legal .leg-body li { margin: 0 0 6px; padding-left: 4px; }
+.gm-legal .leg-body li::marker { color: var(--green-ink); }
+.gm-legal .leg-body :is(b, strong) { font-weight: 700; color: var(--ink); }
+.gm-legal .leg-body a { color: var(--green-ink); font-weight: 700; text-decoration: underline; overflow-wrap: anywhere; }
+.gm-legal .leg-body a:hover { color: var(--green-ink); }
+
+.gm-legal .leg-contents { position: sticky; top: 24px; margin-top: 22px; }
+.gm-legal :is(.leg-contents__title, .leg-contents__label) {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #5f5f5f;
+}
+.gm-legal .leg-contents__list {
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  border-left: 2px solid #e3eddc;
+}
+.gm-legal .leg-contents__list a {
+  display: block;
+  margin-left: -2px;
+  padding: 6px 0 6px 14px;
+  border-left: 2px solid transparent;
+  font-size: 14.5px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: #4a4a4a;
+  text-decoration: none;        /* on phones it's inside .leg-body, whose links are underlined */
+}
+.gm-legal .leg-contents .leg-contents__list { margin: 0; padding: 0; list-style: none; }   /* on phones it's inside .leg-body */
+.gm-legal .leg-contents li { margin: 0; padding: 0; }
+.gm-legal .leg-contents__list a:hover { color: var(--green-ink); text-decoration: underline; }
+.gm-legal .leg-contents__list a[aria-current] { border-left-color: var(--green-ink); color: var(--green-ink); }
+@media (min-width: 861px) {
+  .gm-legal .leg-contents > summary { display: none; }   /* always open beside the words (gm-legal.js), with a label */
+}
+@media (max-width: 860px) {
+  .gm-legal .leg-contents__label { display: none; }      /* the summary says it */
+}
+
 /* ---- Product cards (the homepage's bestseller cards) ---- */
 .gm-info .inf-products {
   display: grid;
@@ -684,6 +758,31 @@ div:where(.gm-info) {
   .gm-contact .con-ways { padding-top: 36px; }
   .gm-contact .con-find { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .gm-contact .con-map { height: 340px; }
+  /* privacy and terms: "On this page" as a list that opens and closes, above the words */
+  .gm-legal .leg-layout--contents { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .gm-legal .leg-contents { position: static; margin: 0 0 28px; border: 1.5px solid #cfe2c4; border-radius: 12px; background: #fff; }
+  .gm-legal .leg-contents > summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .gm-legal .leg-contents > summary::after {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-3px) rotate(45deg);
+    transition: transform .15s ease;
+  }
+  .gm-legal .leg-contents[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+  .gm-legal .leg-contents nav { padding: 0 18px 14px; }
+  .gm-legal .leg-contents__list { max-height: none; overflow: visible; }
 }
 @media (max-width: 560px) {
   .gm-info .inf-hero__copy { padding: 22px 18px 26px; }

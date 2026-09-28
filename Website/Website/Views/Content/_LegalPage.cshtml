@@ -1,0 +1,28 @@
+@model ContentViewModel
+@* New design for the privacy policy and the terms and conditions, shown by Content/Display.cshtml for those two keys
+   when the new chrome is on. Their words stay in the admin site, where the team keeps them up to date: this is the page
+   around them, a readable column for the admin site's HTML (its own <h1> is the page's title). The styles
+   (css/gm-info.css, .gm-legal) give headings, lists and links their look; docs/admin-content has tidied copies of both
+   pages, the same words with real headings and lists, to paste into the admin site. js/gm-legal.js adds "On this page"
+   when the content has three or more <h2> headings. *@
+<div class="gm-info gm-legal">
+    <nav class="container inf-crumbs" aria-label="Breadcrumb">
+        <ol class="inf-crumbs__list">
+            <li><a href="/">Home</a></li>
+            <li><span class="inf-crumbs__current" aria-current="page">@Model.PageTitle</span></li>
+        </ol>
+    </nav>
+    <div class="container leg-layout">
+        <details class="leg-contents" hidden>
+            <summary class="leg-contents__title">On this page</summary>
+            <nav aria-label="On this page">
+                <p class="leg-contents__label" aria-hidden="true">On this page</p>
+                <ol class="leg-contents__list"></ol>
+            </nav>
+        </details>
+        <article class="leg-body">
+            @Model.WebContentHtml
+        </article>
+    </div>
+</div>
+<script src="/js/gm-legal.js?v1" defer></script>

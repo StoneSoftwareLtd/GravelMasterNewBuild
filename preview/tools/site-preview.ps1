@@ -20,7 +20,8 @@
 # pages (Views/MyAccount) for a sample customer, in the same frame: the preview is never signed in. /search shows the
 # new search results page (Views/Category/_SearchPage.cshtml), filled from the live search's results. /delivery,
 # /calculator, /faq and /contact-us show the new delivery, calculator, FAQ and contact pages
-# (Views/Content/_DeliveryPage.cshtml, _CalculatorPage.cshtml, _FaqPage.cshtml and _ContactPage.cshtml).
+# (Views/Content/_DeliveryPage.cshtml, _CalculatorPage.cshtml, _FaqPage.cshtml and _ContactPage.cshtml), and /privacy and
+# /term-conditions the admin site's words in the new design (_LegalPage.cshtml; ?tidy=1 for docs/admin-content's copy).
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -247,6 +248,22 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
       elseif ($path -match '^/contact-us/?$') {
         $content = Format-ContactPage (Join-Path $package 'Views\Content\_ContactPage.cshtml')
         $css = '/css/gm-info.css?v1'; $newPage = 'new contact page'
+      }
+      elseif ($path -match '^/(privacy|term-conditions)/?$') {
+        # The admin site's words as they are now; ?tidy=1 shows the tidied copy in docs/admin-content instead, as the
+        # page would look once it's pasted into the admin site
+        $key = $Matches[1]
+        $admin = Get-OldContentHtml $html.Substring($mainBody.Index, $mainEnd - $mainBody.Index)
+        if ($admin) {
+          $tidy = $rawUrl -match '[?&]tidy=1(&|$)'
+          if ($tidy) { $admin = [IO.File]::ReadAllText((Join-Path $PSScriptRoot "..\..\docs\admin-content\$key.html")) }
+          $pageTitle = [Net.WebUtility]::HtmlDecode([regex]::Match($html, '<title>([\s\S]*?)</title>').Groups[1].Value.Trim())
+          $notice = '<p style="margin:0;padding:8px 18px;background:#fff4d6;color:#4a3b00;font:600 14px/1.5 Quicksand,Arial,sans-serif;text-align:center">Preview: ' +
+            $(if ($tidy) { 'the tidied copy of the words (docs/admin-content), with real headings and lists, as it will look once pasted into the admin site. <a href="/' + $key + '">See the words as they are now</a>.' }
+              else { 'the admin site''s words as they are now. <a href="/' + $key + '?tidy=1">See the tidied copy</a> (docs/admin-content): the same words with real headings and lists.' }) + '</p>'
+          $content = $notice + (Format-LegalPage (Join-Path $package 'Views\Content\_LegalPage.cshtml') $pageTitle $admin)
+          $css = '/css/gm-info.css?v1'; $newPage = 'new legal page'
+        }
       }
       elseif ($path -match '^/trade/?$') {
         $content = Format-TradePage (Join-Path $package 'Views\Content\_TradePage.cshtml')
