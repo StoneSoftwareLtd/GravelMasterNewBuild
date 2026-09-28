@@ -87,6 +87,7 @@ In the whole-website preview (`/checkout/processorder`), on 24 September 2026, w
     - PO30 5AA hides the first seven dates and moves the choice from 29 September to 5 October. PO3 0AA (Portsmouth) doesn't.
     - An Isle of Wight postcode put in without the page noticing is caught by "Continue to payment": a £15 date becomes a free one, and nothing is sent until the customer presses again.
 - **Without its script:** the paid dates and the morning slot stay switched off, so they can't be sent without their charge. The browser's own checks stop an empty form.
+- **With the preview's working basket** (28 September 2026): the checkout showed the basket's own lines, total and area; a postcode outside the area was stopped by the page; "Continue to payment" was sent, and the preview, checking the postcode as `ProcessOrder` does, went to the new [payment error page](payment-error-page.md).
 
 Not tested:
 - The real Postcode Anywhere finders. The preview doesn't load them, since typing would use the site's account. The preview shows a copy of the search box they draw, so the restyling can be seen.

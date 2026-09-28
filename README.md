@@ -14,8 +14,9 @@ Each piece is built to drop into the **GravelMasterSoftware** repository behind 
 | Product page | Built and tested in the preview | Needs wiring into the site |
 | About us page | Built and tested in the preview | Needs wiring into the site |
 | Trade Accounts page | Built and tested in the preview | Needs wiring into the site |
-| Basket page | Built and tested in the preview with a sample basket | Needs wiring into the site, and testing with real baskets |
-| Checkout | Built and tested in the preview with a sample basket | Needs wiring into the site, and testing with real orders and test payments |
+| Basket page | Built and tested in the preview, with sample baskets and the preview's working basket | Needs wiring into the site, and testing with real baskets |
+| Checkout | Built and tested in the preview, with sample baskets and the preview's working basket | Needs wiring into the site, and testing with real orders and test payments |
+| Payment error page | Built and tested in the preview (no prototype: in the information pages' style); "Continue to payment" ends there in the preview | Needs wiring into the site; the old page's security hole should be fixed on the live site now |
 | Order confirmation | Built and tested in the preview with a sample order | Needs wiring into the site, and testing after real test payments |
 | Account pages: signing in | Built and tested in the preview (no prototype: in the new pages' style) | Needs wiring into the site |
 | Account pages: My Account (orders, returns, price match, address) | Built and tested in the preview with a sample customer | Needs wiring into the site, and testing with real accounts |
@@ -43,7 +44,7 @@ Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
 ## See it
 
-Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in, the new basket and checkout with a sample basket in them, the new order confirmation for a sample order, the new sign-in and password pages, My Account for a sample customer, the new search results for any search, the new special offers page, the new delivery, calculator, FAQ and contact pages, the privacy and terms pages in the new design, the new Ideas & Advice pages, and the new Track Order pop-up (which answers for sample orders). Keep the black window open while you use it. It's read-only, so nothing is sent to the real site (the only exceptions are Sort by on category pages, which just reorders the products, and the product pages' price lookup, which only reads prices).
+Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in, a working basket and checkout (add from any product page, change, remove, voucher, check out; "Continue to payment" ends on the new payment error page, as payment isn't set up), the new order confirmation for a sample order, the new sign-in and password pages, My Account for a sample customer, the new search results for any search, the new special offers page, the new delivery, calculator, FAQ and contact pages, the privacy and terms pages in the new design, the new Ideas & Advice pages, and the new Track Order pop-up (which answers for sample orders). Keep the black window open while you use it. Nothing is sent to the real site: the basket is the preview's own, kept while it runs (the only exceptions are Sort by on category pages, which just reorders the products, and the price lookup, which only reads prices).
 
 Or open this folder in VS Code and use Live Server on `preview/index.html` or `preview/category.html`. See [preview/README.md](preview/README.md) for both.
 
@@ -69,6 +70,7 @@ Or open this folder in VS Code and use Live Server on `preview/index.html` or `p
 | [docs/faq-page.md](docs/faq-page.md) | The new FAQ page: where its words come from, the search, the spelling fixes, what was tested |
 | [docs/contact-page.md](docs/contact-page.md) | The new contact page: where its words come from, where the old page's parts went, the map, what was tested |
 | [docs/ideas-pages.md](docs/ideas-pages.md) | The new Ideas & Advice pages: how they're made, where the old pages' parts went, what was tested |
+| [docs/payment-error-page.md](docs/payment-error-page.md) | The new payment error page: when customers see it, the old page's security hole, what was tested |
 | [docs/track-order-popup.md](docs/track-order-popup.md) | The new Track Order pop-up: how it looks orders up, where the old one's parts went, what was tested |
 | [docs/legal-pages.md](docs/legal-pages.md) | The privacy and terms pages: why their words stay in the admin site, the tidied copies, what was tested |
 | [docs/admin-content/](docs/admin-content/) | Tidied copies of the privacy and terms words, to paste into the admin site |

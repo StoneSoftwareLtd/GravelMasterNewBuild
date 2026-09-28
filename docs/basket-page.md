@@ -85,7 +85,9 @@ In the whole-website preview (`/basket`), on 24 September 2026, with a sample ba
   - a photo made to fail left a plain box.
 - For real in the read-only preview: Remove is refused, and the page says "Sorry, that couldn't be done..." and gives the buttons back.
 
-Not tested: anything that changes a real basket (updating, removing, vouchers, add-ons, checkout), which needs the test website. The header's basket total in the preview stays at £0.00, since the sample basket isn't the live site's.
+Not tested: anything that changes a real basket (updating, removing, vouchers, add-ons, checkout), which needs the test website.
+
+On 28 September 2026 the preview got a working basket of its own, which answers the basket's addresses the way `BasketController` does ([preview/README.md](../preview/README.md)). With it, the page's + and −, Remove, the voucher form and the suggestions' Add were used for real in the preview, and the header shows the basket's total. That tests the page's side of each change; the site's side still needs the test website.
 
 The stock on each line, on 25 September 2026 (`/basket?stock=1` adds the planter, a real pre-order size, and marks the pegs as sold out: the preview can't see a size's stock, so that line is a sample):
 

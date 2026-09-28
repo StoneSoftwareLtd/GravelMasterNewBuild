@@ -429,8 +429,22 @@ Dylan confirmed refunds take 14 working days, which is what customers are told. 
 
 Raised: the law generally gives 14 calendar days for these refunds ([open-questions.md](open-questions.md#faq-page)).
 
+## 28 September 2026: a working basket in the preview, and the payment error page
+
+Dylan asked to be able to use the site like a customer: add to the basket, change and remove things, and go all the way to payment, where an error shows because payment isn't set up. Of the two ways (the real site running on a test machine, or the preview), Dylan chose the preview for now. Details: [preview/README.md](../preview/README.md), [payment-error-page.md](payment-error-page.md).
+
+1. Read how the real basket works (`BasketController`, `Cart`, `AddToCartComponent.cshtml`, `ProductController.CalculatePrices`, `CheckoutController.ProcessOrder`), so the preview answers each basket address the same way and the new pages' own scripts work unchanged.
+2. `preview-basket.ps1` keeps one basket in the preview while it runs: adding from product pages (sizes, samples, the pop-up's + and − and add-ons, suggestions), the same size adding to its line (not turf), a new postcode area re-pricing the basket, quantities, Remove, Empty basket, and a sample voucher (PREVIEW10). Prices come from the live site's read-only price lookup; the header shows the basket's total.
+3. The checkout is for that basket (an empty one goes back to the basket, as on the site). "Continue to payment" checks the delivery postcode as `ProcessOrder` does, then goes to the payment error page. Nothing is sent to the live site's basket or checkout, and no order is made.
+4. The payment error page (`/checkout/orderresulterror`) is new, in the information pages' style, with both of the old page's cases. Reading the old view found it writes `?loc` into the page unencoded (cross-site scripting); the new page doesn't, and the one-line fix for the old one is in merging.md.
+5. Tested in headless Edge: the whole journey (empty basket; add 2 from a product page; + in the pop-up; an add-on; + on the basket page; the voucher; Remove; the checkout with a postcode outside the area stopped by the page; Continue to payment to the error page), then turf, a sample, an add without script, an unknown product, a bad voucher, a postcode outside the area sent past the page's check, and moving the basket to PO postcodes (the gravel went from £116 to £129 a bag; samples and fixed prices stayed). The error page's merge code compiled and ran, with and without `?loc` and with a script in it; nothing wider than the screen at 8 widths; contrast; no script errors.
+
+Raised: the old error page's security hole (fix now), and losing the checkout's details when the postcode is outside the area. See [open-questions.md](open-questions.md#payment-error-page).
+
+Not tested: the real basket, checkout and a failed payment, which need the test website.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
 - Test the checkout and the order confirmation with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
-- Still on the old design after that: meet the team, the old "Articles" section, the other pages from the admin site, the "page not found" page and the payment error page.
+- Still on the old design after that: meet the team, the old "Articles" section, the other pages from the admin site and the "page not found" page.

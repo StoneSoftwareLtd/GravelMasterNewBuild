@@ -274,6 +274,38 @@ Product addresses (`/products/{category}/p/{product}`) are routed to `ProductCon
 - [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new confirmation too.
 - [ ] **`Website.csproj`**: add `Views/Checkout/_ConfirmationPage.cshtml`, `ViewModels/Common/ConfirmationPageModels.cs`, `css/gm-confirmation.css`, `js/gm-confirmation.js` and `img/gm-confirm-bag.png`.
 - [ ] Test on the real site, with test payments: the order number, amount, email and delivery address after a real order (with and without a second address line, and with a different billing address); "Track your order"; each suggestion's price and Add to basket; reloading the page (no second email); a trade login (the `trade_order` event); and that the purchase events still fire once.
+## Payment error page
+
+`/checkout/orderresulterror` is `CheckoutController.OrderResultError`, which shows `Views/Checkout/Error.cshtml` ([payment-error-page.md](payment-error-page.md)).
+
+- [ ] **Now, on the live site, whatever happens with the new design**: in `Error.cshtml`, stop writing `?loc` into the page unencoded (cross-site scripting). Replace
+  ```cshtml
+  @Html.Raw("The delivery address entered does not match the selected area (" + Request.QueryString["loc"] + ") used to add to basket.") <br />
+  ```
+  with
+  ```cshtml
+  The delivery address entered does not match the selected area (@Request.QueryString["loc"]) used to add to basket. <br />
+  ```
+  Customers see the same words. (Check the live copy of the view first: the live page is a little newer than master's.)
+- [ ] **`Error.cshtml`**: add the new branch after the `@{ }` block (compiled and run against a stand-in for `_Layout`, with and without `?loc`, and with a script in `?loc`):
+  ```cshtml
+  @using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+  ```
+  at the top, then
+  ```cshtml
+  @section Head { @if (NewChrome.IsOn(Request)) { <link href="/css/gm-info.css?v1" rel="stylesheet" /> } }
+  @if (NewChrome.IsOn(Request))
+  {
+      ViewBag.Title = "Payment problem";
+      @Html.Partial("~/Views/Checkout/_PaymentErrorPage.cshtml", new PaymentErrorModel(Request.QueryString["loc"]))
+      return;
+  }
+  ```
+  (A model object, not the string: `Html.Partial` with a null model would pass the view's own model instead.)
+- [ ] **`Website.csproj`**: add `Views/Checkout/_PaymentErrorPage.cshtml` and `ViewModels/Common/PaymentErrorModels.cs` (and `css/gm-info.css`, if another information page hasn't added it).
+- [ ] **`@section requirecontroller`**: nothing to change; the page has no script of its own.
+- [ ] Test on the test site: a checkout with a delivery postcode outside the basket's area (with the checkout's script switched off, as the new checkout stops it first), and a failed test payment.
+
 ## Account pages (signing in)
 
 The views are in `Views/Account` and `Views/Shared/_AccountMaster.cshtml`; each new page is a partial with its own small model ([account-pages.md](account-pages.md)). Every step below adds `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top of the view. The code was compiled with MVC 5.2's Razor against stand-ins with the repository's names.
