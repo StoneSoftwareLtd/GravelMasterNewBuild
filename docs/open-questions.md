@@ -177,6 +177,16 @@ Decided 23 September 2026: the prices and the quantity calculator stay exactly a
 | **What the calculator shows** (live now) | "How do I use the Gravel Calculator?" says it gives tonnes, 850kg bulk bags or 20kg bags. The calculator (old and new) gives kilograms, one-tonne pallets and bulk bags. | Update the answer to match the calculator |
 | **New words to read** | "Help and support", "Frequently asked questions" (the old heading was "FAQ"), the topics without their numbers, "Can't find your answer? Our team are here Monday to Friday, 8am - 5pm." with "Call 0330 058 5068", "Email us" and "Track your order", the search box ("Search the questions", "e.g. cancel, next day, refund", "No questions match", "Try a different word, or call us 8am - 5pm on 0330 058 5068"), and the spelling fixes ([faq-page.md](faq-page.md#changes-to-the-words)). The opening sentence is the page's description from the admin site. | Read them |
 
+## Contact page
+
+| Found | Detail | Suggestion |
+|---|---|---|
+| **"Our contact form below"** (live now) | The page asks customers to "contact us via our contact form below", but there's no form on it. The new page just says to telephone, and shows both email addresses. | Leave it at phone and email, or add a contact form (the bulk enquiry pop-up on category and product pages already sends an enquiry email, and could be offered here for large loads) |
+| **The map shows the old office** (live now) | The live page's map is centred on Auckley, DN9 3FL, the Hayfield Business Park postcode, not Meteor House, DN9 3GA. The new page's map is found from the new address. | Nothing, once the new page is live; or fix the old page's map now |
+| **Option 3** | The footer lists "Other Enquiries: Option 3"; the contact page lists only options 1 (sales) and 2 (customer services), and the live FAQs send delivery questions to option 2. | Say whether option 3 exists, and what it's for |
+| **The office photo** | The old page's photo looks like the old Hayfield Business Park office, so the new page leaves it out. | Supply a photo of Meteor House or the team, if you want one |
+| **New words to read** | "Call us", "Email us", "Sales", "Customer services", "Monday to Friday, 8am - 5pm", "Track your order" ("Already ordered? Check its status with your order ID and postcode."), "Open in Google Maps", and the hours as "Monday - Friday" ([contact-page.md](contact-page.md#changes-to-the-words)). | Read them |
+
 ## Search results page
 
 | Found | Detail | Suggestion |

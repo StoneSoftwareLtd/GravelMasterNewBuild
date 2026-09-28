@@ -351,8 +351,22 @@ Raised: the live FAQs disagree with the delivery page and the checkout on cancel
 
 Not tested: the page on the test website.
 
+## 28 September 2026: contact page
+
+The contact page (`/contact-us`) in the new design, in the other information pages' style, with the live page's words (again newer than master's view: the Meteor House address, weekends closed, the customer services email). Details: [contact-page.md](contact-page.md).
+
+1. The page: "Here to help"; three cards to get in touch (call, with the two phone options and the hours; email, with both addresses; and Track your order); "Large loads" and "Make the right choice" with icons; the head office, opening hours and a map.
+2. The old map was centred on the old office's postcode, so the new one is found from the Meteor House address, and loads only when it's scrolled near. The old office photo is left out.
+3. "Via our contact form below" is gone: there's no form.
+4. Merge code for `Contact.cshtml`, compiled against stand-ins copied from the repository's classes and run with sample data. The first compile caught an `@` that Razor would have read as code (fixed). The preview shows the page, character for character as the compiled partial makes it.
+5. Tested: the words against the live page by script; nothing wider than the screen at 12 widths; the long email address breaks after the @; the map, Track your order and the links; every text colour passes AA; no script errors.
+
+Raised: the missing contact form, the old page's map, "Other Enquiries: Option 3" in the footer, the office photo, and the new words. See [open-questions.md](open-questions.md#contact-page).
+
+Not tested: the page on the test website.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
 - Test the checkout and the order confirmation with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
-- Still on the old design after that: the other content pages (contact, privacy, terms and the rest), the "page not found" page and the payment error page.
+- Still on the old design after that: the other content pages (privacy, terms, meet the team, leave a review, ideas and the rest from the admin site), the "page not found" page and the payment error page.

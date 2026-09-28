@@ -624,6 +624,30 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
 - [ ] **`Website.csproj`**: add `Views/Content/_FaqPage.cshtml` and `js/gm-faq.js` (and `css/gm-info.css`, if the delivery or calculator page hasn't added it).
 - [ ] Test on the real site: the page with the new design on and off, the search, a link to `/faq#q3`, "Track your order" with a real order number, and the phone and email links on a phone.
 
+## Contact page
+
+`/contact-us` is `ContentController.Display` with the `contact-us` key, which renders `Views/Content/Contact.cshtml` with a `ContentViewModel`. See [contact-page.md](contact-page.md). As with the FAQs, the live page's words are newer than master's view, and the new partial has the live ones.
+
+- [ ] **`Views/Content/Contact.cshtml`**: add `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top, and straight after its `@{ }` block add the code below. The view has no `Head` section yet, so this adds one. The old page and its empty `scripts`/`RightContent` sections are after the `return`, so they aren't drawn; the `404-error` check stays where it is, below. This code was compiled with MVC 5.2's Razor against stand-ins copied from the repository's `ContentViewModel`, and run with sample data ([contact-page.md](contact-page.md#tested)):
+  ```cshtml
+  @section Head
+  {
+      @if (NewChrome.IsOn(Request))
+      {
+          <link href="/css/gm-info.css?v1" rel="stylesheet" />
+      }
+  }
+  @if (NewChrome.IsOn(Request))
+  {
+      @Html.Partial("~/Views/Content/_ContactPage.cshtml")
+      return;
+  }
+  ```
+- [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js`, which brings the Bootstrap that opens the Track Order pop-up.
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new contact page too.
+- [ ] **`Website.csproj`**: add `Views/Content/_ContactPage.cshtml` (and `css/gm-info.css`, if another information page hasn't added it).
+- [ ] Test on the real site: the page with the new design on and off, the map (with the cookie banner, if it asks first), "Track your order" with a real order number, and the phone and email links on a phone.
+
 ## After merging
 
 - [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, order confirmation, account, search, content pages and the 404 page.
