@@ -21,8 +21,8 @@ Its changes compared with master, from before the 17 September fixes, are in `pa
 
 `_Layout.cshtml` reads the `UseNewChrome` app setting in `Web.config`:
 
-- **on**: renders `_SiteHeader`, `_SiteFooter` and `_SiteMobileMenu`, loads `css/gm-chrome.css` and `js/gm-chrome.js`;
-- **off**: renders `_LegacyHeader` and `_LegacyFooter`, which are the old header and footer, unchanged, moved out of `_Layout`.
+- **on**: renders `_SiteHeader`, `_SiteFooter`, `_TrackOrderPopup` and `_SiteMobileMenu`, loads `css/gm-chrome.css` and `js/gm-chrome.js`;
+- **off**: renders `_LegacyHeader` and `_LegacyFooter` (with the old Track Order pop-up, `_TrackOrderModal`), which are the old header and footer, unchanged, moved out of `_Layout`.
 
 `?newchrome=1` or `?newchrome=0` on any address overrides the setting for that browser, for testing.
 
@@ -39,9 +39,10 @@ New:
 | `Views/Shared/_SiteMobileMenu.cshtml` | slide-in phone menu |
 | `Views/Shared/_LegacyHeader.cshtml` | old header, unchanged, moved out of `_Layout` |
 | `Views/Shared/_LegacyFooter.cshtml` | old footer, unchanged, moved out of `_Layout` |
-| `Views/Shared/_TrackOrderModal.cshtml` | Track Order pop-up, used by both |
+| `Views/Shared/_TrackOrderModal.cshtml` | the old Track Order pop-up, moved out of `_Layout`; since 28 September 2026 only the old footer renders it |
+| `Views/Shared/_TrackOrderPopup.cshtml` | the new Track Order pop-up, added 28 September 2026 ([track-order-popup.md](track-order-popup.md)) |
 | `css/gm-chrome.css` | styles for the new design |
-| `js/gm-chrome.js` | phone menu, footer carousel, basket total |
+| `js/gm-chrome.js` | phone menu, footer carousel, basket total, Track Order pop-up |
 | `img/gm-*.png`, `gm-*.jpg` | logos, advisor photo and payment cards |
 
 Changed:
@@ -56,7 +57,7 @@ Changed:
 
 ## Keeping the new styles away from the old page
 
-The old page content still sits underneath the new header and footer, with Bootstrap 4 and the site's `global.css` loaded first. `gm-chrome.css` is written so it can't change anything outside `.site-header`, `.footer`, `.mobile-menu` and `.postcode-modal`:
+The old page content still sits underneath the new header and footer, with Bootstrap 4 and the site's `global.css` loaded first. `gm-chrome.css` is written so it can't change anything outside `.site-header`, `.footer`, `.mobile-menu`, `.postcode-modal` and the Track Order pop-up (`.gm-track`):
 
 - every rule is scoped to those elements;
 - class names shared with Bootstrap (`.container`, `.dropdown`) are scoped too;

@@ -102,7 +102,7 @@ Read from `Views/MyAccount/*.cshtml`, `Views/Shared/_AccountMaster.cshtml`, `MyA
 
 | Old page | New page |
 |---|---|
-| Order History: one box per item, each with its own order number, date and address | Your orders: one card per order (newest first, as before), with its number, date and delivery address, then its items. "Track order" opens the site's Track Order pop-up with the order number and postcode filled in |
+| Order History: one box per item, each with its own order number, date and address | Your orders: one card per order (newest first, as before), with its number, date and delivery address, then its items. "Track order" opens the header's Track Order pop-up, which looks that order up straight away ([track-order-popup.md](track-order-popup.md)) |
 | Each item: photo, name, the saved name without its HTML, "QTY", "Request Return" | Photo, name (linked), size, "Quantity", "Request a return" to the same address. The checkout saves the line as `Product.NameWithVariants`, "*name*&lt;br/&gt;*size*&lt;br/&gt;", and the old page removed the `<br/>`s without a space ("Cotswold Chippings 20mmApprox 850Kg Bulk Bag"); the new page shows the size under the name (several options with commas) |
 | Photos at 300px, which most products don't have (the pegs and turf, for example), so most items had no picture | The 330px photo every product has |
 | Returns: the policy and "View My Orders" | The same words, the policy as a ticked list |

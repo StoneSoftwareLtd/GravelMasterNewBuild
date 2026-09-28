@@ -409,6 +409,20 @@ Raised: the database passwords (urgent), the Wayfair stylesheet, pictures of 1 t
 
 Not tested: the pages on the test website.
 
+## 28 September 2026: Track Order pop-up
+
+Dylan asked for the outdated Track Order pop-up to be redone. Details: [track-order-popup.md](track-order-popup.md).
+
+1. Read how the old one works: a Bootstrap pop-up in `_TrackOrderModal.cshtml` that sends the order number and postcode to `CheckoutController.CheckMyOrder`, which answers with one of seven sentences (four of them for the stages from Palletforce's tracking).
+2. Built `_TrackOrderPopup.cshtml` in the look of the Track Order modal from the July 2026 prototypes: the same two fields to the same address, with the four stages as steps that light up from the answer. `_Layout` renders it instead of the old one when the new chrome is on; the old footer keeps the old one.
+3. It needs neither Bootstrap nor jQuery. The buttons that open it (header, phone menu, delivery, FAQ, contact, order confirmation, My Account) now use `data-track-open`; the confirmation and My Account ones look their order up straight away, so `gm-account.js` and `gm-confirmation.js` no longer fill it in.
+4. The preview answers for four sample orders with the lookup's own sentences, and never asks the live lookup.
+5. Tested: compiled; the preview's markup is the compiled pop-up's; every kind of answer, the tidying of "#123 456", HTML typed as a postcode, keyboard use, and opening from each place, in headless Edge; phones down to 320px; contrast; no script errors.
+
+Raised: the lookup's wrong phone number (0300), its "(Coming Soon)" wording, that it repeats the postcode typed in, and two more keys written into `CheckoutController.cs` (Mailchimp and Palletforce). See [open-questions.md](open-questions.md#track-order-pop-up).
+
+Not tested: the real lookup, with real orders, on the test website.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).

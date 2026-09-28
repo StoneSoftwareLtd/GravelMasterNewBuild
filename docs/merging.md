@@ -38,6 +38,7 @@ The new partials, CSS, JavaScript and images can be copied as they are.
 - [ ] Latest-master rebase of `_Layout`, `_LegacyHeader`, `_LegacyFooter` (above).
 - [ ] Add `<add key="UseNewChrome" value="false" />` to `Web.config` `<appSettings>`.
 - [ ] Add `ViewModels/Common/NewChrome.cs` to `Website.csproj` (the switch that `_Layout` and the page views share).
+- [ ] **The Track Order pop-up** ([track-order-popup.md](track-order-popup.md)): with the new chrome on, `_Layout` renders `_TrackOrderPopup` after the footer, where it rendered `_TrackOrderModal`; `_LegacyFooter` keeps rendering the old one. Add `Views/Shared/_TrackOrderPopup.cshtml` to `Website.csproj` (this repository's copy lists it). Its styles and script are in `gm-chrome.css` and `gm-chrome.js` (now `?v4`). It asks `CheckoutController.CheckMyOrder`, unchanged; test it on the test site with a real order in each state, a wrong postcode and an order number that doesn't exist.
 - [ ] The **"page not found" page** (e.g. `/this-page-does-not-exist-123`) isn't built from `_Layout.cshtml`: it has its own copy of the old header and footer (no newsletter band, no product search data). Find its view or layout and give it the same switch.
 - [ ] Make a fresh patch from the finished branch. `patches/header-and-footer (before 2026-09-17 fixes).patch` is from before the fixes.
 
@@ -269,7 +270,7 @@ Product addresses (`/products/{category}/p/{product}`) are routed to `ProductCon
   @Html.Partial("~/Views/Checkout/_ConfirmationPage.cshtml", confirmation)
   ```
   Check on the test site that `ProductRepo.GetProduct` gives each size's customer price for the area, as the product pages show it.
-- [ ] **`@section requirecontroller`**: nothing to change. The old view has none, so `_Layout` loads `Content/Display.js`, which brings jQuery and Bootstrap for the Track Order pop-up (as in the preview, where "Track your order" opened it).
+- [ ] **`@section requirecontroller`**: nothing to change. The old view has none, so `_Layout` loads `Content/Display.js` as before. "Track your order" doesn't need it: the Track Order pop-up is plain JavaScript in `gm-chrome.js` ([Header and footer](#header-and-footer)).
 - [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new confirmation too.
 - [ ] **`Website.csproj`**: add `Views/Checkout/_ConfirmationPage.cshtml`, `ViewModels/Common/ConfirmationPageModels.cs`, `css/gm-confirmation.css`, `js/gm-confirmation.js` and `img/gm-confirm-bag.png`.
 - [ ] Test on the real site, with test payments: the order number, amount, email and delivery address after a real order (with and without a second address line, and with a different billing address); "Track your order"; each suggestion's price and Add to basket; reloading the page (no second email); a trade login (the `trade_order` event); and that the purchase events still fire once.
@@ -649,7 +650,7 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
       return;
   }
   ```
-- [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js`, which brings the Bootstrap that opens the Track Order pop-up (as the header's link needs).
+- [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js` as before. The Track Order pop-up doesn't need it (plain JavaScript in `gm-chrome.js`).
 - [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new delivery page too.
 - [ ] **`Website.csproj`**: add `Views/Content/_DeliveryPage.cshtml`, `css/gm-info.css` and `img/gm-delivery-hero.jpg`.
 - [ ] Test on the real site: the page with the new design on and off, "Track your order" with a real order number, the phone and email links on a phone, and that another content page (e.g. `/privacy`) still shows its own content.
@@ -673,7 +674,7 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
       return;
   }
   ```
-- [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js`, which brings the Bootstrap that opens the Track Order pop-up. The search (`js/gm-faq.js`) is plain JavaScript.
+- [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js` as before. The search (`js/gm-faq.js`) and the Track Order pop-up (`gm-chrome.js`) are plain JavaScript.
 - [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new FAQ page too.
 - [ ] **`Website.csproj`**: add `Views/Content/_FaqPage.cshtml` and `js/gm-faq.js` (and `css/gm-info.css`, if the delivery or calculator page hasn't added it).
 - [ ] Test on the real site: the page with the new design on and off, the search, a link to `/faq#q3`, "Track your order" with a real order number, and the phone and email links on a phone.
@@ -697,7 +698,7 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
       return;
   }
   ```
-- [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js`, which brings the Bootstrap that opens the Track Order pop-up.
+- [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js` as before. The Track Order pop-up doesn't need it (plain JavaScript in `gm-chrome.js`).
 - [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new contact page too.
 - [ ] **`Website.csproj`**: add `Views/Content/_ContactPage.cshtml` (and `css/gm-info.css`, if another information page hasn't added it).
 - [ ] Test on the real site: the page with the new design on and off, the map (with the cookie banner, if it asks first), "Track your order" with a real order number, and the phone and email links on a phone.

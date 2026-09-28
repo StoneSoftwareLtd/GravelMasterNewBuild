@@ -40,7 +40,7 @@ From the prototype, not on the old page: the illustration, "Track your order" an
 
 ## Choices
 
-- **"Track your order"** opens the site's own Track Order pop-up (`_TrackOrderModal`), the same one as the header's link, with the order number and the delivery postcode already filled in.
+- **"Track your order"** opens the header's Track Order pop-up ([track-order-popup.md](track-order-popup.md)), which looks this order up straight away with the delivery postcode.
 - **"You might also like"** has the prototype's picks that are on the site: the FeatherSnap Bird Feeder, the Large Galvanised Stainless Steel Planter, the Trowel and the Gardening Gloves. The prototype's fifth, a wheelbarrow, isn't sold on the site. Their prices come from the site (the prototype's were made up: the planter is £62.99, not £45.99, and the gloves £9.99, not £4.99). "Add to basket" makes the same request as the basket page's suggestions, then goes to the basket.
 - **The customer's name** isn't in the heading. The prototype's heading has none, and the name is whatever was typed as the full name.
 - **Colours**, measured against what's behind them: the prototype's green (`#388038`) is 4.4:1 on the email panel, so text, buttons and the tick use the darker green of the other new pages. Every text colour on the page passes WCAG AA.
