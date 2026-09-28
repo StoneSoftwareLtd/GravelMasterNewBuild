@@ -365,8 +365,22 @@ Raised: the missing contact form, the old page's map, "Other Enquiries: Option 3
 
 Not tested: the page on the test website.
 
+## 28 September 2026: privacy and terms pages
+
+The privacy policy and the terms in the new design. Details: [legal-pages.md](legal-pages.md).
+
+1. Looked at what's left on the old design. Of the pages `Display.cshtml` shows from the admin site, the privacy policy and the terms are the ones every page links to (the footer); the old `/about` page and the others have layouts of their own, so they're left as they are. `/leave-review` gives a server error on the live site.
+2. Their words stay in the admin site, where the team keeps them up to date, unlike the delivery page's. The new page is the frame around them: the breadcrumb, a readable column in 16px text, and styles for what the admin site's editor makes. `Display.cshtml`'s new code covers the delivery page and these two.
+3. As they are now, neither page has real headings or lists (headings are ordinary lines; lists are lines starting "·"). So [admin-content](admin-content/) has tidied copies, made by a script that changes only the markup, and checked word for word: 20 headings and 18 lists for privacy, 17 headings for the terms, links for emails and phone numbers. They look right in the old design too, so they can be pasted into the admin site now.
+4. "On this page" (`js/gm-legal.js`) lists the headings once there are three: beside the words on a computer, marking the section being read; under the title on a phone, opening and closing.
+5. Tested: the code compiles and runs with sample data (only those two keys change); the preview's page is character for character the compiled one; nothing wider than the screen from 1440 to 320px, with the words as they are and tidied (a long plain-text email address ran off a phone screen: long words now break); "On this page" on a computer and a phone; contrast; no script errors.
+
+Raised: pasting the tidied copies, the privacy policy's "last updated" date, signatures, Comodo logos, out-of-date names in the terms, three versions of the address, `/leave-review` and the old `/about`. See [open-questions.md](open-questions.md#privacy-and-terms-pages).
+
+Not tested: the pages on the test website, and pasting into the admin site's editor.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
 - Test the checkout and the order confirmation with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
-- Still on the old design after that: the other content pages (privacy, terms, meet the team, leave a review, ideas and the rest from the admin site), the "page not found" page and the payment error page.
+- Still on the old design after that: special offers (a product list), the Ideas & Advice articles and their lists, meet the team, the other pages from the admin site, the "page not found" page and the payment error page.

@@ -187,6 +187,18 @@ Decided 23 September 2026: the prices and the quantity calculator stay exactly a
 | **The office photo** | The old page's photo looks like the old Hayfield Business Park office, so the new page leaves it out. | Supply a photo of Meteor House or the team, if you want one |
 | **New words to read** | "Call us", "Email us", "Sales", "Customer services", "Monday to Friday, 8am - 5pm", "Track your order" ("Already ordered? Check its status with your order ID and postcode."), "Open in Google Maps", and the hours as "Monday - Friday" ([contact-page.md](contact-page.md#changes-to-the-words)). | Read them |
 
+## Privacy and terms pages
+
+| Found | Detail | Suggestion |
+|---|---|---|
+| **Paste the tidied copies?** | [admin-content](admin-content/) has both pages with the same words and real headings and lists ([legal-pages.md](legal-pages.md#the-tidied-copies)). Without them the new pages work, but read as one long run of text, with no "On this page". | Have them read, then paste them into the admin site (they work in the old design too) |
+| **"Last updated 31/10/2024"** (live now) | The privacy policy ends "This Privacy Policy was last updated on 31/10/2024", but its first section is about a law from June 2026, so it has been changed since. | Update the date whenever the policy changes |
+| **Signatures** (live now) | The terms say "A signature is required for the delivery of all goods unless prior arrangements have been specified" (4.3); the delivery page and the FAQs say you don't need to be in, and the driver leaves without a signature. | Make them agree |
+| **Comodo logos** (live now) | The privacy policy asks customers to check the site's certificate "by clicking on one of the Comodo logos displayed on the Site". There are none, on the old design or the new. | Remove the sentence, or add the logo |
+| **Out-of-date names** (live now) | The terms say consumers' rights come under "the Sale of Goods Act 1979"; for consumers that was replaced by the Consumer Rights Act 2015. They also say payments are "secured by Sage Pay", which is now called Opayo. | Ask whoever looks after the site's legal wording to check them |
+| **Three versions of the address** | The privacy policy: Meteor House, First Avenue, Finningley, Doncaster, DN9 3GA. The terms: Meteor House, First Avenue, Auckley, Doncaster, DN9 3GA. The contact page and footer: Meteor House, Finningley, DN9 3GA. | Choose one and use it everywhere |
+| **Other pages found on the way** (live now) | `/leave-review` gives a server error (500). `/about` is an older copy of the About page, and is in the sitemap next to `/about-us`. | Fix or remove `/leave-review`; send `/about` to `/about-us` (a permanent redirect) and take it out of the sitemap |
+
 ## Search results page
 
 | Found | Detail | Suggestion |

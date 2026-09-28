@@ -577,14 +577,18 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
 
 `/delivery` is `ContentController.Display` with the `delivery` key. Having no view of its own, it renders `Views/Content/Display.cshtml`, which shows the content's HTML from the admin site, and which every other content page without a view of its own shares. See [delivery-page.md](delivery-page.md).
 
-- [ ] **`Views/Content/Display.cshtml`**: add `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top, add the `newDelivery` line to the end of its `@{ }` block, and add the rest straight after the block. Only the delivery page changes; every other page this view shows keeps its admin content, with the new design on or off. This code was compiled with MVC 5.2's Razor against stand-ins copied from the repository's `ContentViewModel`, and run with sample data ([delivery-page.md](delivery-page.md#tested)):
+- [ ] **`Views/Content/Display.cshtml`**: add `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top, add the four lines starting `string pageKey` to the end of its `@{ }` block, and add the rest straight after the block. It gives the delivery page its new design, and the privacy and terms pages theirs ([below](#privacy-and-terms-pages)); every other page this view shows keeps its admin content, with the new design on or off. This code was compiled with MVC 5.2's Razor against stand-ins copied from the repository's `ContentViewModel`, and run with sample data ([delivery-page.md](delivery-page.md#tested), [legal-pages.md](legal-pages.md#tested)):
   ```cshtml
-      // the delivery page has a new design; every other page this view shows keeps the admin site's content
-      bool newDelivery = string.Equals(Model.Key, "delivery", StringComparison.OrdinalIgnoreCase) && NewChrome.IsOn(Request);
+      // pages with a new design; every other page this view shows keeps the admin site's content as it is
+      string pageKey = (Model.Key ?? "").ToLowerInvariant();
+      bool newChrome = NewChrome.IsOn(Request);
+      bool newDelivery = newChrome && pageKey == "delivery";
+      // the privacy policy and the terms keep their words in the admin site, shown in the new design's column
+      bool newLegal = newChrome && (pageKey == "privacy" || pageKey == "term-conditions");
   }
   @section Head
   {
-      @if (newDelivery)
+      @if (newDelivery || newLegal)
       {
           <link href="/css/gm-info.css?v1" rel="stylesheet" />
       }
@@ -592,6 +596,11 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
   @if (newDelivery)
   {
       @Html.Partial("~/Views/Content/_DeliveryPage.cshtml")
+      return;
+  }
+  @if (newLegal)
+  {
+      @Html.Partial("~/Views/Content/_LegalPage.cshtml", Model)
       return;
   }
   ```
@@ -647,6 +656,17 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
 - [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new contact page too.
 - [ ] **`Website.csproj`**: add `Views/Content/_ContactPage.cshtml` (and `css/gm-info.css`, if another information page hasn't added it).
 - [ ] Test on the real site: the page with the new design on and off, the map (with the cookie banner, if it asks first), "Track your order" with a real order number, and the phone and email links on a phone.
+
+## Privacy and terms pages
+
+`/privacy` and `/term-conditions` are `ContentController.Display` with those keys: `Views/Content/Display.cshtml` shows their HTML from the admin site. The new design keeps the words in the admin site and shows them in a readable column. See [legal-pages.md](legal-pages.md).
+
+- [ ] **`Views/Content/Display.cshtml`**: the code under [Delivery page](#delivery-page) covers these two pages too.
+- [ ] **`@section requirecontroller`**: nothing to change (`Content/Display.js`, as now). "On this page" is plain JavaScript (`js/gm-legal.js`).
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the two pages too.
+- [ ] **`Website.csproj`**: add `Views/Content/_LegalPage.cshtml` and `js/gm-legal.js` (and `css/gm-info.css`, if another information page hasn't added it).
+- [ ] **In the admin site** (not code, and only once someone has read them): paste the tidied copies from [admin-content](admin-content/) into the `privacy` and `term-conditions` content, in the editor's HTML (source) view. They're the same words with real headings and lists; "On this page" appears once there are headings. It can be done before or after the code goes live: the old design shows them fine.
+- [ ] Test on the real site: both pages with the new design on and off, "On this page" on a computer and a phone, and another admin page (e.g. `/about`) still in its old look.
 
 ## After merging
 
