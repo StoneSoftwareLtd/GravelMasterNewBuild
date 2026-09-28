@@ -1,8 +1,12 @@
-# The new search results page (Views/Category/_SearchPage.cshtml) for the previews. Dot-sourced by site-preview.ps1
-# (localhost:8780/search?searchphrase=...), after category-page.ps1, whose tile reader and Razor helpers it uses.
+# The new search results page (Views/Category/_SearchPage.cshtml) and special offers page (Views/Product/
+# _OffersPage.cshtml, in the search page's layout) for the previews. Dot-sourced by site-preview.ps1
+# (localhost:8780/search?searchphrase=... and /special-offers), after category-page.ps1, whose tile reader and Razor
+# helpers it uses.
 #
 #   ConvertFrom-OldSearchPage  reads an old search results page from the live site into what SearchPageModel holds
 #   Format-SearchPage          renders _SearchPage.cshtml with it
+#   ConvertFrom-OldOffersPage  reads the old special offers page into what OffersPageModel holds
+#   Format-OffersPage          renders _OffersPage.cshtml with it
 #
 # The markup comes from the .cshtml as it is: each Razor block is found in the file and filled in, and the render
 # fails if any Razor is left over.
@@ -114,5 +118,71 @@ function Format-SearchPage([string]$templatePath, $model) {
   $h = $h.Replace('@phrase', (Enc $phrase))
   $m = [regex]::Match($h, '(?<![\w.])@(?!media\b|keyframes\b|font-face\b|import\b|supports\b)[A-Za-z(*{]|(?m)^\s*(?:(?:if|foreach|for|while)\s*\(|else\s*(?:\{|$|if\b)|(?:var|string|int) \w+ = )')
   if ($m.Success) { throw "_SearchPage still contains Razor near: " + $h.Substring([Math]::Max(0, $m.Index - 80), [Math]::Min(160, $h.Length - [Math]::Max(0, $m.Index - 80))) }
+  [regex]::Replace($h, [string][char]2 + '(\d+)' + [char]3, { param($x) $values[[int]$x.Groups[1].Value] })
+}
+
+# The old special offers page (Product/SpecialOffers.cshtml) shows its products with the search's tiles
+# (DisplayProductsComponentLarge), so it's read the same way. $null for a page it can't read.
+function ConvertFrom-OldOffersPage([string]$mainHtml) {
+  if ($mainHtml.IndexOf('id="grid-list"') -lt 0) { return $null }
+  if (-not $script:searchCategories) {
+    $data = Get-Content -Raw (Join-Path $PSScriptRoot 'data.json') -Encoding UTF8 | ConvertFrom-Json
+    $script:searchCategories = @($data.categories | ForEach-Object { [pscustomobject]@{ Name = $_.name; Url = "/$($_.url)/products/" } })
+  }
+  [pscustomobject]@{
+    Products = @(ConvertFrom-OldProductTiles $mainHtml)   # already in the old grid's order, without the turf
+    Categories = $script:searchCategories
+  }
+}
+
+function Format-OffersPage([string]$templatePath, $model) {
+  $src = [IO.File]::ReadAllText($templatePath)
+  $src = [regex]::Replace($src, '[ \t]*@\*[\s\S]*?\*@[ \t]*\r?\n?', '')   # Razor comments
+  $products = @($model.Products)
+  $count = $products.Count
+
+  # Values go in as placeholders until the Razor check is done
+  $values = New-Object Collections.ArrayList
+  function Put([string]$html) { [void]$values.Add($html); [string][char]2 + ($values.Count - 1) + [char]3 }
+  function Enc([string]$s) { Put ([Net.WebUtility]::HtmlEncode($s)) }
+  function Sub([string]$text, [hashtable]$map) {
+    foreach ($key in ($map.Keys | Sort-Object Length -Descending)) {
+      if (-not $text.Contains($key)) { throw "Couldn't find $key in _OffersPage.cshtml" }
+      $text = $text.Replace($key, $map[$key])
+    }
+    $text
+  }
+
+  $start = $src.IndexOf('<div class="gm-category gm-search gm-offers">')
+  if ($start -lt 0) { throw "Couldn't find <div class=""gm-category gm-search gm-offers""> in _OffersPage.cshtml" }
+  $h = $src.Substring($start)
+
+  $countText = if ($count -eq 0) { 'No offers at the moment' } else { "$count " + $(if ($count -eq 1) { 'product' } else { 'products' }) }
+  $h = Sub $h @{ '@(count == 0 ? "No offers at the moment" : count + (count == 1 ? " product" : " products"))' = (Enc $countText) }
+
+  # the cards (the same as the search page's), or the categories when there are none
+  $h = Set-RazorBlock $h '@if \(count > 0\)\s*\{' { param($b)
+    if ($count -gt 0) {
+      Set-RazorBlock $b.Inner '@for \(int i = 0; i < Model\.Products\.Count; i\+\+\)\s*\{' { param($lb)
+        $card = Get-LoopMarkup $lb.Inner
+        (0..($count - 1) | ForEach-Object {
+          $i = $_; $product = $products[$i]
+          $image = { param($size) Enc $product.ImageFormat.Replace('{0}', [string]$size) }
+          Sub $card @{ '@product.Url' = (Enc $product.Url); '@product.Name' = (Enc $product.Name); '@product.Synopsis' = (Enc $product.Synopsis)
+            '@product.ImageUrl(330)' = (& $image 330); '@product.ImageUrl(600)' = (& $image 600)
+            '@(i < 4 ? "eager" : "lazy")' = $(if ($i -lt 4) { 'eager' } else { 'lazy' })
+            '@HomeProduct.FormatPrice(product.Price, true)' = (Put (Format-GbpPrice $product.Price $true))
+            '@HomeProduct.FormatPrice(product.TradePrice, true)' = (Put (Format-GbpPrice $product.TradePrice $true)) }
+        }) -join ''
+      }
+    } else {
+      Set-RazorBlock $b.ElseInner '@foreach \(var category in Model\.Categories\)\s*\{' { param($lb)
+        (@($model.Categories) | ForEach-Object { Sub $lb.Inner @{ '@category.Url' = (Enc $_.Url); '@category.Name' = (Enc $_.Name) } }) -join ''
+      }
+    }
+  }
+
+  $m = [regex]::Match($h, '(?<![\w.])@(?!media\b|keyframes\b|font-face\b|import\b|supports\b)[A-Za-z(*{]|(?m)^\s*(?:(?:if|foreach|for|while)\s*\(|else\s*(?:\{|$|if\b)|(?:var|string|int) \w+ = )')
+  if ($m.Success) { throw "_OffersPage still contains Razor near: " + $h.Substring([Math]::Max(0, $m.Index - 80), [Math]::Min(160, $h.Length - [Math]::Max(0, $m.Index - 80))) }
   [regex]::Replace($h, [string][char]2 + '(\d+)' + [char]3, { param($x) $values[[int]$x.Groups[1].Value] })
 }

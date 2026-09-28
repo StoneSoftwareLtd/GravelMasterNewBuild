@@ -22,6 +22,7 @@
 # /calculator, /faq and /contact-us show the new delivery, calculator, FAQ and contact pages
 # (Views/Content/_DeliveryPage.cshtml, _CalculatorPage.cshtml, _FaqPage.cshtml and _ContactPage.cshtml), and /privacy and
 # /term-conditions the admin site's words in the new design (_LegalPage.cshtml; ?tidy=1 for docs/admin-content's copy).
+# /special-offers is the new special offers page (Views/Product/_OffersPage.cshtml), filled from the live page's products.
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -354,6 +355,17 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
           $extraHead = '<link href="/css/gm-category.css?v1" rel="stylesheet" />'
           $css = '/css/gm-search.css?v1'; $newPage = 'new search page'
           $searchPhrase = ("$($model.Phrase)").Trim()
+        }
+      }
+      elseif ($path -match '^/special-offers/?$') {
+        # ?empty=1 shows the page with no products on it
+        $model = ConvertFrom-OldOffersPage $html.Substring($mainBody.Index, $mainEnd - $mainBody.Index)
+        if ($model) {
+          if ($rawUrl -match '[?&]empty=1(&|$)') { $model.Products = @() }
+          $content = Format-OffersPage (Join-Path $package 'Views\Product\_OffersPage.cshtml') $model
+          # the search page's styles, as SpecialOffers.cshtml's Head section loads them
+          $extraHead = '<link href="/css/gm-category.css?v1" rel="stylesheet" />'
+          $css = '/css/gm-search.css?v1'; $newPage = 'new offers page'
         }
       }
     }

@@ -1,0 +1,68 @@
+@model Agilis.ECommerce.Mvc.Web.ViewModels.Common.OffersPageModel
+@using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+@{
+    int count = Model.Products.Count;
+}
+@* New special offers page. There's no Optima prototype for it, so it's the search results page's layout
+   (Views/Category/_SearchPage.cshtml): the category page's intro band and product cards, full width without the
+   sidebar. It sits inside .gm-category and .gm-search and loads css/gm-category.css and css/gm-search.css, so the
+   cards look exactly like theirs. No script of its own. *@
+<div class="gm-category gm-search gm-offers">
+
+    <div class="plp-top">
+        <nav class="container plp-crumbs" aria-label="Breadcrumb">
+            <ol class="plp-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><span class="plp-crumbs__current" aria-current="page">Special offers</span></li>
+            </ol>
+        </nav>
+
+        <section class="plp-intro srch-intro">
+            <div class="container">
+                <h1 class="plp-intro__title srch-title">Special offers</h1>
+                <p class="srch-count">@(count == 0 ? "No offers at the moment" : count + (count == 1 ? " product" : " products"))</p>
+            </div>
+        </section>
+    </div>
+
+    <div class="container srch-body">
+        @if (count > 0)
+        {
+            <h2 class="gm-sr">Products</h2>
+            <div class="plp-grid srch-grid">
+                @for (int i = 0; i < Model.Products.Count; i++)
+                {
+                    var product = Model.Products[i];
+                    @* The category page's card; "sizes" is for this page's four columns *@
+                    <a href="@product.Url" class="plp-card">
+                        <div class="plp-card__media">
+                            <img class="plp-card__img" src="@product.ImageUrl(330)" srcset="@product.ImageUrl(330) 330w, @product.ImageUrl(600) 600w" sizes="(max-width: 560px) calc(100vw - 36px), (max-width: 860px) calc(50vw - 30px), (max-width: 1100px) calc(33.3vw - 28px), (max-width: 1480px) calc(25vw - 27px), 343px" alt="" width="330" height="330" loading="@(i < 4 ? "eager" : "lazy")">
+                            @* Shown to trade customers only, by _Layout's /product/istrade check *@
+                            <span class="plp-card__trade trade-price">Trade price</span>
+                        </div>
+                        <h3 class="plp-card__name">@product.Name</h3>
+                        <p class="plp-card__desc">@product.Synopsis</p>
+                        <p class="plp-card__pricelabel">Price (inc. VAT &amp; delivery)</p>
+                        <p class="plp-card__price">From <span class="cust-price">@HomeProduct.FormatPrice(product.Price, true)</span><span class="trade-price">@HomeProduct.FormatPrice(product.TradePrice, true)</span></p>
+                        <span class="plp-card__btn">Shop now</span>
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            @* The old page would be an empty grid *@
+            <section class="srch-help" aria-labelledby="srch-help-title">
+                <h2 class="srch-help__title" id="srch-help-title">There are no special offers at the moment</h2>
+                <p class="srch-help__text">Shop by category:</p>
+                <ul class="srch-cats">
+                    @foreach (var category in Model.Categories)
+                    {
+                        <li><a href="@category.Url" class="srch-cats__link">@category.Name</a></li>
+                    }
+                </ul>
+                <p class="srch-help__call">Can&rsquo;t find what you need? Call us 8am - 5pm on <a href="tel:03300585068">0330 058 5068</a></p>
+            </section>
+        }
+    </div>
+</div>
