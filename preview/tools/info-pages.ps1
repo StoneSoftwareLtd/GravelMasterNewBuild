@@ -1,6 +1,7 @@
-# The new delivery, calculator and FAQ pages (Views/Content/_DeliveryPage.cshtml, _CalculatorPage.cshtml and
-# _FaqPage.cshtml) for the previews. Dot-sourced by site-preview.ps1 (localhost:8780/delivery, /calculator and /faq),
-# after category-page.ps1 and calculator.ps1, whose Razor helpers, prices and calculator it uses.
+# The new delivery, calculator, FAQ and contact pages (Views/Content/_DeliveryPage.cshtml, _CalculatorPage.cshtml,
+# _FaqPage.cshtml and _ContactPage.cshtml) for the previews. Dot-sourced by site-preview.ps1 (localhost:8780/delivery,
+# /calculator, /faq and /contact-us), after category-page.ps1 and calculator.ps1, whose Razor helpers, prices and
+# calculator it uses.
 #
 #   Format-DeliveryPage       renders the delivery page (it has no data from the site: its checklist is in the
 #                             partial's own C# block, which this reads)
@@ -8,6 +9,7 @@
 #   Format-CalculatorPage     renders the calculator page, with the shared calculator and bulk enquiry pop-up
 #   Format-FaqPage            renders the FAQ page (no data from the site either: its topics and questions are in the
 #                             partial's own C# block)
+#   Format-ContactPage        renders the contact page (plain markup: nothing to fill in)
 #
 # The markup comes from the .cshtml as it is, and the render fails if any Razor is left over.
 # Keep this file ASCII: Windows PowerShell 5.1 reads .ps1 files without a byte order mark as ANSI.
@@ -145,4 +147,14 @@ function Format-FaqPage([string]$templatePath) {
   }
   Assert-NoRazorLeft '_FaqPage' $h
   [regex]::Replace($h, [string][char]2 + '(\d+)' + [char]3, { param($x) $values[[int]$x.Groups[1].Value] })
+}
+
+function Format-ContactPage([string]$templatePath) {
+  $src = [IO.File]::ReadAllText($templatePath)
+  $src = [regex]::Replace($src, '[ \t]*@\*[\s\S]*?\*@[ \t]*\r?\n?', '')   # Razor comments
+  $start = $src.IndexOf('<div class="gm-info gm-contact">')
+  if ($start -lt 0) { throw "Couldn't find <div class=""gm-info gm-contact""> in _ContactPage.cshtml" }
+  $h = $src.Substring($start)
+  Assert-NoRazorLeft '_ContactPage' $h
+  $h
 }

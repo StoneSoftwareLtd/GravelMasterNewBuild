@@ -1,7 +1,8 @@
 /* ===== GravelMaster information pages (Optima design) =====
    For the pages without an Optima prototype that are mostly words: the delivery page
-   (Views/Content/_DeliveryPage.cshtml), the calculator page (Views/Content/_CalculatorPage.cshtml) and the FAQ page
-   (Views/Content/_FaqPage.cshtml, whose own rules are scoped to .gm-faqpage). They use the
+   (Views/Content/_DeliveryPage.cshtml), the calculator page (Views/Content/_CalculatorPage.cshtml), the FAQ page
+   (Views/Content/_FaqPage.cshtml, whose own rules are scoped to .gm-faqpage) and the contact page
+   (Views/Content/_ContactPage.cshtml, .gm-contact). They use the
    Trade Accounts page's look (css/gm-trade.css): its hero card, colours, buttons, breadcrumb and FAQs. The old
    stylesheets still load underneath, so every rule is scoped to .gm-info, the wrapper around each page, with the
    same shield as the other new pages:
@@ -60,6 +61,8 @@ div:where(.gm-info) {
 :where(.gm-info) :is(strong, b) { font-weight: 700; }       /* global.css: 500 */
 :where(.gm-info) img { vertical-align: baseline; max-width: 100%; }
 :where(.gm-info) label { margin: 0; }                      /* Bootstrap Reboot: margin-bottom .5rem */
+:where(.gm-info) :is(address, dl, dd) { margin: 0; font-style: normal; }   /* Bootstrap Reboot: margin-bottom 1rem */
+:where(.gm-info) dt { font-weight: inherit; }
 :where(.gm-info) :is(input, select, textarea, button) { font-family: inherit; }
 :where(.gm-info) button { border-radius: 0; }
 :where(.gm-info) summary { list-style: none; }
@@ -208,8 +211,8 @@ div:where(.gm-info) {
 .gm-info .inf-head p { font-size: 16px; line-height: 1.7; font-weight: 500; color: #333; }
 .gm-info .inf-text p { margin: 0 0 14px; font-size: 15.5px; line-height: 1.7; color: #333; }
 .gm-info .inf-text p:last-child { margin-bottom: 0; }
-.gm-info :is(.inf-text, .inf-block, .inf-faq__intro, .inf-faq__a) a:not(.inf-btn) { color: var(--green-ink); font-weight: 700; text-decoration: underline; }
-.gm-info :is(.inf-text, .inf-block, .inf-faq__intro, .inf-faq__a) a:not(.inf-btn):hover { color: var(--green-ink); }
+.gm-info :is(.inf-text, .inf-block, .inf-faq__intro, .inf-faq__a, .inf-intro__text) a:not(.inf-btn) { color: var(--green-ink); font-weight: 700; text-decoration: underline; }
+.gm-info :is(.inf-text, .inf-block, .inf-faq__intro, .inf-faq__a, .inf-intro__text) a:not(.inf-btn):hover { color: var(--green-ink); }
 
 /* ---- Ticked list (the trade page's ticks) ---- */
 .gm-info .inf-check {
@@ -269,7 +272,7 @@ div:where(.gm-info) {
   border-radius: 50%;
   background: var(--green-ink);
 }
-.gm-info .inf-card h3 { margin: 17px 0 10px; font-size: 20px; line-height: 1.3; color: var(--ink); }   /* level with the icon's middle */
+.gm-info .inf-card :is(h2, h3) { margin: 17px 0 10px; font-size: 20px; line-height: 1.3; color: var(--ink); }   /* level with the icon's middle */
 .gm-info .inf-card p { font-size: 16px; line-height: 1.7; font-weight: 500; color: #333; }
 
 /* ---- Headed text: in two or three columns, or beside a photo ---- */
@@ -472,6 +475,88 @@ div:where(.gm-info) {
 .gm-faqpage .faq-none__text { font-size: 16px; line-height: 1.6; font-weight: 500; color: #333; }
 .gm-faqpage .faq-none a { color: var(--green-ink); font-weight: 700; text-decoration: underline; }
 
+/* ---- The contact page: ways to get in touch, advice, and the office ---- */
+.gm-contact .con-ways { padding-top: 48px; }
+.gm-contact .con-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.gm-contact .con-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 2px solid #cfe2c4;
+  border-radius: 14px;
+  padding: 28px 26px 30px;
+  background: #fff;
+}
+.gm-contact .con-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: var(--green-ink);
+}
+.gm-contact .con-card__title { margin: 0 0 10px; font-size: 21px; line-height: 1.3; color: var(--ink); }
+.gm-contact .con-card__big { margin: 0 0 12px; font-size: 27px; line-height: 1.2; font-weight: 700; color: var(--green-ink); }
+.gm-contact .con-card__big:hover { color: var(--green-ink); text-decoration: underline; }
+.gm-contact .con-card__lines li,
+.gm-contact .con-card__text { font-size: 16px; line-height: 1.65; font-weight: 500; color: #333; }
+.gm-contact .con-card__note { margin-top: 12px; font-size: 15px; font-weight: 600; color: #4a4a4a; }
+.gm-contact .con-card__label { margin: 0 0 2px; font-size: 15px; font-weight: 700; color: #4a4a4a; }
+.gm-contact .con-card__email {
+  max-width: 100%;
+  margin: 0 0 16px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--green-ink);
+  text-decoration: underline;
+  overflow-wrap: break-word;    /* after the @ (a <wbr>) first, anywhere only if that isn't enough */
+}
+.gm-contact .con-card__email:last-child { margin-bottom: 0; }
+.gm-contact .con-card__email:hover { color: var(--green-ink); }
+.gm-contact .con-card__btn { margin-top: auto; }            /* level with the other cards' last line */
+.gm-contact .con-card__text + .con-card__btn { margin-top: 18px; }
+
+.gm-contact .con-cta { margin-top: 40px; text-align: center; }
+.gm-contact .con-cta__title { margin: 0 0 6px; font-size: 24px; font-weight: 700; color: var(--ink); }
+.gm-contact .con-cta__text { font-size: 16px; line-height: 1.6; font-weight: 500; color: #333; overflow-wrap: anywhere; }
+.gm-contact .con-cta a { color: var(--green-ink); font-weight: 700; text-decoration: underline; }
+.gm-contact .con-cta a:hover { color: var(--green-ink); }
+
+.gm-contact .con-find {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+.gm-contact .con-find .inf-h2 { margin-bottom: 14px; }
+.gm-contact .con-address { margin: 0 0 20px; font-size: 17px; line-height: 1.6; font-weight: 500; color: #333; }
+.gm-contact .con-hours__title { margin: 40px 0 10px; font-size: 22px; line-height: 1.3; color: var(--ink); }
+.gm-contact .con-hours > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 16px;
+  color: #333;
+}
+.gm-contact .con-hours dt { font-weight: 600; }
+.gm-contact .con-hours dd { font-weight: 500; text-align: right; }
+.gm-contact .con-map {
+  display: block;
+  width: 100%;
+  height: 440px;
+  border: 0;
+  border-radius: 14px;
+  background: #e8ece4;          /* while it loads */
+}
+
 /* ---- Product cards (the homepage's bestseller cards) ---- */
 .gm-info .inf-products {
   display: grid;
@@ -566,6 +651,10 @@ div:where(.gm-info) {
   .gm-info .inf-grid3 > :last-child:nth-child(odd) { grid-column: 1 / -1; }
   .gm-info .inf-facts { grid-template-columns: repeat(2, 1fr); }
   .gm-faqpage .faq-layout { grid-template-columns: 240px minmax(0, 1fr); gap: 44px; }
+  /* contact page: two cards a row, the third across both */
+  .gm-contact .con-cards { grid-template-columns: 1fr 1fr; }
+  .gm-contact .con-card:last-child { grid-column: 1 / -1; }
+  .gm-contact .con-find { grid-template-columns: 300px minmax(0, 1fr); gap: 40px; }
 }
 @media (max-width: 860px) {
   /* stack the hero card: photo on top, words below */
@@ -592,6 +681,9 @@ div:where(.gm-info) {
   .gm-faqpage .faq-topics__list { display: flex; flex-wrap: wrap; gap: 8px; }
   .gm-faqpage .faq-topics__link { padding: 7px 8px 7px 14px; border: 1.5px solid #cfe2c4; border-radius: 999px; font-size: 15px; }
   .gm-faqpage .faq-help__btn { display: inline-block; width: auto; margin-right: 10px; }
+  .gm-contact .con-ways { padding-top: 36px; }
+  .gm-contact .con-find { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .gm-contact .con-map { height: 340px; }
 }
 @media (max-width: 560px) {
   .gm-info .inf-hero__copy { padding: 22px 18px 26px; }
@@ -602,7 +694,7 @@ div:where(.gm-info) {
   /* the icon goes above the words, to leave them the card's width */
   .gm-info .inf-card { display: block; padding: 24px 20px 26px; }
   .gm-info .inf-card__icon { margin-bottom: 16px; }
-  .gm-info .inf-card h3 { margin-top: 0; }
+  .gm-info .inf-card :is(h2, h3) { margin-top: 0; }
   .gm-info .inf-point { grid-template-columns: 44px 1fr; gap: 16px; }
   .gm-info .inf-point__icon { width: 44px; height: 44px; }
   .gm-info .inf-point h3 { margin-top: 9px; font-size: 19px; }
@@ -613,4 +705,10 @@ div:where(.gm-info) {
   .gm-info .inf-products { grid-template-columns: 1fr; }
   .gm-faqpage .faq-help__btn { display: block; width: 100%; margin-right: 0; }
   .gm-faqpage .inf-faq__q h3 { font-size: 17px; }
+  .gm-contact .con-cards { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .gm-contact .con-card { padding: 24px 20px 26px; }
+  .gm-contact .con-card__big { font-size: 25px; }
+  .gm-contact .con-card__btn { width: 100%; }
+  .gm-contact .con-cta__title { font-size: 21px; }
+  .gm-contact .con-map { height: 300px; }
 }

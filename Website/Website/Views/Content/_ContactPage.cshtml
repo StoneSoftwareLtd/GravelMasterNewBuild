@@ -1,0 +1,106 @@
+@* New contact page, shown by Content/Contact.cshtml for /contact-us when the new chrome is on. There's no Optima
+   prototype for it, so it's in the style of the other information pages (css/gm-info.css, loaded in Contact.cshtml's
+   Head section; its own rules are scoped to .gm-contact). The words are the live page's own, which are newer than
+   master's Contact.cshtml (the Meteor House address, weekends closed, the customer services email);
+   docs/contact-page.md lists the changes. No script: "Track your order" opens the site's Track Order pop-up. *@
+<div class="gm-info gm-contact">
+    <section class="inf-intro">
+        <nav class="container inf-crumbs" aria-label="Breadcrumb">
+            <ol class="inf-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><span class="inf-crumbs__current" aria-current="page">Contact us</span></li>
+            </ol>
+        </nav>
+        <div class="container">
+            <p class="inf-eyebrow">Contact us</p>
+            <h1 class="inf-intro__title">Here to help</h1>
+            <p class="inf-intro__text">For assistance with your order or if you have an enquiry, please telephone us on <a href="tel:03300585068">0330 058 5068</a>. We are open between 8am and 5pm Monday to Friday.</p>
+        </div>
+    </section>
+
+    <section class="inf-section con-ways">
+        <div class="container">
+            <ul class="con-cards">
+                <li class="con-card">
+                    <span class="con-card__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 1.6 4.2 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L7.5 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2z" /></svg>
+                    </span>
+                    <h2 class="con-card__title">Call us</h2>
+                    <a class="con-card__big" href="tel:03300585068">0330 058 5068</a>
+                    <ul class="con-card__lines">
+                        <li>Sales team &ndash; option 1</li>
+                        <li>Customer services &ndash; option 2</li>
+                    </ul>
+                    <p class="con-card__note">Monday to Friday, 8am - 5pm</p>
+                </li>
+                <li class="con-card">
+                    <span class="con-card__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2" /><path d="m3 6.5 9 6.5 9-6.5" /></svg>
+                    </span>
+                    <h2 class="con-card__title">Email us</h2>
+                    <p class="con-card__label">Sales</p>
+                    <a class="con-card__email" href="mailto:sales@gravelmaster.co.uk">sales@gravelmaster.co.uk</a>
+                    <p class="con-card__label">Customer services</p>
+                    <a class="con-card__email" href="mailto:customerservices@gravelmaster.co.uk">customerservices&#64;<wbr>gravelmaster.co.uk</a>@* &#64; is @: Razor would read "@<" as code *@
+                </li>
+                <li class="con-card">
+                    <span class="con-card__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z" /><path d="M3.3 7 12 12l8.7-5" /><path d="M12 22V12" /><path d="m7.5 4.3 9 5.2" /></svg>
+                    </span>
+                    <h2 class="con-card__title">Track your order</h2>
+                    <p class="con-card__text">Already ordered? Check its status with your order ID and postcode.</p>
+                    @* The site's Track Order pop-up (_TrackOrderModal), as the header's Track Order link opens it *@
+                    <button type="button" class="inf-btn con-card__btn" data-toggle="modal" data-target="#trackModal">Track your order</button>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="inf-section inf-section--tint">
+        <div class="container">
+            <div class="inf-cards">
+                <article class="inf-card">
+                    <span class="inf-card__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="13" height="10" rx="1" /><path d="M14 9h4l3 3v4h-7z" /><circle cx="5.5" cy="17" r="1.6" /><circle cx="17.5" cy="17" r="1.6" /></svg>
+                    </span>
+                    <div>
+                        <h2>Large loads</h2>
+                        <p>Our sales team can help with any query, if you are looking for bulk deliveries or just want a price please contact us straight away as we have some of the best products at the most competitive prices.</p>
+                    </div>
+                </article>
+                <article class="inf-card">
+                    <span class="inf-card__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 21 21" /><circle cx="8.8" cy="11.6" r="1.4" /><circle cx="12.2" cy="9.2" r="1.2" /></svg>
+                    </span>
+                    <div>
+                        <h2>Make the right choice</h2>
+                        <p>If you are still not sure of the aggregate you have chosen is right and you are thinking of ordering a bulk load we would always recommend a small sample first so please give us a call!</p>
+                    </div>
+                </article>
+            </div>
+            <div class="con-cta">
+                <p class="con-cta__title">Telephone on <a href="tel:03300585068">0330 058 5068</a>.</p>
+                <p class="con-cta__text">We look forward to hearing from you. Or email <a href="mailto:sales@gravelmaster.co.uk">sales@gravelmaster.co.uk</a></p>
+            </div>
+        </div>
+    </section>
+
+    <section class="inf-section" aria-labelledby="con-office">
+        <div class="container con-find">
+            <div class="con-find__info">
+                <h2 class="inf-h2" id="con-office">Head office</h2>
+                <address class="con-address">Meteor House<br>Finningley<br>DN9 3GA</address>
+                <a class="inf-btn inf-btn--outline" href="https://www.google.com/maps/search/?api=1&amp;query=Meteor+House%2C+Finningley%2C+DN9+3GA" target="_blank" rel="noopener">Open in Google Maps<span class="inf-sr"> (opens in a new tab)</span></a>
+
+                <h2 class="con-hours__title">Opening hours</h2>
+                <dl class="con-hours">
+                    <div><dt>Monday - Friday</dt><dd>8:00am - 5:00pm</dd></div>
+                    <div><dt>Saturday - Sunday</dt><dd>Closed</dd></div>
+                    <div><dt>Bank holidays</dt><dd>Closed</dd></div>
+                </dl>
+            </div>
+            @* The old page's map showed the old office (Auckley, DN9 3FL); this one is found from the new address *@
+            <iframe class="con-map" src="https://www.google.com/maps?q=Meteor+House,+Finningley,+DN9+3GA&amp;output=embed" title="Map showing our head office, Meteor House, Finningley, DN9 3GA" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        </div>
+    </section>
+</div>
