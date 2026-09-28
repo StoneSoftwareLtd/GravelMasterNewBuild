@@ -453,6 +453,29 @@ Dylan asked for the payment error page's security hole to be fixed here, to pass
 4. Also found: an old CyberSource test page (`/checkout/paymentconfirmation`, live) that prints whatever is posted to it and signs it with a secret key written into `Services/Security.cs`. To delete. And the list of passwords and keys written into the code, to change.
 5. Checked and fine: redirects after signing in only go to the site's own pages.
 
+## 28 September 2026: accounts and forms working in the preview
+
+Dylan asked for the preview to be as functional as it can be with what's available (the live site's pages and read-only lookups, no database, email or payments). Details: [preview/README.md](../preview/README.md).
+
+1. `preview-account.ps1` keeps accounts in the preview and answers the account forms as `AccountController` and `MyAccountController` do:
+   - signing in, with the site's messages for a wrong password or an unconfirmed email;
+   - creating an account, confirmed by the email's link, which the next page shows (no email is sent);
+   - trade applications, whose approval link opens "You're in!" and makes a trade account;
+   - forgotten and reset passwords, and signing out;
+   - the header's name and `/product/istrade`;
+   - My Account's address (then filled in at the checkout), return request and price match.
+   The sample customer has a test password, shown on the sign-in page.
+2. My Account needs signing in, as on the site. The sample states are still there with `?sample=1` and the other flags.
+3. The bulk enquiry, "Send me my estimate", the price match and the newsletter answer as the site does and send nothing. The preview's window lists what they would have sent.
+4. Tested in headless Edge, every journey above end to end, plus the checkout for a signed-in customer and the three email forms. No script errors.
+
+Raised:
+- long first names show as nonsense in the live header (a bug in `GetUser`);
+- return requests go to a developer's address;
+- more email-service keys written into the code, added to [security-fixes](../security-fixes/README.md).
+
+See [open-questions.md](open-questions.md#found-while-making-the-previews-accounts).
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).

@@ -76,6 +76,15 @@ In the whole-website preview on 25 September 2026: `/account/login` (with `?isTr
 
 Not tested: signing in, registering, applying and resetting for real, and the emails. These need the test website.
 
+On 28 September 2026 the preview got accounts of its own, which answer these forms the way `AccountController` does ([preview/README.md](../preview/README.md)). With them, in headless Edge:
+- a wrong password, and an account whose email wasn't confirmed, came back with the site's messages;
+- an account was made, confirmed through its (shown) email link, and signed in;
+- the same email twice came back "already taken";
+- a forgotten password went through its (shown) email link to a new password, after which only the new one worked;
+- a trade application went through its approval link to "You're in!" and a trade account.
+
+That tests the pages' side of each form, not the site's.
+
 ## Part 2: My Account
 
 The pages a signed-in customer sees: their orders, returns, price match and address. The old pages sit in `_AccountMaster.cshtml`'s grey bar and purple side column; the new ones share a top of their own instead: "Hi *name*" (with a "Trade account" tag for trade customers, where the old column said "Trade Portal"), the email address, Continue shopping, and tabs for the same links as the old column. On phones the tabs become buttons that wrap, so Sign out isn't hidden off the side.
@@ -129,3 +138,5 @@ In the whole-website preview on 25 September 2026, at `/myaccount/orders` (with 
   - Price match (with the sending stood in for): empty and 3-character messages are caught; "Cotswold 20mm bulk bag at B&amp;Q for £80 #cheaper" was sent whole and the page said so; a failure keeps the message and gives the phone number. The real address is blocked by the preview.
 
 Not tested: the pages with a real account and real orders, sending a return or price match for real, and saving an address. These need the test website.
+
+With the preview's own accounts (28 September 2026): My Account sent a customer who wasn't signed in to sign in; signed in as the sample customer, the address form saved (and the checkout then filled it in), "Request a return" on an item sent its form and showed "Return request sent", and the price match said it had been sent.

@@ -69,6 +69,7 @@ Anyone who can read the repository, or its history, can read these. Deleting the
 - **A Palletforce tracking access key** in `CheckoutController.cs` (`GetStatus`, used by Track Order).
 - **A CyberSource secret key** in `Services/Security.cs` (item 2).
 - **Azure Search admin keys** in `Controllers/BrandController.cs` and `Controllers/CategoryController.cs`, which the search no longer uses.
+- **Campaign Monitor keys** (the email service) in seven controllers: `AccountController.cs`, `BasketController.cs`, `CheckoutController.cs`, `ContentController.cs`, `EmailController.cs`, `MyAccountController.cs` and `ProductController.cs`. With one, anyone could send email as GravelMaster or read the mailing lists.
 
 ## Checked and fine
 
