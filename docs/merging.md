@@ -538,6 +538,51 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
 - [ ] **`Website.csproj`**: add `Views/Category/_SearchPage.cshtml`, `ViewModels/Common/SearchPageModels.cs`, `css/gm-search.css` and `js/gm-search.js`. It uses the category page's `css/gm-category.css` and `CategoryPageModels.cs` (in [Category page](#category-page)).
 - [ ] Test on the real site: a search with results, one with none, one word that matches more than 100 products (e.g. "e"), nothing typed, `/search/slate`, "cement" (Post Mix Concrete), a trade login (trade prices and the "Trade price" badge), the header's search box filled in on the results page (desktop and phone), and the page title in the browser tab.
 
+## Special offers page
+
+`/special-offers` is `ProductController.SpecialOffers`, which renders `Views/Product/SpecialOffers.cshtml` with a `CategoryProductsViewModel` (the favourite products). See [offers-page.md](offers-page.md). It uses the search page's styles and the category page's model classes (in [Search results page](#search-results-page) and [Category page](#category-page)).
+
+- [ ] **`Views/Product/SpecialOffers.cshtml`**: add `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` under its `@using Agilis.Mvc.Common;`, and after its `@{ }` block add the code below. The view has no `Head` section yet, so this adds one. This code was compiled with MVC 5.2's Razor against stand-ins copied from the repository's own classes, and run with sample data ([offers-page.md](offers-page.md#tested)):
+  ```cshtml
+  @section Head
+  {
+      @if (NewChrome.IsOn(Request))
+      {
+          <link href="/css/gm-category.css?v1" rel="stylesheet" />
+          <link href="/css/gm-search.css?v1" rel="stylesheet" />
+      }
+  }
+  @if (NewChrome.IsOn(Request))
+  {
+      // the live page's title (this view's "SpecialOffers" has no space)
+      ViewBag.Title = "Special Offers";
+      var offers = new OffersPageModel();
+      // the products the old grid shows, in its order: DisplayProductsComponentLarge sorts them by TaxRateID and leaves
+      // out any named Top Tee or Pro Turf
+      foreach (var item in Model.Products.OrderByDescending(p => p.TaxRateID))
+      {
+          if (item.Name.ToLower().Contains("top tee") || item.Name.ToLower().Contains("pro turf"))
+          {
+              continue;
+          }
+          offers.Products.Add(new CategoryProduct(item.Name, Html.GetProductUrl(item.Name, item.Url, item.Category.Url),
+              // the photo's address with {0} where the width goes (ImagePathFormat is ".../{1}-{0}.jpg")
+              string.Format(System.Configuration.ConfigurationManager.AppSettings["ImagePathFormat"], "{0}", item.Image1),
+              item.Price, item.Cost, item.Synopsis));
+      }
+      foreach (var category in Model.MasterLayoutViewModel.TopLevelCategories.OrderByDescending(c => c.PriorityOnSubMenu))
+      {
+          offers.Categories.Add(new CategoryLink(category.Name, "/" + category.Url + "/products/"));
+      }
+      @Html.Partial("~/Views/Product/_OffersPage.cshtml", offers)
+      return;
+  }
+  ```
+- [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js`, as it does now.
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new special offers page too.
+- [ ] **`Website.csproj`**: add `Views/Product/_OffersPage.cshtml` and `ViewModels/Common/OffersPageModels.cs` (and the search page's files, if they aren't in yet).
+- [ ] Test on the real site: the page with the new design on and off, a trade login (trade prices and the "Trade price" badge), and the page title in the browser tab.
+
 ## Calculator page
 
 `/calculator` is `ContentController.Display` with the `calculator` key, which renders `Views/Content/Calculator.cshtml` with a `ContentViewModel`. See [calculator-page.md](calculator-page.md). It needs the homepage's `MasterLayoutViewModel.GetHomeProduct` (in [Homepage](#homepage)).

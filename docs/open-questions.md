@@ -199,6 +199,12 @@ Decided 23 September 2026: the prices and the quantity calculator stay exactly a
 | **Three versions of the address** | The privacy policy: Meteor House, First Avenue, Finningley, Doncaster, DN9 3GA. The terms: Meteor House, First Avenue, Auckley, Doncaster, DN9 3GA. The contact page and footer: Meteor House, Finningley, DN9 3GA. | Choose one and use it everywhere |
 | **Other pages found on the way** (live now) | `/leave-review` gives a server error (500). `/about` is an older copy of the About page, and is in the sitemap next to `/about-us`. | Fix or remove `/leave-review`; send `/about` to `/about-us` (a permanent redirect) and take it out of the sitemap |
 
+## Special offers page
+
+| Found | Detail | Suggestion |
+|---|---|---|
+| **No offers on the special offers page** (live now) | `/special-offers` lists the site's "favourite" products (38 gravels, slates, soils, bark and salt) at their normal "From" prices: nothing is reduced, and nothing says what the offer is. The new homepage's "Special Offers" banner ("Limited-time deals across our gravels, soils, cobbles and aggregates", from the prototype), the old homepage's "Deals" link and the calculator page's card all send customers there. | Add real offers (a sale price or a badge per product, which the page could then show), or rename the page and the banner to something like "Popular products" |
+
 ## Search results page
 
 | Found | Detail | Suggestion |

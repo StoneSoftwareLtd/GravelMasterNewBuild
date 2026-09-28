@@ -379,8 +379,21 @@ Raised: pasting the tidied copies, the privacy policy's "last updated" date, sig
 
 Not tested: the pages on the test website, and pasting into the admin site's editor.
 
+## 28 September 2026: special offers page
+
+The special offers page (`/special-offers`) in the new design: the search results page's layout, with the category page's cards. Details: [offers-page.md](offers-page.md).
+
+1. Read where it comes from: `ProductController.SpecialOffers` gives the "favourite" products to `SpecialOffers.cshtml`, which shows them with the same tiles as the old search results. So the new page is built the same way as the new search page, with its own small model (`OffersPageModel`) and partial, and the search page's styles.
+2. With no products it says so, and offers the categories and the phone number.
+3. Merge code for `SpecialOffers.cshtml`, compiled against the search page's stand-ins and run with sample data. The preview shows the page from the live page's products, character for character as the compiled partial makes it (with products and without).
+4. Tested: nothing wider than the screen from 1440 to 320px, the grid's columns, the photos, no script errors.
+
+Raised: there are no offers on it: 38 popular products at their normal prices. See [open-questions.md](open-questions.md#special-offers-page).
+
+Not tested: the page on the test website, and trade prices.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
 - Test the checkout and the order confirmation with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
-- Still on the old design after that: special offers (a product list), the Ideas & Advice articles and their lists, meet the team, the other pages from the admin site, the "page not found" page and the payment error page.
+- Still on the old design after that: the Ideas & Advice articles and their lists, meet the team, the other pages from the admin site, the "page not found" page and the payment error page.
