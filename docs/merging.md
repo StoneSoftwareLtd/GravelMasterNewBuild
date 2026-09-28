@@ -652,7 +652,7 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
   ```
 - [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js` as before. The Track Order pop-up doesn't need it (plain JavaScript in `gm-chrome.js`).
 - [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new delivery page too.
-- [ ] **`Website.csproj`**: add `Views/Content/_DeliveryPage.cshtml`, `css/gm-info.css` and `img/gm-delivery-hero.jpg`.
+- [ ] **`Website.csproj`**: add `Views/Content/_DeliveryPage.cshtml`, `css/gm-info.css`, `img/gm-delivery-hero.jpg` and `img/gm-delivery-lorry.jpg`.
 - [ ] Test on the real site: the page with the new design on and off, "Track your order" with a real order number, the phone and email links on a phone, and that another content page (e.g. `/privacy`) still shows its own content.
 
 ## FAQ page
