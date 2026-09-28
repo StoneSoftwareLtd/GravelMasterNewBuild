@@ -423,6 +423,12 @@ Raised: the lookup's wrong phone number (0300), its "(Coming Soon)" wording, tha
 
 Not tested: the real lookup, with real orders, on the test website.
 
+## 28 September 2026: refund times
+
+Dylan confirmed refunds take 14 working days, which is what customers are told. The only refund times on the new pages were the delivery page's figure and its refund paragraph, both "14 days" (as the live page says); both now say "14 working days". The FAQs already did. The other 14-day periods are about sending goods back, not refunds, and stay as the live site words them. Checked: the partial compiles, and the preview's delivery page shows the new wording in both places.
+
+Raised: the law generally gives 14 calendar days for these refunds ([open-questions.md](open-questions.md#faq-page)).
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).

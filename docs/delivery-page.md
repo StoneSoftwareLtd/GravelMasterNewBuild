@@ -11,7 +11,7 @@ The site's delivery information page, `/delivery`, in the new design. There's no
 | `img/gm-delivery-hero.jpg` | the live page's kerbside photo (`img/gravel-delivery.jpg`) at 900px wide: 131 KB, down from 283 KB at 1366px |
 | `img/gm-delivery-lorry.jpg` | the live page's "Delivery Truck Size" photo (`img/delivery-hero.jpg`), trimmed at the sides to 930 × 520: 119 KB, down from 287 KB |
 
-No script: "Track your order" opens the site's own Track Order pop-up, as the header's link does.
+No script: "Track your order" opens the header's [Track Order pop-up](track-order-popup.md).
 
 ## Where the page comes from
 
@@ -32,10 +32,12 @@ Read from the live page's HTML on 25 September 2026.
 | "Key Delivery Questions": four pictures with their words drawn in (No Hi-Abs, Kerbside Delivery, No Soft Ground, Contactless Delivery), each with a heading and a paragraph | Four cards, two to a row, with the same headings and paragraphs and new icons (lorry, house, pallet truck, pen) beside them in place of the pictures |
 | "How do we deliver to you?", then Delivery Vehicle, Offloading your products, Possible Restrictions and Contact | The same, in the same order: "Delivery vehicle" beside the lorry photo, the other three in columns under it. "Terms and Conditions" now links to them (`/term-conditions`), and the phone number can be tapped |
 | "Delivery Terms": six paragraphs | The first paragraph as the section's introduction, then the other five as six points, each with an icon and a heading of its own (the long third paragraph is split in two, between "drop-kerb" and the trolleys) |
-| "Returns": six paragraphs | "Cancellations and returns": four key figures in large type (2 hours to cancel, 14 working days to send goods back, from £80 per pallet, 14 days for a refund), then the six paragraphs under four headings. The email address can be tapped |
+| "Returns": six paragraphs | "Cancellations and returns": four key figures in large type (2 hours to cancel, 14 working days to send goods back, from £80 per pallet, 14 working days for a refund), then the six paragraphs under four headings. The email address can be tapped |
 | A picture of a lorry with the logo at the bottom | Left out: it looks like a mock-up rather than a GravelMaster lorry |
 
 Every heading, paragraph and list item of the live page was checked against the new page in the preview, ignoring capitals and punctuation: all of them are there word for word except the first heading's "as shown below", and the delivery terms' third paragraph, whose two halves are each there word for word under their own headings. Other changes: headings in sentence case, full stops where a paragraph had none, and "(option 2). Please note" where the live page ran the two sentences together.
+
+**Refunds: 14 working days** (changed 28 September 2026). The live page says refunds are processed "within 14 days of cancellation"; the FAQs say 14 working days. Dylan confirmed 14 working days is what customers are told, so the refund paragraph and its figure now say "14 working days". The other 14-day periods (sending goods back, and the terms' and My Account's returns) are left as the live site words them.
 
 ### Why the delivery terms and returns look as they do
 
