@@ -334,8 +334,25 @@ Tested: the partial compiles and runs with sample data; every block of the live 
 
 Not tested: the page on the test website.
 
+## 28 September 2026: FAQ page
+
+The FAQ page (`/faq`) in the new design. No Optima prototype, so it's in the other information pages' style, with the live page's 47 questions and answers. Details: [faq-page.md](faq-page.md).
+
+1. Read where it comes from: `Content/FAQ.cshtml`, with the questions typed into it. The live page's words turned out newer than master's view (Palletforce, £80, a £25 cancelling fee, one more question), so the new page has the live ones.
+2. The page: the five topics down the side, staying in view (a row of buttons on phones); the questions under their topics, opening and closing as before; "Can't find your answer?" with the phone number, email and Track your order. The old `#q1` to `#q5` addresses still work.
+3. A search box (`js/gm-faq.js`): as you type, only the questions with every word stay, and the topics and counts follow. Hidden until the script runs, so without it the page is the full list.
+4. Spelling fixes in nine answers and questions ("unfortunatley", "restrictons", "the are you wish to cover" and others); phone numbers and emails can be tapped.
+5. Merge code for `FAQ.cshtml`, compiled against stand-ins copied from the repository's classes and run with sample data. The preview shows the page, character for character as the compiled partial makes it.
+6. Tested: every question and answer against the live page by script; nothing wider than the screen at 12 widths; the search, the topic links (on phones they stop below the sticky header, which the header's script already allows for), the questions, Track your order; every text colour passes AA; no script errors.
+
+Along the way: the answers' text in the information pages' questions went from 15px to 16px, so the calculator page's FAQs changed too (checked).
+
+Raised: the live FAQs disagree with the delivery page and the checkout on cancelling, delivery times, delivery costs and refunds; "freephone"; what the calculator shows. See [open-questions.md](open-questions.md#faq-page).
+
+Not tested: the page on the test website.
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
 - Test the checkout and the order confirmation with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
-- Still on the old design after that: the other content pages (FAQs, contact, privacy, terms and the rest), the "page not found" page and the payment error page.
+- Still on the old design after that: the other content pages (contact, privacy, terms and the rest), the "page not found" page and the payment error page.

@@ -600,6 +600,30 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
 - [ ] **`Website.csproj`**: add `Views/Content/_DeliveryPage.cshtml`, `css/gm-info.css` and `img/gm-delivery-hero.jpg`.
 - [ ] Test on the real site: the page with the new design on and off, "Track your order" with a real order number, the phone and email links on a phone, and that another content page (e.g. `/privacy`) still shows its own content.
 
+## FAQ page
+
+`/faq` is `ContentController.Display` with the `faq` key, which renders `Views/Content/FAQ.cshtml` with a `ContentViewModel`. See [faq-page.md](faq-page.md). The live page's words are newer than `FAQ.cshtml` on master; the new partial has the live ones, so it doesn't matter which `FAQ.cshtml` the code goes into.
+
+- [ ] **`Views/Content/FAQ.cshtml`**: add `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top, and straight after its `@{ }` block add the code below. The view has no `Head` section yet, so this adds one. The old page, its admin banner and its empty `scripts`/`RightContent` sections are after the `return`, so they aren't drawn; the `404-error` check stays where it is, below. This code was compiled with MVC 5.2's Razor against stand-ins copied from the repository's `ContentViewModel`, and run with sample data ([faq-page.md](faq-page.md#tested)):
+  ```cshtml
+  @section Head
+  {
+      @if (NewChrome.IsOn(Request))
+      {
+          <link href="/css/gm-info.css?v1" rel="stylesheet" />
+      }
+  }
+  @if (NewChrome.IsOn(Request))
+  {
+      @Html.Partial("~/Views/Content/_FaqPage.cshtml")
+      return;
+  }
+  ```
+- [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js`, which brings the Bootstrap that opens the Track Order pop-up. The search (`js/gm-faq.js`) is plain JavaScript.
+- [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new FAQ page too.
+- [ ] **`Website.csproj`**: add `Views/Content/_FaqPage.cshtml` and `js/gm-faq.js` (and `css/gm-info.css`, if the delivery or calculator page hasn't added it).
+- [ ] Test on the real site: the page with the new design on and off, the search, a link to `/faq#q3`, "Track your order" with a real order number, and the phone and email links on a phone.
+
 ## After merging
 
 - [ ] Switch `UseNewChrome` on in a test environment and click through the main page types: home, category, subcategory, filtered category, product, basket, checkout, order confirmation, account, search, content pages and the 404 page.

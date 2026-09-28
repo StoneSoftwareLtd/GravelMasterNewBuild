@@ -164,6 +164,19 @@ Decided 23 September 2026: the prices and the quantity calculator stay exactly a
 | **Pictures** | The live page's "Delivery Truck Size" photo is back, beside "Delivery vehicle", with those words still drawn on it (they cover part of the lorry, so they can't be cropped off). The lorry with the logo at the bottom is still left out (it looks like a mock-up). | Keep them as they are, or supply a clean photo of the delivery lorry |
 | **New words to read** | To break up the delivery terms and returns, the new page adds headings ("The driver has the final say", "Safe access for the lorry", "Solid, level ground", "Cost, pallets and bulk bags", "If you're not at home", "If a delivery can't be made"; "Cancelling an order", "Sending goods back", "If we can't deliver", "Refunds"), renames "Returns" to "Cancellations and returns", and shows four figures taken from the returns paragraphs: "2 hours to cancel by email after you order", "14 working days to send goods back yourself, from the day after delivery", "From £80 per pallet if we collect your goods, or a load is cancelled on route" and "14 days for your refund to be processed after you cancel". The paragraphs themselves are unchanged. | Check they're right, especially the four figures, since customers will read those first |
 
+## FAQ page
+
+| Found | Detail | Suggestion |
+|---|---|---|
+| **The live FAQs aren't in the code on master** | The live page names Palletforce, charges £80 a pallet, takes 14 working days to refund, has a £25 cancelling fee and one more question; `FAQ.cshtml` on master says Mitchells, £50, 3-5 days, no fee. So the view that's live was changed outside master, like the rest of the live code ([merging.md](merging.md#before-anything-which-code-is-live)). The new page has the live words. | Nothing extra: getting the live code onto a branch covers it |
+| **Cancelling** (live now) | The FAQs say an order can be cancelled before it's dispatched for a £25 admin fee. The delivery page says cancellations must be emailed within 2 hours of ordering, and doesn't mention a fee. | Say which is right, and make the two pages agree |
+| **Delivery times** (live now) | The FAQs say standard delivery is between 7am and 6pm; the checkout's all-day choice says 8am - 6pm. | Say which is right |
+| **What delivery costs** (live now) | One answer says standard delivery is free "regardless of how many items", another that delivery is included in the price for your postcode, and another that some areas cost extra. | Word them so they agree, e.g. "included in the price, which depends on your postcode" |
+| **Refund times** (live now) | The FAQs say 14 working days to reach your account; the delivery page says refunds are processed within 14 days of cancelling. | Say which is right |
+| **"Freephone"** (live now) | "How can I contact you?" calls 0330 058 5068 a freephone number. 0330 numbers cost the same as a call to an 01 or 02 number and are usually in inclusive minutes, but they aren't free. | Drop "freephone" |
+| **What the calculator shows** (live now) | "How do I use the Gravel Calculator?" says it gives tonnes, 850kg bulk bags or 20kg bags. The calculator (old and new) gives kilograms, one-tonne pallets and bulk bags. | Update the answer to match the calculator |
+| **New words to read** | "Help and support", "Frequently asked questions" (the old heading was "FAQ"), the topics without their numbers, "Can't find your answer? Our team are here Monday to Friday, 8am - 5pm." with "Call 0330 058 5068", "Email us" and "Track your order", the search box ("Search the questions", "e.g. cancel, next day, refund", "No questions match", "Try a different word, or call us 8am - 5pm on 0330 058 5068"), and the spelling fixes ([faq-page.md](faq-page.md#changes-to-the-words)). The opening sentence is the page's description from the admin site. | Read them |
+
 ## Search results page
 
 | Found | Detail | Suggestion |
