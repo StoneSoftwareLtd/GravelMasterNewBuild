@@ -18,8 +18,9 @@
 # /register and /traderegister the new messages those pages lead to (some are only reached by posting a form).
 # /myaccount/orders, /returns, /requestreturn, /returnconfirmation, /pricematch and /editaddress show the new My Account
 # pages (Views/MyAccount) for a sample customer, in the same frame: the preview is never signed in. /search shows the
-# new search results page (Views/Category/_SearchPage.cshtml), filled from the live search's results. /delivery and
-# /calculator show the new delivery and calculator pages (Views/Content/_DeliveryPage.cshtml and _CalculatorPage.cshtml).
+# new search results page (Views/Category/_SearchPage.cshtml), filled from the live search's results. /delivery,
+# /calculator and /faq show the new delivery, calculator and FAQ pages (Views/Content/_DeliveryPage.cshtml,
+# _CalculatorPage.cshtml and _FaqPage.cshtml).
 #
 # It is read-only, so nothing reaches the real website except page views and read-only lookups:
 #   - adding to basket, sign-ups, enquiries and every form post are blocked, except a category page's
@@ -238,6 +239,10 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
       elseif ($path -match '^/calculator/?$') {
         $content = Format-CalculatorPage (Join-Path $package 'Views\Content\_CalculatorPage.cshtml') (Get-SampleCalculatorPage) $chrome.Enquiry
         $css = '/css/gm-info.css?v1'; $newPage = 'new calculator page'
+      }
+      elseif ($path -match '^/faq/?$') {
+        $content = Format-FaqPage (Join-Path $package 'Views\Content\_FaqPage.cshtml')
+        $css = '/css/gm-info.css?v1'; $newPage = 'new FAQ page'
       }
       elseif ($path -match '^/trade/?$') {
         $content = Format-TradePage (Join-Path $package 'Views\Content\_TradePage.cshtml')

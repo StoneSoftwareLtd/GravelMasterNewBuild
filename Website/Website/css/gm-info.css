@@ -1,13 +1,15 @@
 /* ===== GravelMaster information pages (Optima design) =====
    For the pages without an Optima prototype that are mostly words: the delivery page
-   (Views/Content/_DeliveryPage.cshtml) and the calculator page (Views/Content/_CalculatorPage.cshtml). They use the
+   (Views/Content/_DeliveryPage.cshtml), the calculator page (Views/Content/_CalculatorPage.cshtml) and the FAQ page
+   (Views/Content/_FaqPage.cshtml, whose own rules are scoped to .gm-faqpage). They use the
    Trade Accounts page's look (css/gm-trade.css): its hero card, colours, buttons, breadcrumb and FAQs. The old
    stylesheets still load underneath, so every rule is scoped to .gm-info, the wrapper around each page, with the
    same shield as the other new pages:
    - .container is also Bootstrap's, so it's only styled inside .gm-info;
    - the shield resets the old element rules (Bootstrap 4 Reboot, global.css) at element-level specificity, so the
      class rules below still win.
-   The pages need no script of their own: the FAQs are <details>, and "Track your order" is the header's pop-up. */
+   The FAQs are <details> and "Track your order" is the header's pop-up, so only the FAQ page has a script of its own
+   (js/gm-faq.js, for its search). */
 
 .gm-info {
   --green: #5ca458;
@@ -62,6 +64,7 @@ div:where(.gm-info) {
 :where(.gm-info) button { border-radius: 0; }
 :where(.gm-info) summary { list-style: none; }
 :where(.gm-info) summary::-webkit-details-marker { display: none; }
+.gm-info [hidden] { display: none !important; }            /* over any class that sets display */
 
 /* .container is also Bootstrap's; max-width is one class stronger to beat _Layout's
    inline .container { max-width: 1140px }. These pages are 1180px wide inside it, the trade page's hero card, so
@@ -369,7 +372,105 @@ div:where(.gm-info) {
 .gm-info .inf-faq__q h3 { margin: 0; font-size: 18.5px; font-weight: 600; color: var(--ink); }
 .gm-info .inf-faq__chev { flex-shrink: 0; color: var(--ink); transition: transform .15s ease; }
 .gm-info .inf-faq__item[open] .inf-faq__chev { transform: rotate(180deg); }
-.gm-info .inf-faq__a { margin: 16px 0 4px; max-width: 760px; font-size: 15px; line-height: 1.75; color: #333; }
+.gm-info .inf-faq__a { margin: 16px 0 4px; max-width: 760px; font-size: 16px; line-height: 1.7; font-weight: 500; color: #333; }
+
+/* ---- The FAQ page: search, topics beside the questions, and help ---- */
+.gm-faqpage .inf-intro__text { margin-bottom: 26px; }
+.gm-faqpage .faq-search { max-width: 640px; }
+.gm-faqpage .faq-search__label { display: block; margin: 0 0 8px; font-size: 15px; font-weight: 700; color: var(--ink); }
+.gm-faqpage .faq-search__box { position: relative; display: block; }
+.gm-faqpage .faq-search__icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #5f5f5f;
+  pointer-events: none;
+}
+.gm-faqpage .faq-search__input {
+  display: block;
+  width: 100%;
+  height: 54px;
+  margin: 0;
+  padding: 0 16px 0 48px;
+  border: 1.5px solid #6f9a66;  /* 3.2:1 on white */
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: none;
+  outline: none;
+  font-size: 16px;              /* 16px or more, or phones zoom in on it */
+  font-weight: 500;
+  color: #1a1a1a;
+}
+.gm-faqpage .faq-search__input::placeholder { color: #6b6b6b; opacity: 1; }
+.gm-faqpage .faq-search__input:focus { border-color: var(--green-ink); box-shadow: 0 0 0 3px rgba(47, 107, 52, 0.25); }
+.gm-faqpage .faq-search__status { min-height: 22px; margin: 10px 0 0; font-size: 15px; font-weight: 600; color: #333; }
+
+.gm-faqpage .faq-body { padding-top: 48px; }
+.gm-faqpage .faq-layout {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 64px;
+  align-items: start;
+}
+.gm-faqpage .faq-side { position: sticky; top: 24px; display: grid; gap: 28px; }
+.gm-faqpage .faq-topics__title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #5f5f5f;
+}
+.gm-faqpage .faq-topics__list { display: grid; gap: 2px; }
+.gm-faqpage .faq-topics__link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.gm-faqpage .faq-topics__link:hover { background: var(--tint); color: var(--ink); }
+.gm-faqpage .faq-topics__count {
+  min-width: 30px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eef5ea;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--green-ink);
+}
+.gm-faqpage .faq-help { border-radius: 14px; background: #eef5ea; padding: 24px 22px 20px; }
+.gm-faqpage .faq-help__title { margin: 0 0 6px; font-size: 19px; line-height: 1.3; color: var(--ink); }
+.gm-faqpage .faq-help__text { margin: 0 0 16px; font-size: 15px; line-height: 1.5; font-weight: 500; color: #333; }
+.gm-faqpage .faq-help__btn { display: block; width: 100%; margin: 0 0 10px; padding: 11px 14px; }
+.gm-faqpage .faq-help__track {
+  margin: 2px 0 0;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--green-ink);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.gm-faqpage .faq-main { display: flex; flex-direction: column; gap: 56px; }   /* gap: hidden topics leave none */
+.gm-faqpage .faq-topic { scroll-margin-top: 20px; }   /* on phones, on top of the sticky header's room (gm-chrome.js) */
+.gm-faqpage .faq-topic__title { margin-bottom: 6px; font-size: clamp(24px, 2.2vw, 30px); }
+.gm-faqpage .inf-faq__item { padding: 20px 0; }
+.gm-faqpage .inf-faq__item:first-child { padding-top: 12px; }
+.gm-faqpage .inf-faq__q h3 { font-size: 18px; line-height: 1.4; }
+.gm-faqpage .faq-none { border-radius: 14px; background: var(--tint); padding: 28px 26px; }
+.gm-faqpage .faq-none__title { margin: 0 0 6px; font-size: 20px; font-weight: 700; color: var(--ink); overflow-wrap: anywhere; }
+.gm-faqpage .faq-none__text { font-size: 16px; line-height: 1.6; font-weight: 500; color: #333; }
+.gm-faqpage .faq-none a { color: var(--green-ink); font-weight: 700; text-decoration: underline; }
 
 /* ---- Product cards (the homepage's bestseller cards) ---- */
 .gm-info .inf-products {
@@ -464,6 +565,7 @@ div:where(.gm-info) {
   .gm-info .inf-grid3 { grid-template-columns: 1fr 1fr; }
   .gm-info .inf-grid3 > :last-child:nth-child(odd) { grid-column: 1 / -1; }
   .gm-info .inf-facts { grid-template-columns: repeat(2, 1fr); }
+  .gm-faqpage .faq-layout { grid-template-columns: 240px minmax(0, 1fr); gap: 44px; }
 }
 @media (max-width: 860px) {
   /* stack the hero card: photo on top, words below */
@@ -480,6 +582,16 @@ div:where(.gm-info) {
   .gm-info .inf-faq { grid-template-columns: 1fr; gap: 24px; }
   .gm-info .inf-measure { grid-template-columns: 1fr; }
   .gm-info .inf-products { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  /* FAQ page: the topics as a row of buttons above the questions, the help under them */
+  .gm-faqpage .faq-body { padding-top: 32px; }
+  .gm-faqpage .faq-layout { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .gm-faqpage .faq-side { display: contents; }
+  .gm-faqpage .faq-topics { order: 0; }
+  .gm-faqpage .faq-main { order: 1; gap: 44px; }
+  .gm-faqpage .faq-help { order: 2; }
+  .gm-faqpage .faq-topics__list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .gm-faqpage .faq-topics__link { padding: 7px 8px 7px 14px; border: 1.5px solid #cfe2c4; border-radius: 999px; font-size: 15px; }
+  .gm-faqpage .faq-help__btn { display: inline-block; width: auto; margin-right: 10px; }
 }
 @media (max-width: 560px) {
   .gm-info .inf-hero__copy { padding: 22px 18px 26px; }
@@ -499,4 +611,6 @@ div:where(.gm-info) {
   .gm-info .inf-fact__big { font-size: 25px; margin-bottom: 4px; }
   .gm-info .inf-links { grid-template-columns: 1fr; }
   .gm-info .inf-products { grid-template-columns: 1fr; }
+  .gm-faqpage .faq-help__btn { display: block; width: 100%; margin-right: 0; }
+  .gm-faqpage .inf-faq__q h3 { font-size: 17px; }
 }

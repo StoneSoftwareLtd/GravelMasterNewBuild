@@ -1,0 +1,165 @@
+@{
+    // The live page's questions and answers, in its order and under its five topics (docs/faq-page.md lists the few
+    // changes). The Ids are the live page's, so links to /faq#q2 still land on delivery. The questions and answers are
+    // HTML written here, never anything a customer typed, so they're shown as they are: use entities (&rsquo; &pound;)
+    // rather than typed symbols, and single quotes in links.
+    var topics = new[]
+    {
+        new
+        {
+            Id = "q1", Name = "Orders", Title = "Questions about orders",
+            Questions = new[]
+            {
+                new { Q = "How can I pay for my order?", A = "You can place your order over the phone with one of our experienced sales team members, or you can place your order online yourself. We accept major payment methods such as: Visa, Mastercard, American Express &amp; PayPal." },
+                new { Q = "Is it safe to order online?", A = "It is safe to order online with us as we do encrypt your payment card details. We have safety locks in our system so no one can see." },
+                new { Q = "Can I cancel my order?", A = "An order can only be cancelled if it hasn&rsquo;t been dispatched and a &pound;25 admin fee will be charged. If your order has already left us unfortunately you would be charged to cancel." },
+                new { Q = "Can I make changes to my order?", A = "Depending on the change you are wanting to make we do aim to try and make them possible. If your order has already left us and has been despatched unfortunately no change can be made to that product apart from a return which would still attract an additional charge. You can add further products to the order however we can&rsquo;t guarantee they would arrive together. If your product hasn&rsquo;t left us and you want to change the product or add on, we can make this possible." },
+                new { Q = "Will I receive a confirmation email?", A = "You will receive an email as soon as payment has been made confirming the desired delivery date and the overall price paid." },
+                new { Q = "How do I know if I&rsquo;ve ordered the right amount?", A = "Our website provides a <a href='/calculator'>gravel calculator</a> for all our customers to check they are ordering the correct amount, alternatively you can call our sales team on <a href='tel:03300585068'>0330 058 5068</a> and one of our members will kindly advise the amount you require." },
+                new { Q = "Can you price match?", A = "We like to believe our prices are the best around however if you can find a better price please let us know and we will do everything we can to match." },
+                new { Q = "Can I have an invoice?", A = "Yes, an invoice is automatically sent to the email address the order has been placed under." },
+                new { Q = "If I don&rsquo;t want to pay online, what do I do?", A = "You can simply call our team on <a href='tel:03300585068'>0330 058 5068</a> and one of our friendly sales advisors will be more than happy to process your order via telephone using your payment card." },
+                new { Q = "Does it cost any extra to use PayPal?", A = "No, PayPal does not attract any additional costs. However it can only be used on online orders by yourself, not telephone orders." }
+            }
+        },
+        new
+        {
+            Id = "q2", Name = "Delivery", Title = "Questions about delivery",
+            Questions = new[]
+            {
+                new { Q = "How much is delivery and VAT?", A = "All cost for delivery and VAT is included in the price shown once you select the postal area during the quote/buy process." },
+                new { Q = "What are my delivery options?", A = "We aim to deliver within 2-3 working days on our free standard service. We also offer a Next Day delivery and an AM delivery slot upgrade for additional costs." },
+                new { Q = "What&rsquo;s the cut off time for next day delivery?", A = "A next day delivery is available to select on orders placed before 12pm." },
+                new { Q = "When will I receive my order?", A = "On our Standard delivery service you will receive your order within 2-3 working days. We do everything that we can to meet the selected desired delivery date but cannot always be guaranteed. Should an issue arise, we will notify the customer by telephone or email as soon as possible." },
+                new { Q = "Post code restrictions", A = "We are able to deliver to most post code areas, however some post codes may require slightly longer than our Standard delivery of 2-3 working days. Should this be the case, we will notify the customer by telephone or email as soon as possible." },
+                new { Q = "Do I need to be in to accept delivery?", A = "No you do not need to be at the property to accept the delivery. However, as we can only guarantee a kerbside delivery, we do recommend it. The drivers will where possible, deliver the goods to the requested location and leave without a signature." },
+                new { Q = "Can I request a delivery time?", A = "On our Standard delivery service we can only guarantee between 7am and 6pm. You can upgrade to an AM delivery slot between 7am and 12:30pm for an additional &pound;15.00. We can advise the haulier of any times to avoid which are unsuitable or where access may be an issue but cannot guarantee that the haulier will be able to adhere to this." },
+                new { Q = "What if I have access restrictions?", A = "If there are any concerns regarding restrictions you can speak to a member of our Sales Team beforehand who can take a look at this and offer advice. Where access for an 18 tonne lorry is not possible, please advise us before your delivery date of this and we can request a smaller vehicle." },
+                new { Q = "What if I want to change the delivery date?", A = "You can amend your delivery date by emailing or calling our Customer Service Team. All orders are dispatched approximately 48 hours before the due delivery date to make their way to your local delivery depot. The delivery depot may be able to hold the goods until the requested date, however, depending on the hold time this may incur a holding fee." },
+                new { Q = "Who will deliver my items?", A = "Our third party haulier is Palletforce although orders to some areas local to Doncaster may be delivered on our dedicated wagon." },
+                new { Q = "Can I track the status of my delivery?", A = "You should receive email updates from our haulier regarding your order or alternatively you can call our office and follow option 2 to speak to the Customer Service Team who will be able to provide you with an update." },
+                new { Q = "Where do you deliver?", A = "We deliver to most locations across the UK." },
+                new { Q = "When I order more than one item, will they all be delivered at the same time?", A = "Items placed on the same order will be dispatched together and scheduled for the same delivery date to be delivered together. Where this is not possible, we will notify the customer by telephone or email as soon as possible." },
+                new { Q = "How much does delivery cost?", A = "We offer a free standard delivery regardless of how many items you decide to order. However if you want to receive next day delivery it attracts the additional cost of &pound;15." },
+                new { Q = "What happens if you can&rsquo;t deliver?", A = "If we are unable to deliver, the customer will be notified by telephone or email as soon as possible." },
+                new { Q = "Can I speak to my driver?", A = "You cannot speak to the driver but our Customer Service Team can speak to or pass on information to your local delivery depot." },
+                new { Q = "My delivery driver was great, how can I say thank you?", A = "Please email <a href='mailto:customerservices@gravelmaster.co.uk'>Customer Services</a> and we will pass on your comments to the haulier. Another option would be to review us on <a href='https://uk.trustpilot.com/review/gravelmaster.co.uk' target='_blank' rel='noopener'>Trustpilot<span class='inf-sr'> (opens in a new tab)</span></a> or pass comments through our social media! This will be passed on straight away." },
+                new { Q = "Help, I&rsquo;ve ordered the wrong thing", A = "Please email <a href='mailto:customerservices@gravelmaster.co.uk'>Customer Services</a> to advise of the issue. The Customer Service Team will be able to cancel or amend your order. Please note that once deliveries have been dispatched from our yard, a return fee of &pound;80.00 per pallet will apply. Additional costs may also apply if you are wishing to change the product." },
+                new { Q = "There was no paper work with my delivery, what should I do?", A = "Paperwork should accompany your order detailing the items on your order and a delivery ticket from the haulier should also be provided for you to sign. If this is not the case you can call our offices and we can provide a copy via email." },
+                new { Q = "Will you deliver if the weather is bad?", A = "We will always aim to deliver your products whatever the weather, if for some reason your driver is delayed or needs to reschedule the delivery you will be the first to know." },
+                new { Q = "What size trucks do you deliver with?", A = "Our truck size can vary however the delivery is usually made on an 18 tonne vehicle which is similar in size to that of a bin lorry. If a smaller vehicle is required we can request a 7.5 tonne but can&rsquo;t guarantee this. Large orders over this amount can be discussed when purchasing as this may attract the need for a larger vehicle." }
+            }
+        },
+        new
+        {
+            Id = "q3", Name = "Returns and refunds", Title = "Questions about returns and refunds",
+            Questions = new[]
+            {
+                new { Q = "What is your returns policy?", A = "If you are wanting to return your goods due to any damages or shortages you have 48 hours to make us aware, and 14 days to return the goods, however if its due to not liking the product, ordering over the amount needed or a change of mind there will be a &pound;80 charge per pallet to return the goods." },
+                new { Q = "How long does it take to process my refund?", A = "Once a refund is requested it takes 14 working days for it to reach your account. If there is any issues please feel free to contact our finance department on <a href='mailto:accounts@gravelmaster.co.uk'>accounts@gravelmaster.co.uk</a> or our customer service team." },
+                new { Q = "Can I return my used pallets and bulk bags?", A = "Unfortunately we do not accept used pallets or bulk bags to be returned. We do apologise." },
+                new { Q = "How do I return?", A = "All returned products must be in their original condition and they must be in the original packaging. We advise if you are returning bulk bags/pallets you should get in contact with us and we will arrange the return pick up. However you can also return the goods yourself, this will be at your own cost. We advise if you are externally returning your goods, to keep your receipt for proof." },
+                new { Q = "Do you refund the delivery charge?", A = "Unfortunately we do not refund the delivery charge, and an additional &pound;80 is charged as this is the cost of a pallet collection." }
+            }
+        },
+        new
+        {
+            Id = "q4", Name = "Products and stock", Title = "Questions about products and stock",
+            Questions = new[]
+            {
+                new { Q = "Will you be getting more stock?", A = "Please call a member of our sales team to enquire about stock and availability. If a product is out of stock, a member of our team will contact you as soon as it is available to order. Please note that certain products may take days or weeks to become available again." },
+                new { Q = "What size aggregate would you recommend for a driveway?", A = "The average recommended size for a driveway is 20mm. We would not advise using a gravel smaller than 20mm because it can often get stuck in tyre treads." },
+                new { Q = "Is it necessary to have weed control membrane?", A = "It is not a necessity to lay weed control membrane underneath soil and aggregates, however, it is advisable because weed control membranes retains moisture and suppresses the growth of weeds; maintaining a tidy garden." },
+                new { Q = "Are your products washed?", A = "As all of our products are naturally quarried and are dispatched from a working yard, these will be dusty on arrival. This easily washes away with a hose down or rainfall." },
+                new { Q = "Do you screen your topsoil?", A = "Yes, each Topsoil is screened initially at 10mm to remove oversized lumps and stones." },
+                new { Q = "Can I order single pre-packed bags?", A = "Unfortunately you cannot order single bags alone. Each product page gives an option of the quantity which is available to buy. Pre-packed bags are already readily packed onto pallets; therefore, we cannot alter the quantity offered. Please speak to a member of the sales team if you are unsure about a certain quantity." }
+            }
+        },
+        new
+        {
+            Id = "q5", Name = "Technical", Title = "Technical questions",
+            Questions = new[]
+            {
+                new { Q = "How do I use the Gravel Calculator?", A = "Once you know the dimensions of the area you wish to cover, enter the length, width and depth into the provided boxes. It will then calculate the following for you: approximately how many tonnes you require, how many 850kg bulk bags you require, or how many 20kg bags you require to cover the given area. Should you have any difficulties using the <a href='/calculator'>gravel calculator</a>, please contact a member of our sales team who would be happy to help." },
+                new { Q = "How can I contact you?", A = "You can contact a member of our team by calling the freephone on <a href='tel:03300585068'>0330 058 5068</a>, or email our sales team at <a href='mailto:customerservices@gravelmaster.co.uk'>customerservices@gravelmaster.co.uk</a>." },
+                new { Q = "Why has the price changed once I have entered the checkout page?", A = "When you enter the first two letters of the delivery postcode onto the product page, it will provide you with a price which includes standard delivery and VAT. Please note that we have to distribute our products from Doncaster in South Yorkshire, therefore, there may be an extra charge for deliveries to certain areas. You will always be notified of a price increase before entering payment details. Should you wish to withdraw from placing your order, you can do so before entering payment details." },
+                new { Q = "Why am I experiencing problems when entering my payment details?", A = "Please ensure that the details entered are correct. If you are still experiencing problems with the checkout process, please call our sales team on <a href='tel:03300585068'>0330 058 5068</a> and they will be happy to assist you with your payment." },
+                new { Q = "Is it necessary to have an existing account with you if I want to place an order?", A = "No, it is not a necessity to have an account with us to place an order. You can place an order at any time on the website, or via phone with a member of our sales team." }
+            }
+        }
+    };
+}
+@* New FAQ page, shown by Content/FAQ.cshtml for /faq when the new chrome is on. There's no Optima prototype for it, so
+   it's in the style of the other information pages (the delivery and calculator pages), with the Trade Accounts page's
+   FAQs. Styles: css/gm-info.css, loaded in FAQ.cshtml's Head section. js/gm-faq.js adds the search box, which is hidden
+   until it runs: without it every question shows. *@
+<div class="gm-info gm-faqpage">
+    <section class="inf-intro">
+        <nav class="container inf-crumbs" aria-label="Breadcrumb">
+            <ol class="inf-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><span class="inf-crumbs__current" aria-current="page">FAQs</span></li>
+            </ol>
+        </nav>
+        <div class="container">
+            <p class="inf-eyebrow">Help and support</p>
+            <h1 class="inf-intro__title">Frequently asked questions</h1>
+            <p class="inf-intro__text">A list of questions we get asked that may help you resolve any issues quicker.</p>
+            <div class="faq-search" data-faq-search hidden>
+                <label class="faq-search__label" for="faq-search">Search the questions</label>
+                <span class="faq-search__box">
+                    <svg class="faq-search__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 21 21" /></svg>
+                    <input type="search" id="faq-search" class="faq-search__input" placeholder="e.g. cancel, next day, refund" autocomplete="off" spellcheck="false">
+                </span>
+                <p class="faq-search__status" id="faq-status" role="status" aria-live="polite"></p>
+            </div>
+        </div>
+    </section>
+
+    <section class="inf-section faq-body">
+        <div class="container faq-layout">
+            <div class="faq-side">
+                <nav class="faq-topics" aria-label="Topics">
+                    <p class="faq-topics__title">Topics</p>
+                    <ul class="faq-topics__list">
+                        @foreach (var topic in topics)
+                        {
+                            <li><a href="#@topic.Id" class="faq-topics__link"><span>@topic.Name</span><span class="faq-topics__count">@topic.Questions.Length</span></a></li>
+                        }
+                    </ul>
+                </nav>
+                <div class="faq-help">
+                    <h2 class="faq-help__title">Can&rsquo;t find your answer?</h2>
+                    <p class="faq-help__text">Our team are here Monday to Friday, 8am - 5pm.</p>
+                    <a href="tel:03300585068" class="inf-btn faq-help__btn">Call 0330 058 5068</a>
+                    <a href="mailto:customerservices@gravelmaster.co.uk" class="inf-btn inf-btn--outline faq-help__btn">Email us</a>
+                    @* The site's Track Order pop-up (_TrackOrderModal), as the header's Track Order link opens it *@
+                    <button type="button" class="faq-help__track" data-toggle="modal" data-target="#trackModal">Track your order</button>
+                </div>
+            </div>
+
+            <div class="faq-main">
+                @foreach (var topic in topics)
+                {
+                    <section class="faq-topic" id="@topic.Id" aria-labelledby="@(topic.Id)-title">
+                        <h2 class="inf-h2 faq-topic__title" id="@(topic.Id)-title">@topic.Title</h2>
+                        <div class="faq-topic__list">
+                            @foreach (var item in topic.Questions)
+                            {
+                                <details class="inf-faq__item">
+                                    <summary class="inf-faq__q"><h3>@Html.Raw(item.Q)</h3><svg class="inf-faq__chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg></summary>
+                                    <p class="inf-faq__a">@Html.Raw(item.A)</p>
+                                </details>
+                            }
+                        </div>
+                    </section>
+                }
+                <div class="faq-none" hidden>
+                    <p class="faq-none__title">No questions match &ldquo;<span data-faq-term></span>&rdquo;</p>
+                    <p class="faq-none__text">Try a different word, or call us 8am - 5pm on <a href="tel:03300585068">0330 058 5068</a>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="/js/gm-faq.js?v1" defer></script>
