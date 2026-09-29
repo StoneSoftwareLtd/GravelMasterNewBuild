@@ -161,6 +161,62 @@ function Format-ContactPage([string]$templatePath) {
   $h
 }
 
+# The Price Match Promise page (Views/Content/_PriceMatchPromisePage.cshtml): plain markup
+function Format-PriceMatchPage([string]$templatePath) {
+  $src = [IO.File]::ReadAllText($templatePath)
+  $src = [regex]::Replace($src, '[ \t]*@\*[\s\S]*?\*@[ \t]*\r?\n?', '')   # Razor comments
+  $start = $src.IndexOf('<div class="gm-info gm-pricematch">')
+  if ($start -lt 0) { throw "Couldn't find <div class=""gm-info gm-pricematch""> in _PriceMatchPromisePage.cshtml" }
+  $h = $src.Substring($start)
+  Assert-NoRazorLeft '_PriceMatchPromisePage' $h
+  $h
+}
+
+# Meet the team (Views/Content/_MeetTeamPage.cshtml), with its people and departments read from the partial's own C# block
+function Format-MeetTeamPage([string]$templatePath) {
+  $src = [IO.File]::ReadAllText($templatePath)
+  $src = [regex]::Replace($src, '[ \t]*@\*[\s\S]*?\*@[ \t]*\r?\n?', '')   # Razor comments
+  $team = @([regex]::Matches($src, 'new \{ Name = "([^"]+)", Role = "([^"]+)", Photo = "([^"]+)", Departments = "([^"]+)" \}') | ForEach-Object { [pscustomobject]@{ Name = $_.Groups[1].Value; Role = $_.Groups[2].Value; Photo = $_.Groups[3].Value; Departments = $_.Groups[4].Value } })
+  $departments = @([regex]::Matches($src, 'new \{ Key = "([^"]+)", Name = "([^"]+)" \}') | ForEach-Object { [pscustomobject]@{ Key = $_.Groups[1].Value; Name = $_.Groups[2].Value } })
+  if ($team.Count -eq 0 -or $departments.Count -eq 0) { throw "Couldn't read the team and departments from _MeetTeamPage.cshtml" }
+  $start = $src.IndexOf('<div class="gm-info gm-team">')
+  if ($start -lt 0) { throw "Couldn't find <div class=""gm-info gm-team""> in _MeetTeamPage.cshtml" }
+  $h = $src.Substring($start)
+  $enc = { param($s) [Net.WebUtility]::HtmlEncode($s) }
+  $h = Set-RazorBlock $h '@foreach \(var department in departments\)\s*\{' { param($b)
+    ($departments | ForEach-Object { $b.Inner.Replace('@department.Key', (& $enc $_.Key)).Replace('@department.Name', (& $enc $_.Name)) }) -join ''
+  }
+  $h = Set-RazorBlock $h '@for \(int i = 0; i < team\.Length; i\+\+\)\s*\{' { param($b)
+    $markup = Get-LoopMarkup $b.Inner
+    $out = for ($i = 0; $i -lt $team.Count; $i++) {
+      $p = $team[$i]
+      $markup.Replace('@person.Departments', (& $enc $p.Departments)).Replace('@(person.Photo)', (& $enc $p.Photo)).Replace('@(i < 8 ? "eager" : "lazy")', $(if ($i -lt 8) { 'eager' } else { 'lazy' })).Replace('@person.Name', (& $enc $p.Name)).Replace('@person.Role', (& $enc $p.Role))
+    }
+    $out -join ''
+  }
+  Assert-NoRazorLeft '_MeetTeamPage' $h
+  $h
+}
+
+# The "page not found" page (Views/Shared/_NotFoundPage.cshtml). $categories: the header's categories in its order
+# (name and url, as data.json has them), which NotFound.cshtml's new branch passes as links to their pages
+function Format-NotFoundPage([string]$templatePath, $categories) {
+  $src = [IO.File]::ReadAllText($templatePath)
+  $src = [regex]::Replace($src, '[ \t]*@\*[\s\S]*?\*@[ \t]*\r?\n?', '')   # Razor comments
+  $start = $src.IndexOf('<link href="/css/gm-info.css')
+  if ($start -lt 0) { throw "Couldn't find the gm-info.css link in _NotFoundPage.cshtml" }
+  $h = $src.Substring($start)
+  $cats = @($categories)
+  $h = Set-RazorBlock $h '@if \(Model\.Count > 0\)\s*\{' { param($b)
+    if ($cats.Count -eq 0) { return '' }
+    Set-RazorBlock $b.Inner '@foreach \(var category in Model\)\s*\{' { param($lb)
+      ($cats | ForEach-Object { $lb.Inner.Replace('@category.Url', [Net.WebUtility]::HtmlEncode('/' + $_.url + '/products/')).Replace('@category.Name', [Net.WebUtility]::HtmlEncode($_.name)) }) -join ''
+    }
+  }
+  Assert-NoRazorLeft '_NotFoundPage' $h
+  $h
+}
+
 # $mainHtml: the old page from its #mainBody to the end of it. Display.cshtml shows the admin site's HTML and nothing
 # else, and the privacy and terms pages' HTML starts with the old design's wrapper; $null if it isn't there.
 function Get-OldContentHtml([string]$mainHtml) {

@@ -122,6 +122,9 @@ $blockedPage = [Text.Encoding]::UTF8.GetBytes(@'
 
 $script:chrome = $null
 $staticCache = @{}
+$script:renderNotFound = $false
+# the header's categories in its order (build.ps1 reads the same), for the "page not found" page's links
+$script:menuCategories = @(([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'data.json')) | ConvertFrom-Json).categories)
 
 function Update-Chrome {
   $stamp = Join-Path $fragments 'built.txt'
@@ -235,7 +238,12 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
     $content = $null
     $extraHead = $null
     if ($mainBody.Success -and $mainEnd -gt $mainBody.Index) {
-      if ($chrome.Home -and $path -eq '/') {
+      if ($script:renderNotFound) {
+        # an address the live site doesn't have (the main loop gives this page a content page's frame)
+        $content = Format-NotFoundPage (Join-Path $package 'Views\Shared\_NotFoundPage.cshtml') $script:menuCategories
+        $css = '/css/gm-info.css?v1'; $newPage = 'new not-found page'
+      }
+      elseif ($chrome.Home -and $path -eq '/') {
         $content = $chrome.Home; $css = '/css/gm-home.css?v1'; $newPage = 'new homepage'
       }
       elseif ($path -match $categoryPathPattern) {
@@ -260,6 +268,14 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $content = Format-AboutPage (Join-Path $package 'Views\Content\_AboutPage.cshtml')
         $css = '/css/gm-about.css?v1'; $newPage = 'new about page'
         $extraHead = '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet" />'
+      }
+      elseif ($path -match '^/meet-the-team/?$') {
+        $content = Format-MeetTeamPage (Join-Path $package 'Views\Content\_MeetTeamPage.cshtml')
+        $css = '/css/gm-info.css?v1'; $newPage = 'new team page'
+      }
+      elseif ($path -match '^/price-match/?$') {
+        $content = Format-PriceMatchPage (Join-Path $package 'Views\Content\_PriceMatchPromisePage.cshtml')
+        $css = '/css/gm-info.css?v1'; $newPage = 'new price match page'
       }
       elseif ($path -match '^/delivery/?$') {
         $content = Format-DeliveryPage (Join-Path $package 'Views\Content\_DeliveryPage.cshtml')
@@ -518,6 +534,10 @@ function Convert-Page([string]$html, [string]$rawUrl, [bool]$useNewChrome, [stri
         $title = if ($newPage -eq 'new checkout') { 'GravelMaster | Checkout' } else { 'Order Information' }   # the views' ViewBag.Title
         $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', "<title>$title</title>")
       }
+      # The "page not found" page's title, which NotFound.cshtml's new branch sets
+      if ($newPage -eq 'new not-found page') {
+        $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', '<title>Page not found | GravelMaster</title>')
+      }
       # The payment error page's title, which its new branch in Error.cshtml sets (the old one is "Error")
       if ($newPage -eq 'new payment error page') {
         $html = [regex]::Replace($html, '<title>[\s\S]*?</title>', '<title>Payment problem</title>')
@@ -595,6 +615,7 @@ while ($listener.IsListening) {
   $path = $req.Url.AbsolutePath
   $withBody = $req.HttpMethod -ne 'HEAD'
   $note = ''
+  $script:renderNotFound = $false
 
   # ?newchrome=0 / ?newchrome=1 picks the old or new header and footer and is remembered in a cookie;
   # the parameter itself is not passed on to the live site
@@ -657,6 +678,12 @@ while ($listener.IsListening) {
       if ($accountAnswer.Location) { $res.StatusCode = 302; $res.RedirectLocation = $accountAnswer.Location }
       else { Send-Response $res 200 $accountAnswer.ContentType ([Text.Encoding]::UTF8.GetBytes([string]$accountAnswer.Body)) $withBody }
       $note = $accountAnswer.Note
+    }
+    elseif ($useNewChrome -and $req.HttpMethod -eq 'GET' -and $path -match '^/articles(/\d+/[^/]+)?/?$') {
+      # The old Articles list and its category pages: NewsController's new branch sends them to Ideas & Advice, where
+      # their articles already go (docs/merging.md)
+      $res.StatusCode = 302; $res.RedirectLocation = '/ideas-advice'
+      $note = 'articles: to Ideas & Advice'
     }
     elseif ($myAccountRedirect) {
       $res.StatusCode = 302; $res.RedirectLocation = $myAccountRedirect
@@ -753,6 +780,14 @@ while ($listener.IsListening) {
       }
       elseif ($live.ContentType -and $live.ContentType.StartsWith('text/html')) {
         Update-Chrome
+        $script:renderNotFound = $false
+        if ($live.Status -eq 404 -and $useNewChrome -and $req.HttpMethod -ne 'POST') {
+          # The live "page not found" page is IIS's static Error404.html, with its own copy of the old header and footer.
+          # The new one goes through _Layout (NotFound.cshtml's new branch), so it's shown in a content page's frame,
+          # still answering 404
+          $frame = Get-Live '/faq' 'text/html' $null
+          if ($frame.Status -eq 200) { $live = [pscustomobject]@{ Status = 404; ContentType = $frame.ContentType; Location = $null; Body = $frame.Body }; $script:renderNotFound = $true }
+        }
         $page = Convert-Page ($utf8.GetString($live.Body)) $rawUrl $useNewChrome $null
         Send-Response $res $live.Status 'text/html; charset=utf-8' ($utf8.GetBytes($page.Html)) $withBody
         $note = if ($page.NewPage) { "new header and footer, $($page.NewPage)" } elseif ($page.Swapped) { 'new header and footer' } elseif (-not $useNewChrome) { 'old header and footer (newchrome=0)' } else { 'page left as it is (no old header/footer found)' }
