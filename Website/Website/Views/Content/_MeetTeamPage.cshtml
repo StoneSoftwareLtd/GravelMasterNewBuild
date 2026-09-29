@@ -1,0 +1,99 @@
+@* New Meet the team page, shown by Content/MeetTeam.cshtml for /meet-the-team when the new chrome is on. There's no
+   Optima prototype for it, so it's in the information pages' style (css/gm-info.css, .gm-team, loaded in MeetTeam.cshtml's
+   Head section). The people, jobs, departments and words are the live page's (docs/meet-team-page.md), with Customer
+   service added for the two customer service managers; the photos are the live page's, as smaller JPEGs
+   (img/gm-team-*.jpg). The department buttons (js/gm-team.js) show one department at a time; without the script,
+   everyone shows. The old page's pop-up biographies are left out. *@
+@{
+    // In the live page's order. Departments: the live page's filter classes, plus customer-service
+    var team = new[]
+    {
+        new { Name = "Sam Robinson", Role = "Managing Director", Photo = "sam", Departments = "management" },
+        new { Name = "Mollie Robinson", Role = "Commercial Director", Photo = "mollie", Departments = "management" },
+        new { Name = "Rhiannon Sloan", Role = "Head Of Finance", Photo = "rhiannon", Departments = "management accounts" },
+        new { Name = "Jordan Smith", Role = "Senior Sales Executive", Photo = "jordan", Departments = "sales" },
+        new { Name = "Mary Hughes", Role = "Senior Sales Executive", Photo = "mary", Departments = "management sales" },
+        new { Name = "Jessica Shadlock", Role = "Customer Experience Manager", Photo = "jessica", Departments = "management customer-service" },
+        new { Name = "Kieran Blagden", Role = "Customer Service Manager", Photo = "kieran", Departments = "management customer-service" },
+        new { Name = "Lianne Bidmead", Role = "Logistics Manager", Photo = "lianne", Departments = "management transport" },
+        new { Name = "Harry Knibb", Role = "Production Manager", Photo = "harry", Departments = "management production" },
+        new { Name = "Mick Askew", Role = "Production Team Leader", Photo = "mick", Departments = "management production" },
+        new { Name = "Jade Robinson", Role = "Production Administrator", Photo = "jade", Departments = "management production" },
+        new { Name = "Leighton Humphries", Role = "Accounts Apprentice", Photo = "leighton", Departments = "accounts" },
+        new { Name = "Tarla Scott", Role = "Production Administrator", Photo = "tarla", Departments = "production" },
+        new { Name = "Tony Cartwright", Role = "Forklift Supervisor", Photo = "tony", Departments = "production" },
+        new { Name = "Ben Brunt", Role = "Prepack Supervisor", Photo = "ben", Departments = "production" },
+        new { Name = "Alex White", Role = "Forklift Driver", Photo = "alex", Departments = "production" },
+        new { Name = "Charlie Cook", Role = "Production Apprentice", Photo = "charlie", Departments = "production" }
+    };
+
+    // The department buttons, in the live page's order (only those with people in)
+    var departments = new[]
+    {
+        new { Key = "management", Name = "Management" },
+        new { Key = "sales", Name = "Sales" },
+        new { Key = "customer-service", Name = "Customer service" },
+        new { Key = "transport", Name = "Transport" },
+        new { Key = "production", Name = "Production" },
+        new { Key = "accounts", Name = "Accounts" }
+    };
+}
+<div class="gm-info gm-team">
+    <section class="inf-intro">
+        <nav class="container inf-crumbs" aria-label="Breadcrumb">
+            <ol class="inf-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about-us">About us</a></li>
+                <li><span class="inf-crumbs__current" aria-current="page">Meet the team</span></li>
+            </ol>
+        </nav>
+        <div class="container">
+            <p class="inf-eyebrow">About us</p>
+            <h1 class="inf-intro__title">Meet the team</h1>
+            <p class="inf-intro__text">The staff at Gravel Master are devoted to providing excellent customer service, which is why we have ensured that each team member can provide specialist advice when it comes to purchasing our top-quality products.</p>
+            <p class="inf-intro__text">At Gravel Master we have a cheerful, caring team who have their customer&rsquo;s best interest at heart!</p>
+        </div>
+    </section>
+
+    <section class="inf-section team-people" aria-labelledby="team-title">
+        <div class="container">
+            <h2 class="inf-sr" id="team-title">Our team</h2>
+            @* Shown by gm-team.js *@
+            <div class="team-filter" role="group" aria-label="Show a department" data-team-filter hidden>
+                <button type="button" class="team-filter__btn" aria-pressed="true" data-department="">Everyone</button>
+                @foreach (var department in departments)
+                {
+                    <button type="button" class="team-filter__btn" aria-pressed="false" data-department="@department.Key">@department.Name</button>
+                }
+            </div>
+            <p class="inf-sr" aria-live="polite" data-team-status></p>
+            <ul class="team-grid">
+                @for (int i = 0; i < team.Length; i++)
+                {
+                    var person = team[i];
+                    <li class="team-card" data-departments="@person.Departments">
+                        <img class="team-card__img" src="/img/gm-team-@(person.Photo).jpg" alt="" width="450" height="490" loading="@(i < 8 ? "eager" : "lazy")" decoding="async">
+                        <h3 class="team-card__name">@person.Name</h3>
+                        <p class="team-card__role">@person.Role</p>
+                    </li>
+                }
+            </ul>
+        </div>
+    </section>
+
+    <section class="inf-section inf-section--tint">
+        <div class="container">
+            <div class="team-help">
+                <div>
+                    <h2 class="team-help__title">Talk to the team</h2>
+                    <p class="team-help__text">For advice on choosing the right products, or help with an order, call us Monday to Friday, 8am - 5pm.</p>
+                </div>
+                <div class="team-help__actions">
+                    <a class="inf-btn" href="tel:03300585068">Call 0330 058 5068</a>
+                    <a class="inf-btn inf-btn--outline" href="/contact-us">Contact us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="/js/gm-team.js?v1" defer></script>

@@ -1,0 +1,44 @@
+@model List<Agilis.ECommerce.Mvc.Web.ViewModels.Common.CategoryLink>
+@* New "page not found" page, shown by Views/Shared/NotFound.cshtml when the new chrome is on (docs/not-found-page.md).
+   The site had two: IIS's static Error404.html (a saved copy of an old page, for any address that doesn't exist) and
+   NotFound.cshtml's black page (for a product or category that doesn't). Both now come here, through _Layout, so the
+   header and footer are the new ones. Model: the header's top-level categories, in the header's order. There's no Optima
+   prototype for it, so it's in the information pages' style (css/gm-info.css, .gm-notfound), linked here because the
+   old view has no layout to take a Head section. The words are the two old pages', with a search added. *@
+<link href="/css/gm-info.css?v1" rel="stylesheet" />
+<div class="gm-info gm-notfound">
+    <section class="inf-section nf-hero" aria-labelledby="nf-title">
+        <div class="container nf-inner">
+            <p class="inf-eyebrow">Page not found</p>
+            <h1 class="nf-title" id="nf-title">Sorry, that page doesn&rsquo;t exist</h1>
+            <p class="nf-text">The page you were looking for could not be found. It may have moved shelf.</p>
+            <form class="nf-search" role="search" action="/search" method="get">
+                <label class="inf-sr" for="nf-search">Search our products</label>
+                <input class="nf-search__input" id="nf-search" name="searchphrase" type="search" placeholder="Search for gravel, slate, bark&hellip;" autocomplete="off">
+                <button class="inf-btn nf-search__btn" type="submit">Search</button>
+            </form>
+        </div>
+    </section>
+
+    @if (Model.Count > 0)
+    {
+        <section class="inf-section inf-section--tint" aria-labelledby="nf-cats">
+            <div class="container">
+                <h2 class="inf-h2 inf-h2--center" id="nf-cats">Or browse our products</h2>
+                <ul class="nf-cats">
+                    @foreach (var category in Model)
+                    {
+                        <li><a class="nf-cat" href="@category.Url">@category.Name</a></li>
+                    }
+                </ul>
+            </div>
+        </section>
+    }
+
+    <section class="inf-section">
+        <div class="container nf-inner">
+            <p class="nf-help">Trying to place an order and something went wrong? Call us on <a href="tel:03300585068">0330 058 5068</a>, Monday to Friday, 8am - 5pm, or <a href="/contact-us">contact us</a>.</p>
+            <a class="inf-btn inf-btn--outline" href="/">Back to our home page</a>
+        </div>
+    </section>
+</div>

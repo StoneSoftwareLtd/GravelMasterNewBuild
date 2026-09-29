@@ -1,0 +1,101 @@
+@* New Price Match Promise page, shown by Content/Display.cshtml for /price-match when the new chrome is on. There's no
+   Optima prototype for it, so it's in the other information pages' style (css/gm-info.css, .gm-pricematch, loaded in
+   Display.cshtml's Head section). The words are the live page's own (its content, from the admin site), in the same
+   order, with the steps and conditions as cards; docs/price-match-page.md lists the changes. No script. *@
+<div class="gm-info gm-pricematch">
+    <section class="inf-intro">
+        <nav class="container inf-crumbs" aria-label="Breadcrumb">
+            <ol class="inf-crumbs__list">
+                <li><a href="/">Home</a></li>
+                <li><span class="inf-crumbs__current" aria-current="page">Price match promise</span></li>
+            </ol>
+        </nav>
+        <div class="container">
+            <p class="inf-eyebrow">Price match promise</p>
+            <h1 class="inf-intro__title">Price match guarantee</h1>
+            <p class="inf-intro__text">If you find a lower price for the same product at another retailer before making your purchase, give us a call at <a href="tel:03300585068">0330 058 5068</a>, and we&rsquo;ll match it. Additionally, if the price of an item you&rsquo;ve already ordered drops on our site, simply notify us and we will see if you&rsquo;re eligible to claim the difference.</p>
+            <p class="inf-intro__text">We all want the best deal, and even saving a few pounds can really add up. That&rsquo;s why we&rsquo;ll match the price if you find your product cheaper at another retailer.</p>
+            <div class="pm-actions">
+                <a class="inf-btn" href="tel:03300585068">Call 0330 058 5068</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="inf-section" aria-labelledby="pm-promise">
+        <div class="container">
+            <div class="inf-head">
+                <p class="inf-eyebrow">Our price match promise</p>
+                <h2 class="inf-h2" id="pm-promise">We&rsquo;ll match any price!</h2>
+                <p>At Gravel Master, we&rsquo;re committed to giving you the best value. That&rsquo;s why we&rsquo;ll match any price on products we sell, even including discount codes and special offers. Here&rsquo;s how to secure the best deal:</p>
+            </div>
+            <ol class="pm-steps">
+                <li class="pm-step"><span class="pm-step__no" aria-hidden="true">1</span><span>Give us a call on <a href="tel:03300585068">0330 058 5068</a></span></li>
+                <li class="pm-step"><span class="pm-step__no" aria-hidden="true">2</span><span>Provide our team with the product name and size</span></li>
+                <li class="pm-step"><span class="pm-step__no" aria-hidden="true">3</span><span>Let us know where you found the lower price</span></li>
+                <li class="pm-step"><span class="pm-step__no" aria-hidden="true">4</span><span>Sit back and let our team take care of the rest!</span></li>
+            </ol>
+            <p class="pm-note">We&rsquo;ll confirm the price on the spot, so make sure you have the link or details ready. In just a few minutes, you could be saving money. Simple and hassle-free!</p>
+            <p class="pm-note">Already ordered? You can also send us a price match message from <a href="/myaccount/pricematch">My Account</a>.</p>
+        </div>
+    </section>
+
+    <section class="inf-section inf-section--tint" aria-labelledby="pm-info">
+        <div class="container">
+            <div class="inf-head">
+                <p class="inf-eyebrow">Important info</p>
+                <h2 class="inf-h2" id="pm-info">Gravel Master Price Match Promise</h2>
+                <p>To ensure you get the best value, we offer a price match guarantee. Here&rsquo;s how it works:</p>
+            </div>
+            <div class="inf-grid2">
+                <div class="inf-block">
+                    <h3>UK-based retailers only</h3>
+                    <p>We match prices against websites from UK retailers selling UK products.</p>
+                </div>
+                <div class="inf-block">
+                    <h3>Exact match required</h3>
+                    <p>The product on our competitor&rsquo;s site must be identical to the one on our site.</p>
+                </div>
+                <div class="inf-block">
+                    <h3>Availability</h3>
+                    <p>The product must be available for immediate order and payment.</p>
+                </div>
+                <div class="inf-block">
+                    <h3>Exclusions</h3>
+                    <p>We do not price match against in-store only deals, membership-exclusive prices, business or trade sites.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="inf-section" aria-labelledby="pm-products">
+        <div class="container">
+            <h2 class="inf-h2 inf-h2--center" id="pm-products">Products you may like</h2>
+            <ul class="inf-links">
+                <li>
+                    <a href="/garden-chippings/products/" class="inf-link">
+                        <span class="inf-link__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="15" r="3.2" /><circle cx="15.5" cy="16" r="2.6" /><circle cx="12" cy="9" r="2.8" /><circle cx="18.5" cy="9.5" r="2" /></svg></span>
+                        <span class="inf-link__words"><span class="inf-link__title">Gravels &amp; chippings</span><span class="inf-link__text">Shop our gravels and chippings</span></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/play-area-surfaces/products/" class="inf-link">
+                        <span class="inf-link__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l6-5 6 5v12" /><path d="M16 12l5 9" /><path d="M4 21h17" /></svg></span>
+                        <span class="inf-link__words"><span class="inf-link__title">Play area</span><span class="inf-link__text">Shop our play area surfaces</span></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/topsoil-and-compost/products/" class="inf-link">
+                        <span class="inf-link__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-9" /><path d="M12 12c0-4 3-7 7-7 0 4-3 7-7 7z" /><path d="M12 14c0-3-2.5-5.5-6-5.5 0 3 2.5 5.5 6 5.5z" /><path d="M4 21h16" /></svg></span>
+                        <span class="inf-link__words"><span class="inf-link__title">Topsoil &amp; mulches</span><span class="inf-link__text">Shop our topsoil and mulches</span></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/winter-salt-and-fuel/products/" class="inf-link">
+                        <span class="inf-link__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20" /><path d="M4.9 6.9l14.2 10.2" /><path d="M19.1 6.9 4.9 17.1" /><path d="M9 3.5 12 6l3-2.5" /><path d="M9 20.5 12 18l3 2.5" /></svg></span>
+                        <span class="inf-link__words"><span class="inf-link__title">Winter salt &amp; fuel</span><span class="inf-link__text">Shop our winter salt and fuel</span></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
+</div>
