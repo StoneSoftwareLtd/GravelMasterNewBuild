@@ -1176,7 +1176,7 @@ div:where(.gm-track) {
   font-size: 16px;              /* 16px so phones don't zoom in */
   color: #23301c;
   background: #fff;
-  border: 2px solid #cfd6c7;
+  border: 2px solid #859079;    /* the checkout's box edge: 3:1 or more on white */
   border-radius: 8px;
   box-shadow: none;
 }
