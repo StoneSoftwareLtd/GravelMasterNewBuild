@@ -83,6 +83,11 @@ Each needs a decision (see [open-questions.md](open-questions.md)):
 - the old site's Contact link isn't in the new header (the prototype doesn't have one either);
 - the prototype's mobile menu lists sub-sections for every category, but the live site only has 4 subcategories across its 8 categories, so four categories open to just a "Shop all" link.
 
+## Changes since
+
+- 28 September 2026: the Track Order pop-up ([track-order-popup.md](track-order-popup.md)); its boxes' edges darkened to the checkout's (3.35:1 against white; they were 1.5:1).
+- 28 September 2026: "Blog" in the top bar and the phone menu goes straight to `/ideas-advice` (`/blog` only redirects there). In the footer's "Help and support", "Articles" and "Blog" (both ending at Ideas & Advice) became one "Ideas & Advice" link, and "Price Match Promise" was added, as nothing in the new header or footer linked to that page ([open question](open-questions.md#the-last-pages)).
+
 ## Before merging
 
 See [merging.md](merging.md): the live `_Layout.cshtml` is newer than the branch's master, and the "page not found" page has its own copy of the old header.

@@ -476,8 +476,44 @@ Raised:
 
 See [open-questions.md](open-questions.md#found-while-making-the-previews-accounts).
 
+## 28 September 2026: the last pages
+
+Dylan asked for the remaining pages. From the live site's links, those left on the old design were Meet the team, the Price Match Promise page, the old Articles section and "page not found" (`/blog` only redirects to Ideas & Advice; `/leave-review` gives an error on the live site).
+
+1. **Meet the team** (`_MeetTeamPage.cshtml`, [meet-team-page.md](meet-team-page.md)):
+   - the live page's 17 people, jobs and departments, as cards with department buttons (`gm-team.js`), Customer service added for the two customer service managers;
+   - the photos as JPEGs: 495 KB, down from about 4 MB;
+   - the out-of-date pop-up biographies left out.
+2. **Price Match Promise** (`_PriceMatchPromisePage.cshtml`, [price-match-page.md](price-match-page.md)): the live page's words, written in as the delivery page's are, with the steps and conditions as cards; `Display.cshtml`'s new branch gains the `price-match` key. It's now in the footer.
+3. **Page not found** (`_NotFoundPage.cshtml`, [not-found-page.md](not-found-page.md)):
+   - through `_Layout`, so with the new header and footer: both old pages' words, a search, and the header's categories;
+   - `NotFound.cshtml`'s new branch gives the layout the model it needs (the controllers pass none);
+   - `Web.config` sends IIS's 404s to it.
+4. **Old Articles section**: `/articles` and its category pages go to Ideas & Advice with the new design on, as its articles already did (`NewsController`). The header's "Blog" and the footer's "Articles" and "Blog" now link straight there.
+5. **Tested**:
+   - the partials, the merged `Display.cshtml`, `MeetTeam.cshtml` and `NotFound.cshtml`, and the redirect compile;
+   - the views ran with sample data (with the design on and off, and `NotFound.cshtml` with and without a model);
+   - the preview's three pages are the same markup as the compiled partials;
+   - every live word and person is on the new pages;
+   - the department buttons, 404 status and redirects work in headless Edge;
+   - nothing wider than the screen at 8 widths; contrast; no script errors.
+6. **Fixed along the way**:
+   - the Track Order pop-up's boxes had faint edges (1.5:1), now the checkout's (3.35:1);
+   - the small heading over a section title lost its look inside centred headings;
+   - two intro paragraphs ran together.
+
+Raised:
+- the biographies, the departments and the two team lists;
+- the price match page's words;
+- the `Web.config` change the 404 page needs;
+- the "Blog" label;
+- new words;
+- two more secrets in the code: `Web.config`'s machine key and a reCAPTCHA key, added to [security-fixes](../security-fixes/README.md).
+
+See [open-questions.md](open-questions.md#the-last-pages).
+
 ## Next
 
 - Wire the finished pages into the site, once the code that's live is on a GravelMasterSoftware branch and there's a test site ([merging.md](merging.md#before-anything-which-code-is-live)).
 - Test the checkout and the order confirmation with real orders and test payments on the test site ([merging.md](merging.md#checkout)).
-- Still on the old design after that: meet the team, the old "Articles" section, the other pages from the admin site and the "page not found" page.
+- Every page linked from the live site now has a new design, or goes to one. Left: `/leave-review` (the review form from review emails), which gives an error on the live site; other admin-site pages not linked from anywhere keep their old look inside the new header and footer.

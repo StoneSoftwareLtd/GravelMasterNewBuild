@@ -69,6 +69,8 @@ Anyone who can read the repository, or its history, can read these. Deleting the
 - **A Palletforce tracking access key** in `CheckoutController.cs` (`GetStatus`, used by Track Order).
 - **A CyberSource secret key** in `Services/Security.cs` (item 2).
 - **Azure Search admin keys** in `Controllers/BrandController.cs` and `Controllers/CategoryController.cs`, which the search no longer uses.
+- **`Web.config`'s machine key** (`<machineKey>`), which signs and encrypts sign-in cookies: with it, someone could make a cookie that signs them in as any customer. Change it as well as the database password.
+- **A Google reCAPTCHA secret key** in `Controllers/ContentController.cs` (the trade form's check).
 - **Campaign Monitor keys** (the email service) in seven controllers: `AccountController.cs`, `BasketController.cs`, `CheckoutController.cs`, `ContentController.cs`, `EmailController.cs`, `MyAccountController.cs` and `ProductController.cs`. With one, anyone could send email as GravelMaster or read the mailing lists.
 
 ## Checked and fine

@@ -38,6 +38,12 @@ The articles' words are the admin site's HTML as it is, except for empty paragra
 
 The landing page's title is "Ideas & Advice | GravelMaster" (was "Gravelmaster Articles"), and a topic with no page title of its own gets its name ("Product Information | GravelMaster" in place of "| GravelMaster").
 
+## The old Articles section
+
+`/articles` is an older list of the same articles (`NewsController.LatestNews`): 4 categories and the 20 newest articles' names, which aren't links. Each category (`/articles/7/winter-product-news` and so on) lists its articles the same way (`DisplayCategory`). The articles themselves (`/article/{id}/{name}`) already redirect to Ideas & Advice.
+
+With the new design on, `/articles` and its category pages go to `/ideas-advice` too ([merging.md](merging.md#old-articles-section)), rather than getting a design of their own. The new header's "Blog" (which went to `/blog`, a permanent redirect to Ideas & Advice) and the new footer's "Articles" and "Blog" now go straight there; the footer has one "Ideas & Advice" link instead of the two. Tested in the preview on 28 September 2026: `/articles` and `/articles/7/winter-product-news` both landed on Ideas & Advice; the redirect code compiles.
+
 ## Tested
 
 In the whole-website preview on 28 September 2026: the landing page, "How to Guides", "Collaborations" (no articles), "Product Information" and "How To Lay A Gravel Driveway".

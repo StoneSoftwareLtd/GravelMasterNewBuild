@@ -39,7 +39,7 @@ The new partials, CSS, JavaScript and images can be copied as they are.
 - [ ] Add `<add key="UseNewChrome" value="false" />` to `Web.config` `<appSettings>`.
 - [ ] Add `ViewModels/Common/NewChrome.cs` to `Website.csproj` (the switch that `_Layout` and the page views share).
 - [ ] **The Track Order pop-up** ([track-order-popup.md](track-order-popup.md)): with the new chrome on, `_Layout` renders `_TrackOrderPopup` after the footer, where it rendered `_TrackOrderModal`; `_LegacyFooter` keeps rendering the old one. Add `Views/Shared/_TrackOrderPopup.cshtml` to `Website.csproj` (this repository's copy lists it). Its styles and script are in `gm-chrome.css` and `gm-chrome.js` (now `?v4`). It asks `CheckoutController.CheckMyOrder`, unchanged; test it on the test site with a real order in each state, a wrong postcode and an order number that doesn't exist.
-- [ ] The **"page not found" page** (e.g. `/this-page-does-not-exist-123`) isn't built from `_Layout.cshtml`: it has its own copy of the old header and footer (no newsletter band, no product search data). Find its view or layout and give it the same switch.
+- [ ] The **"page not found" page** (e.g. `/this-page-does-not-exist-123`) isn't built from `_Layout.cshtml`: it's IIS's static `Error404.html`. The new one goes through `_Layout`: see [Page not found](#page-not-found).
 - [ ] Make a fresh patch from the finished branch. `patches/header-and-footer (before 2026-09-17 fixes).patch` is from before the fixes.
 
 ## Homepage
@@ -661,12 +661,13 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
       string pageKey = (Model.Key ?? "").ToLowerInvariant();
       bool newChrome = NewChrome.IsOn(Request);
       bool newDelivery = newChrome && pageKey == "delivery";
+      bool newPriceMatch = newChrome && pageKey == "price-match";
       // the privacy policy and the terms keep their words in the admin site, shown in the new design's column
       bool newLegal = newChrome && (pageKey == "privacy" || pageKey == "term-conditions");
   }
   @section Head
   {
-      @if (newDelivery || newLegal)
+      @if (newDelivery || newPriceMatch || newLegal)
       {
           <link href="/css/gm-info.css?v1" rel="stylesheet" />
       }
@@ -676,12 +677,18 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
       @Html.Partial("~/Views/Content/_DeliveryPage.cshtml")
       return;
   }
+  @if (newPriceMatch)
+  {
+      @Html.Partial("~/Views/Content/_PriceMatchPromisePage.cshtml")
+      return;
+  }
   @if (newLegal)
   {
       @Html.Partial("~/Views/Content/_LegalPage.cshtml", Model)
       return;
   }
   ```
+  (The `newPriceMatch` lines are for the [Price Match Promise page](#price-match-promise-page), added 28 September 2026.)
 - [ ] **`@section requirecontroller`**: nothing to change. The view has none, so `_Layout` loads `Content/Display.js` as before. The Track Order pop-up doesn't need it (plain JavaScript in `gm-chrome.js`).
 - [ ] **`_Layout.cshtml`**: render `#mainBody` full width for the new delivery page too.
 - [ ] **`Website.csproj`**: add `Views/Content/_DeliveryPage.cshtml`, `css/gm-info.css`, `img/gm-delivery-hero.jpg` and `img/gm-delivery-lorry.jpg`.
@@ -818,6 +825,73 @@ The returns pages are on `master` only. On a branch without them, add `ShowRetur
 - [ ] **`Website.csproj`**: add `Views/Content/_LegalPage.cshtml` and `js/gm-legal.js` (and `css/gm-info.css`, if another information page hasn't added it).
 - [ ] **In the admin site** (not code, and only once someone has read them): paste the tidied copies from [admin-content](admin-content/) into the `privacy` and `term-conditions` content, in the editor's HTML (source) view. They're the same words with real headings and lists; "On this page" appears once there are headings. It can be done before or after the code goes live: the old design shows them fine.
 - [ ] Test on the real site: both pages with the new design on and off, "On this page" on a computer and a phone, and another admin page (e.g. `/about`) still in its old look.
+
+## Price Match Promise page
+
+`/price-match` is `ContentController.Display` with the `price-match` key, which renders `Views/Content/Display.cshtml` with the admin site's HTML. See [price-match-page.md](price-match-page.md).
+
+- [ ] **`Views/Content/Display.cshtml`**: the `newPriceMatch` lines in the code under [Delivery page](#delivery-page). Compiled and run with sample data: `price-match` (and `Price-Match`) show the new page with `gm-info.css` in the head; `about` and `price-match` with the design off show the admin content.
+- [ ] **`Website.csproj`**: add `Views/Content/_PriceMatchPromisePage.cshtml` (and `css/gm-info.css`, if another information page hasn't added it).
+- [ ] Test on the real site: the page with the design on and off, and the phone link on a phone.
+
+## Meet the team page
+
+`/meet-the-team` is `ContentController.Display` with the `meet-the-team` key, which renders `Views/Content/MeetTeam.cshtml`. See [meet-team-page.md](meet-team-page.md).
+
+- [ ] **`Views/Content/MeetTeam.cshtml`**: add `@using Agilis.ECommerce.Mvc.Web.ViewModels.Common` at the top, and straight after its `@{ }` block (compiled against stand-ins, and run: the new page and `gm-info.css` in the head with the design on):
+  ```cshtml
+  @section Head
+  {
+      @if (NewChrome.IsOn(Request))
+      {
+          <link href="/css/gm-info.css?v1" rel="stylesheet" />
+      }
+  }
+  @if (NewChrome.IsOn(Request))
+  {
+      @Html.Partial("~/Views/Content/_MeetTeamPage.cshtml")
+      return;
+  }
+  ```
+- [ ] **`Website.csproj`**: add `Views/Content/_MeetTeamPage.cshtml`, `js/gm-team.js` and the 17 `img/gm-team-*.jpg` files.
+- [ ] Test on the real site: the department buttons, with and without JavaScript.
+
+## Page not found
+
+The site has two "page not found" pages. IIS answers any address that doesn't exist with `Error404.html`, a saved static copy of an old page (`Web.config`: `<error statusCode="404" path="Error404.html" responseMode="File" />`), so it can't follow the new design. `ProductController` and `CategoryController` show `Views/Shared/NotFound.cshtml`, a black page with no layout, for a product or category that doesn't exist, though IIS's `existingResponse="Replace"` probably swaps that for `Error404.html` too. See [not-found-page.md](not-found-page.md).
+
+- [ ] **`Views/Shared/NotFound.cshtml`**: add this at the very top (compiled against stand-ins, and run with no model, as the controllers pass none, and with one: the new page inside `_Layout`, which gets a `NotFoundViewModel`, answering 404; with the design off, the old page):
+  ```cshtml
+  @using Agilis.ECommerce.Mvc.Web.ViewModels.Common
+  @if (NewChrome.IsOn(Request))
+  {
+      // The site's layout needs a BaseViewModel, and the controllers that show this view pass none
+      BaseViewModel page = (Model as BaseViewModel) ?? new NotFoundViewModel();
+      ViewData.Model = page;
+      Layout = "~/Views/Shared/_Layout.cshtml";
+      ViewBag.Title = "Page not found | GravelMaster";
+      Response.StatusCode = 404;
+      var categories = page.MasterLayoutViewModel.TopLevelCategories.OrderByDescending(c => c.PriorityOnSubMenu)
+          .Select(c => new CategoryLink(c.Name, "/" + c.Url + "/products/")).ToList();
+      @Html.Partial("~/Views/Shared/_NotFoundPage.cshtml", categories)
+      return;
+  }
+  ```
+- [ ] **`Web.config`** (on the test server first): send IIS's 404s to that view through `ErrorController.NotFound`, which already sets 404 and shows it: in `<httpErrors>`, replace the 404 line with `<error statusCode="404" path="/error/notfound" responseMode="ExecuteURL" />`. Check the routes send `/error/notfound` to `ErrorController` (the content route may catch it first). With the design off, the old black page then shows for every missing address, instead of `Error404.html`, so make this change when the new design goes on.
+- [ ] **`Website.csproj`**: add `Views/Shared/_NotFoundPage.cshtml` (and `css/gm-info.css`).
+- [ ] Test on the real site: an address that doesn't exist, a product and a category that don't, each answering 404 with the new page; and that an ordinary page still works.
+
+## Old Articles section
+
+`/articles` (`NewsController.LatestNews`) lists 4 categories and 20 article names that aren't links; each category is `/articles/{id}/{name}` (`DisplayCategory`). The articles themselves (`/article/{id}/{name}`) already redirect to Ideas & Advice. With the new design on, the list and the categories go there too. See [ideas-pages.md](ideas-pages.md#the-old-articles-section).
+
+- [ ] **`Controllers/NewsController.cs`**: add `using Agilis.ECommerce.Mvc.Web.ViewModels.Common;` and, as the first line of `LatestNews()` and of `DisplayCategory(int categoryId)` (compiled):
+  ```csharp
+  // The articles moved to Ideas & Advice (DisplayArticle already sends each one there): so does the list
+  if (NewChrome.IsOn(Request)) return Redirect("/ideas-advice");
+  ```
+  A temporary redirect while the design can be switched off; once it's on for good, make it `RedirectPermanent` with no condition, as `DisplayArticle` is.
+- [ ] The new header's "Blog" (which went to `/blog`, itself a permanent redirect) and the new footer's "Articles" and "Blog" now go straight to `/ideas-advice`; the footer has one "Ideas & Advice" link instead of the two, and a "Price Match Promise" link ([open questions](open-questions.md#the-last-pages)). These are in `_SiteHeader`, `_SiteMobileMenu` and `_SiteFooter`, copied with the header and footer.
 
 ## After merging
 

@@ -28,6 +28,10 @@ Each piece is built to drop into the **GravelMasterSoftware** repository behind 
 | Contact page | Built and tested in the preview (no prototype: in the other information pages' style) | Needs wiring into the site |
 | Privacy and terms pages | Built and tested in the preview (the admin site's words in the new design) | Needs wiring into the site, and the tidied words pasting into the admin site |
 | Ideas & Advice (landing, topics, articles) | Built and tested in the preview (no prototype: in the information pages' style) | Needs wiring into the site |
+| Meet the team | Built and tested in the preview (no prototype: in the information pages' style) | Needs wiring into the site |
+| Price Match Promise page | Built and tested in the preview (no prototype: in the information pages' style) | Needs wiring into the site |
+| "Page not found" page | Built and tested in the preview (no prototype: in the information pages' style) | Needs wiring into the site, and a `Web.config` change |
+| Old Articles section | Sent to Ideas & Advice with the new design on (tested in the preview) | Needs the redirect adding to `NewsController` |
 | Track Order pop-up | Built and tested in the preview with sample orders (in the look of the July 2026 prototypes' one) | Needs wiring into the site, and testing with real orders |
 
 Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
@@ -45,7 +49,7 @@ Every step so far, with dates: **[docs/progress-log.md](docs/progress-log.md)**.
 
 ## See it
 
-Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in, a working basket and checkout (add from any product page, change, remove, voucher, check out; "Continue to payment" ends on the new payment error page, as payment isn't set up), the new order confirmation for a sample order, working accounts (sign in as the sample customer or create an account, trade applications, passwords, and My Account's address, returns and price match), the new search results for any search, the new special offers page, the new delivery, calculator, FAQ and contact pages, the privacy and terms pages in the new design, the new Ideas & Advice pages, and the new Track Order pop-up (which answers for sample orders). Keep the black window open while you use it. Nothing is sent to the real site: the basket is the preview's own, kept while it runs (the only exceptions are Sort by on category pages, which just reorders the products, and the price lookup, which only reads prices).
+Double-click **`Start website preview.cmd`**. Your browser opens http://localhost:8780: the live website with the new header, footer, homepage, category pages, product pages, About us and Trade Accounts pages swapped in, a working basket and checkout (add from any product page, change, remove, voucher, check out; "Continue to payment" ends on the new payment error page, as payment isn't set up), the new order confirmation for a sample order, working accounts (sign in as the sample customer or create an account, trade applications, passwords, and My Account's address, returns and price match), the new search results for any search, the new special offers page, the new delivery, calculator, FAQ and contact pages, the privacy and terms pages in the new design, the new Ideas & Advice pages, Meet the team, the Price Match Promise page, the new "page not found" page for any address that doesn't exist, and the new Track Order pop-up (which answers for sample orders). Keep the black window open while you use it. Nothing is sent to the real site: the basket is the preview's own, kept while it runs (the only exceptions are Sort by on category pages, which just reorders the products, and the price lookup, which only reads prices).
 
 Or open this folder in VS Code and use Live Server on `preview/index.html` or `preview/category.html`. See [preview/README.md](preview/README.md) for both.
 
@@ -71,6 +75,9 @@ Or open this folder in VS Code and use Live Server on `preview/index.html` or `p
 | [docs/faq-page.md](docs/faq-page.md) | The new FAQ page: where its words come from, the search, the spelling fixes, what was tested |
 | [docs/contact-page.md](docs/contact-page.md) | The new contact page: where its words come from, where the old page's parts went, the map, what was tested |
 | [docs/ideas-pages.md](docs/ideas-pages.md) | The new Ideas & Advice pages: how they're made, where the old pages' parts went, what was tested |
+| [docs/meet-team-page.md](docs/meet-team-page.md) | The new Meet the team page: the people, the department buttons, the photos, what was tested |
+| [docs/price-match-page.md](docs/price-match-page.md) | The new Price Match Promise page: where its words come from, what was tested |
+| [docs/not-found-page.md](docs/not-found-page.md) | The new "page not found" page: the two old ones, how the new one is reached, what was tested |
 | [docs/payment-error-page.md](docs/payment-error-page.md) | The new payment error page: when customers see it, the old page's security hole, what was tested |
 | [docs/track-order-popup.md](docs/track-order-popup.md) | The new Track Order pop-up: how it looks orders up, where the old one's parts went, what was tested |
 | [docs/legal-pages.md](docs/legal-pages.md) | The privacy and terms pages: why their words stay in the admin site, the tidied copies, what was tested |
